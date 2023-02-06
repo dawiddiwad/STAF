@@ -1,0 +1,305 @@
+{
+   "apps": [
+      {
+         "appId": "",
+         "description": "(Lightning Experience) Lets sales reps work with multiple records on one screen",
+         "developerName": "ole",
+         "eTag": "",
+         "formFactors": [
+            "Small",
+            "Large"
+         ],
+         "headerColor": "#0070D2",
+         "isabled": false,
+         "onDisabled": false,
+         "eDisabled": false,
+         "label": "Sales Console",
+         "mobileStartUrl": null,
+         "navItems": [],
+         "selected": false,
+         "type": "Lightning",
+         "userNavItems": []
+      },
+      {
+         "appId": "",
+         "description": "(Lightning Experience) Lets support agents work with multiple records across customer service channels on one screen",
+         "developerName": "LightningService",
+         "eTag": "",
+         "formFactors": [
+            "Small",
+            "Large"
+         ],
+         "headerColor": "#802ABE",
+         "isabled": false,
+         "onDisabled": false,
+         "eDisabled": false,
+         "label": "Service Console",
+         "mobileStartUrl": null,
+         "navItems": [],
+         "selected": false,
+         "type": "Lightning",
+         "userNavItems": []
+      },
+      {
+         "appId": "",
+         "description": "See how your company uses certain features, and learn ways you can improve your org.",
+         "developerName": "Optimizer",
+         "eTag": "",
+         "formFactors": [
+            "Large"
+         ],
+         "headerColor": "#0070D2",
+         "isabled": false,
+         "onDisabled": false,
+         "eDisabled": false,
+         "label": "Salesforce Optimizer",
+         "mobileStartUrl": null,
+         "navItems": [],
+         "selected": false,
+         "type": "Lightning",
+         "userNavItems": []
+      },
+      {
+         "appId": "",
+         "description": null,
+         "developerName": "Logistics_Park",
+         "eTag": "",
+         "formFactors": [
+            "Small",
+            "Large"
+         ],
+         "headerColor": "#0070D2",
+         "iconUrl": null,
+         "isabled": false,
+         "onDisabled": false,
+         "eDisabled": false,
+         "label": "Logistics Park",
+         "mobileStartUrl": null,
+         "navItems": [
+            {
+               "": true,
+               "ng": true,
+               "color": "EF7EAD",
+               "custom": false,
+               "developerName": "standard-home",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Home",
+               "objectApiName": "Home",
+               "objectLabel": null,
+               "objectLabelPlural": null,
+               "pageReference": {
+                  "attributes": {
+                     "pageName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__namedPage"
+               },
+               "standardType": "Home"
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "7F8DE1",
+               "custom": false,
+               "developerName": "standard-Account",
+               "id": null,
+               "itemType": "Entity",
+               "label": "Accounts",
+               "objectApiName": "Account",
+               "objectLabel": "Account",
+               "objectLabelPlural": "Accounts",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Account",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": null
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "A094ED",
+               "custom": false,
+               "developerName": "standard-Contact",
+               "id": null,
+               "itemType": "Entity",
+               "label": "Contacts",
+               "objectApiName": "Contact",
+               "objectLabel": "Contact",
+               "objectLabelPlural": "Contacts",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Contact",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": null
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "FCB95B",
+               "custom": false,
+               "developerName": "standard-Opportunity",
+               "id": null,
+               "itemType": "Entity",
+               "label": "Opportunities",
+               "objectApiName": "Opportunity",
+               "objectLabel": "Opportunity",
+               "objectLabelPlural": "Opportunities",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Opportunity",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": null
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "6EC06E",
+               "custom": false,
+               "developerName": "standard-Contract",
+               "id": null,
+               "itemType": "Entity",
+               "label": "Contracts",
+               "objectApiName": "Contract",
+               "objectLabel": "Contract",
+               "objectLabelPlural": "Contracts",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Contract",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": null
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "F2CF5B",
+               "custom": false,
+               "developerName": "standard-Case",
+               "id": null,
+               "itemType": "Entity",
+               "label": "Cases",
+               "objectApiName": "Case",
+               "objectLabel": "Case",
+               "objectLabelPlural": "Cases",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Case",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": null
+            },
+            {
+               "": false,
+               "ng": true,
+               "color": "489DD0",
+               "content": null,
+               "custom": false,
+               "developerName": "standard-Feed",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Chatter",
+               "objectApiName": "Feed",
+               "objectLabel": null,
+               "objectLabelPlural": null,
+               "pageReference": {
+                  "attributes": {
+                     "pageName": "chatter"
+                  },
+                  "state": {},
+                  "type": "standard__namedPage"
+               },
+               "standardType": "Feed"
+            },
+            {
+               "": false,
+               "ng": true,
+               "color": "EB7092",
+               "custom": false,
+               "developerName": "standard-Event",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Calendar",
+               "objectApiName": "Event",
+               "objectLabel": "Event",
+               "objectLabelPlural": "Events",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Event",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": "Events"
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "2ECBBE",
+               "custom": false,
+               "developerName": "standard-report",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Reports",
+               "objectApiName": "Report",
+               "objectLabel": "Report",
+               "objectLabelPlural": "Reports",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Report",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": "Reports"
+            },
+            {
+               "": true,
+               "ng": true,
+               "color": "EF6E64",
+               "custom": false,
+               "developerName": "standard-Dashboard",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Dashboards",
+               "objectApiName": "Dashboard",
+               "objectLabel": "Dashboard",
+               "objectLabelPlural": "Dashboards",
+               "pageReference": {
+                  "attributes": {
+                     "objectApiName": "Dashboard",
+                     "actionName": "home"
+                  },
+                  "state": {},
+                  "type": "standard__objectPage"
+               },
+               "standardType": "Dashboards"
+            }
+         ],
+         "selected": true,
+         "type": "Lightning",
+         "userNavItems": []
+      }
+   ],
+   "eTag": ""
+}
