@@ -205,10 +205,13 @@ export class SfdcApiCtx extends SfdcCtx {
 
 	public async validateVisibleRecordLayouts(recordId: string, options?: RecordUiData): Promise<void> {
 		try {
-			const orgLayout: UiLayout = await this.readLayoutsFromOrg(recordId, options);
-			await this.user.ui.navigateToResource(recordId);
-			await this.user.ui.page.waitForLoadState('networkidle');
-			expect(JSON.stringify(orgLayout, null, 3)).toMatchSnapshot();
+			const orgLayouts = this.readLayoutsFromOrg(recordId, options);
+			await Promise.allSettled([
+				orgLayouts,
+				this.user.ui.navigateToResource(recordId)
+					.then(() => this.user.ui.page.waitForLoadState('networkidle'))
+			]);
+			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Layouts validation via UI-API failed for user ${this.user.credentials.id} ${this.user.credentials.username} due to:\n${error}`);
 		}
@@ -216,10 +219,14 @@ export class SfdcApiCtx extends SfdcCtx {
 
 	public async validateAvailableApps(): Promise<void> {
 		try {
-			const orgApps = await this.readApps();
-			await this.user.ui.page.click('.appLauncher button');
-			await (await this.user.ui.page.waitForResponse(/getAppLauncherMenuData/gm)).ok();
-			expect(JSON.stringify(orgApps, null, 3)).toMatchSnapshot();
+			const orgApps = this.readApps();
+			await Promise.allSettled([
+				orgApps,
+				this.user.ui.page.click('.appLauncher button')
+					.then(() => this.user.ui.page.waitForResponse(/getAppLauncherMenuData/gm)
+						.then((response) => response.ok()))
+			])
+			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Apps validation via UI-API failed for user ${this.user.credentials.id} ${this.user.credentials.username} due to:\n${error}`);
 		}
