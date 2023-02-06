@@ -63,7 +63,7 @@ export abstract class User {
         } else this.credentials = User.sfdxCredentials;
   
         if (!page){
-            throw new Error('Page was specified for autohrization - cannot continue');
+            throw new Error('Page was not specified for authorization - cannot continue');
         } else {
             await this.workOnPage(page);
             await (await this.ui.page.context().cookies(this.credentials.instanceUrl)).forEach(cookie => {

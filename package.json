@@ -2,7 +2,6 @@
   "name": "staf",
   "version": "0.1.0",
   "description": "STAF - Salesforce test automation framework",
-  "main": "index.js",
   "scripts": {
     "test": "npx playwright test --config=config/default.config.ts",
     "test-api": "npx playwright test --config=config/neom-api.config.ts",

@@ -10,7 +10,6 @@ export abstract class Sobject {
 }
 
 export interface IsCreatableViaApi {
-    
     createViaApi: (data?) => Promise<string>
 }
 
