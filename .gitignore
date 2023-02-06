@@ -1,5 +1,6 @@
 .sf
 .sfdx
+.DS_STORE
 node_modules
 /test-results/
 /playwright/.cache/

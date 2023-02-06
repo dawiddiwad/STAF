@@ -1,8 +1,8 @@
-import { defineConfig } from '@playwright/test';
-export default defineConfig({
-  testDir: '../src/test/',
+import type { PlaywrightTestConfig } from '@playwright/test';
+ const config: PlaywrightTestConfig = {
+  testDir: './src/test/',
   timeout: 180000,
-  reporter: [['html', { outputFolder: '../src/test/playwright-report' }], ['list']],
+  reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
   repeatEach: 1,
   retries: 3,
   workers: '50%',
@@ -31,4 +31,6 @@ export default defineConfig({
       }
     },
   },
-});
+};
+
+export default config;
