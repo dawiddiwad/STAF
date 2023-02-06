@@ -115,7 +115,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
         });
 
         await test.step('Upload Documents', async() => {
-            const documentPath = './scripts/test/neom/lp/uploads/placeholder-doc.pdf';
+            const documentPath = './src/test/neom/lp/uploads/placeholder-doc.pdf';
             await page.setInputFiles("//span[contains(@class,'file-selector__button') and ancestor::slot[descendant::*[text()='Overall Company Profile']]]", documentPath);
             await (await page.waitForResponse(/saveContent/gm)).ok();
             await page.click("//button[descendant::*[text()='Done']]"); await (await page.waitForResponse(/ApexAction/gm)).ok();
