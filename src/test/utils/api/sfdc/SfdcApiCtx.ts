@@ -48,14 +48,6 @@ export class SfdcApiCtx extends SfdcCtx {
 		});
 	}
 
-	private objectsCompare(data1: UiLayout, data2: UiLayout): void {
-		try {
-			expect.soft(data1).toEqual(data2);
-		} catch (error) {
-			throw new Error(`Objects do not match due to:\n${error}`);
-		}
-	}
-
 	private parseLayoutFromLayoutResponse(layoutData: RecordUiData): UiLayout {
 		const sfdcEtag = /[a-zA-Z0-9]{32}/gm;
 		const sfdcLongId = /[a-zA-Z0-9]{18}/gm;
