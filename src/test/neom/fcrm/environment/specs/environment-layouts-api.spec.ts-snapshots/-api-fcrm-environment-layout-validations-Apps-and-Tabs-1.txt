@@ -147,50 +147,6 @@
                "standardType": null
             },
             {
-               "": true,
-               "ng": true,
-               "color": "2ECBBE",
-               "custom": false,
-               "developerName": "standard-report",
-               "id": null,
-               "itemType": "Standard",
-               "label": "Reports",
-               "objectApiName": "Report",
-               "objectLabel": "Report",
-               "objectLabelPlural": "Reports",
-               "pageReference": {
-                  "attributes": {
-                     "objectApiName": "Report",
-                     "actionName": "home"
-                  },
-                  "state": {},
-                  "type": "standard__objectPage"
-               },
-               "standardType": "Reports"
-            },
-            {
-               "": true,
-               "ng": true,
-               "color": "EF6E64",
-               "custom": false,
-               "developerName": "standard-Dashboard",
-               "id": null,
-               "itemType": "Standard",
-               "label": "Dashboards",
-               "objectApiName": "Dashboard",
-               "objectLabel": "Dashboard",
-               "objectLabelPlural": "Dashboards",
-               "pageReference": {
-                  "attributes": {
-                     "objectApiName": "Dashboard",
-                     "actionName": "home"
-                  },
-                  "state": {},
-                  "type": "standard__objectPage"
-               },
-               "standardType": "Dashboards"
-            },
-            {
                "": false,
                "ng": true,
                "color": "4BC076",
@@ -254,6 +210,28 @@
                   "type": "standard__navItemPage"
                },
                "standardType": null
+            },
+            {
+               "": false,
+               "ng": true,
+               "color": "0070D2",
+               "content": null,
+               "custom": false,
+               "developerName": "standard-WaveHomeLightning",
+               "id": null,
+               "itemType": "Standard",
+               "label": "Analytics",
+               "objectApiName": "WaveHomeLightning",
+               "objectLabel": null,
+               "objectLabelPlural": null,
+               "pageReference": {
+                  "attributes": {
+                     "pageName": "analytics"
+                  },
+                  "state": {},
+                  "type": "standard__namedPage"
+               },
+               "standardType": "WaveHomeLightning"
             }
          ],
          "selected": true,
