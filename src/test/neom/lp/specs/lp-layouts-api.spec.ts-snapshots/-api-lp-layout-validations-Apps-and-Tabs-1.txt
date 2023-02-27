@@ -2,65 +2,6 @@
    "apps": [
       {
          "appId": "",
-         "description": "(Lightning Experience) Lets sales reps work with multiple records on one screen",
-         "developerName": "ole",
-         "eTag": "",
-         "formFactors": [
-            "Small",
-            "Large"
-         ],
-         "headerColor": "#0070D2",
-         "isabled": false,
-         "onDisabled": false,
-         "eDisabled": false,
-         "label": "Sales Console",
-         "mobileStartUrl": null,
-         "navItems": [],
-         "selected": false,
-         "type": "Lightning",
-         "userNavItems": []
-      },
-      {
-         "appId": "",
-         "description": "(Lightning Experience) Lets support agents work with multiple records across customer service channels on one screen",
-         "developerName": "LightningService",
-         "eTag": "",
-         "formFactors": [
-            "Small",
-            "Large"
-         ],
-         "headerColor": "#802ABE",
-         "isabled": false,
-         "onDisabled": false,
-         "eDisabled": false,
-         "label": "Service Console",
-         "mobileStartUrl": null,
-         "navItems": [],
-         "selected": false,
-         "type": "Lightning",
-         "userNavItems": []
-      },
-      {
-         "appId": "",
-         "description": "See how your company uses certain features, and learn ways you can improve your org.",
-         "developerName": "Optimizer",
-         "eTag": "",
-         "formFactors": [
-            "Large"
-         ],
-         "headerColor": "#0070D2",
-         "isabled": false,
-         "onDisabled": false,
-         "eDisabled": false,
-         "label": "Salesforce Optimizer",
-         "mobileStartUrl": null,
-         "navItems": [],
-         "selected": false,
-         "type": "Lightning",
-         "userNavItems": []
-      },
-      {
-         "appId": "",
          "description": null,
          "developerName": "Logistics_Park",
          "eTag": "",

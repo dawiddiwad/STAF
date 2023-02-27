@@ -610,13 +610,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Type of Entity",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Type_of_Entity__c",
+                                 "componentType": "Field",
+                                 "label": "Type of Entity"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -643,13 +644,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Guarantor",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "LP_Guarantor__c",
+                                 "componentType": "Field",
+                                 "label": "Guarantor"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1342,13 +1344,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Type of Entity",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Type_of_Entity__c",
+                                 "componentType": "Field",
+                                 "label": "Type of Entity"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1375,13 +1378,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Guarantor",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "LP_Guarantor__c",
+                                 "componentType": "Field",
+                                 "label": "Guarantor"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -2128,13 +2132,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Type of Entity",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Type_of_Entity__c",
+                                 "componentType": "Field",
+                                 "label": "Type of Entity"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -2161,13 +2166,14 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Guarantor",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "LP_Guarantor__c",
+                                 "componentType": "Field",
+                                 "label": "Guarantor"
                               }
                            ],
                            "lookupIdApiName": null,

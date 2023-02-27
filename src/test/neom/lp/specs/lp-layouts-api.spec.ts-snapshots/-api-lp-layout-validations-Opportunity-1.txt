@@ -497,18 +497,18 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "Contract",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Stage",
                            "layoutComponents": [
                               {
-                                 "apiName": "ContractId",
+                                 "apiName": "StageName",
                                  "componentType": "Field",
-                                 "label": "Contract ID"
+                                 "label": "Stage"
                               }
                            ],
-                           "lookupIdApiName": "ContractId",
-                           "required": false,
+                           "lookupIdApiName": null,
+                           "required": true,
                            "sortable": false
                         }
                      ]
@@ -533,40 +533,6 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Stage",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "StageName",
-                                 "componentType": "Field",
-                                 "label": "Stage"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": true,
-                           "sortable": false
-                        }
-                     ]
-                  },
-                  {
-                     "layoutItems": [
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Description",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "Description",
-                                 "componentType": "Field",
-                                 "label": "Description"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": false,
-                           "sortable": false
-                        },
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
                            "label": "Loss Reason",
                            "layoutComponents": [
                               {
@@ -586,12 +552,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Next Step",
+                           "label": "Description",
                            "layoutComponents": [
                               {
-                                 "apiName": "NextStep",
+                                 "apiName": "Description",
                                  "componentType": "Field",
-                                 "label": "Next Step"
+                                 "label": "Description"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -620,12 +586,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Revenue Generated",
+                           "label": "Next Step",
                            "layoutComponents": [
                               {
-                                 "apiName": "Revenue_Generated__c",
+                                 "apiName": "NextStep",
                                  "componentType": "Field",
-                                 "label": "Revenue Generated"
+                                 "label": "Next Step"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -652,13 +618,14 @@
                   {
                      "layoutItems": [
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Revenue Generated",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Revenue_Generated__c",
+                                 "componentType": "Field",
+                                 "label": "Revenue Generated"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -683,7 +650,7 @@
                      ]
                   }
                ],
-               "rows": 6,
+               "rows": 5,
                "useHeading": true
             },
             {
@@ -1054,18 +1021,18 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "Contract",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Stage",
                            "layoutComponents": [
                               {
-                                 "apiName": "ContractId",
+                                 "apiName": "StageName",
                                  "componentType": "Field",
-                                 "label": "Contract ID"
+                                 "label": "Stage"
                               }
                            ],
-                           "lookupIdApiName": "ContractId",
-                           "required": false,
+                           "lookupIdApiName": null,
+                           "required": true,
                            "sortable": false
                         }
                      ]
@@ -1090,40 +1057,6 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Stage",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "StageName",
-                                 "componentType": "Field",
-                                 "label": "Stage"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": true,
-                           "sortable": false
-                        }
-                     ]
-                  },
-                  {
-                     "layoutItems": [
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Description",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "Description",
-                                 "componentType": "Field",
-                                 "label": "Description"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": false,
-                           "sortable": false
-                        },
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
                            "label": "Loss Reason",
                            "layoutComponents": [
                               {
@@ -1143,12 +1076,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Next Step",
+                           "label": "Description",
                            "layoutComponents": [
                               {
-                                 "apiName": "NextStep",
+                                 "apiName": "Description",
                                  "componentType": "Field",
-                                 "label": "Next Step"
+                                 "label": "Description"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1177,12 +1110,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Revenue Generated",
+                           "label": "Next Step",
                            "layoutComponents": [
                               {
-                                 "apiName": "Revenue_Generated__c",
+                                 "apiName": "NextStep",
                                  "componentType": "Field",
-                                 "label": "Revenue Generated"
+                                 "label": "Next Step"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1209,13 +1142,14 @@
                   {
                      "layoutItems": [
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Revenue Generated",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Revenue_Generated__c",
+                                 "componentType": "Field",
+                                 "label": "Revenue Generated"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1240,7 +1174,7 @@
                      ]
                   }
                ],
-               "rows": 6,
+               "rows": 5,
                "useHeading": true
             },
             {
@@ -1655,18 +1589,18 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "Contract",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Stage",
                            "layoutComponents": [
                               {
-                                 "apiName": "ContractId",
+                                 "apiName": "StageName",
                                  "componentType": "Field",
-                                 "label": "Contract ID"
+                                 "label": "Stage"
                               }
                            ],
-                           "lookupIdApiName": "ContractId",
-                           "required": false,
+                           "lookupIdApiName": null,
+                           "required": true,
                            "sortable": false
                         }
                      ]
@@ -1691,40 +1625,6 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Stage",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "StageName",
-                                 "componentType": "Field",
-                                 "label": "Stage"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": true,
-                           "sortable": false
-                        }
-                     ]
-                  },
-                  {
-                     "layoutItems": [
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Description",
-                           "layoutComponents": [
-                              {
-                                 "apiName": "Description",
-                                 "componentType": "Field",
-                                 "label": "Description"
-                              }
-                           ],
-                           "lookupIdApiName": null,
-                           "required": false,
-                           "sortable": false
-                        },
-                        {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
                            "label": "Loss Reason",
                            "layoutComponents": [
                               {
@@ -1744,12 +1644,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Next Step",
+                           "label": "Description",
                            "layoutComponents": [
                               {
-                                 "apiName": "NextStep",
+                                 "apiName": "Description",
                                  "componentType": "Field",
-                                 "label": "Next Step"
+                                 "label": "Description"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1778,12 +1678,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Revenue Generated",
+                           "label": "Next Step",
                            "layoutComponents": [
                               {
-                                 "apiName": "Revenue_Generated__c",
+                                 "apiName": "NextStep",
                                  "componentType": "Field",
-                                 "label": "Revenue Generated"
+                                 "label": "Next Step"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1810,13 +1710,14 @@
                   {
                      "layoutItems": [
                         {
-                           "editableForNew": false,
-                           "editableForUpdate": false,
-                           "label": "",
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Revenue Generated",
                            "layoutComponents": [
                               {
-                                 "apiName": null,
-                                 "componentType": "EmptySpace"
+                                 "apiName": "Revenue_Generated__c",
+                                 "componentType": "Field",
+                                 "label": "Revenue Generated"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1841,7 +1742,7 @@
                      ]
                   }
                ],
-               "rows": 6,
+               "rows": 5,
                "useHeading": true
             },
             {

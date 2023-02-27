@@ -764,34 +764,13 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Shipping Address",
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
                            "layoutComponents": [
                               {
-                                 "apiName": "ShippingStreet",
-                                 "componentType": "Field",
-                                 "label": "Shipping Street"
-                              },
-                              {
-                                 "apiName": "ShippingCity",
-                                 "componentType": "Field",
-                                 "label": "Shipping City"
-                              },
-                              {
-                                 "apiName": "ShippingStateCode",
-                                 "componentType": "Field",
-                                 "label": "Shipping State/Province Code"
-                              },
-                              {
-                                 "apiName": "",
-                                 "componentType": "Field",
-                                 "label": "Shipping Zip/Postal Code"
-                              },
-                              {
-                                 "apiName": "e",
-                                 "componentType": "Field",
-                                 "label": "Shipping Country Code"
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1319,34 +1298,13 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Shipping Address",
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
                            "layoutComponents": [
                               {
-                                 "apiName": "ShippingStreet",
-                                 "componentType": "Field",
-                                 "label": "Shipping Street"
-                              },
-                              {
-                                 "apiName": "ShippingCity",
-                                 "componentType": "Field",
-                                 "label": "Shipping City"
-                              },
-                              {
-                                 "apiName": "ShippingStateCode",
-                                 "componentType": "Field",
-                                 "label": "Shipping State/Province Code"
-                              },
-                              {
-                                 "apiName": "",
-                                 "componentType": "Field",
-                                 "label": "Shipping Zip/Postal Code"
-                              },
-                              {
-                                 "apiName": "e",
-                                 "componentType": "Field",
-                                 "label": "Shipping Country Code"
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1928,34 +1886,13 @@
                            "sortable": false
                         },
                         {
-                           "editableForNew": true,
-                           "editableForUpdate": true,
-                           "label": "Shipping Address",
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
                            "layoutComponents": [
                               {
-                                 "apiName": "ShippingStreet",
-                                 "componentType": "Field",
-                                 "label": "Shipping Street"
-                              },
-                              {
-                                 "apiName": "ShippingCity",
-                                 "componentType": "Field",
-                                 "label": "Shipping City"
-                              },
-                              {
-                                 "apiName": "ShippingStateCode",
-                                 "componentType": "Field",
-                                 "label": "Shipping State/Province Code"
-                              },
-                              {
-                                 "apiName": "",
-                                 "componentType": "Field",
-                                 "label": "Shipping Zip/Postal Code"
-                              },
-                              {
-                                 "apiName": "e",
-                                 "componentType": "Field",
-                                 "label": "Shipping Country Code"
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
                               }
                            ],
                            "lookupIdApiName": null,

@@ -2,25 +2,6 @@
    "apps": [
       {
          "appId": "",
-         "description": "See how your company uses certain features, and learn ways you can improve your org.",
-         "developerName": "Optimizer",
-         "eTag": "",
-         "formFactors": [
-            "Large"
-         ],
-         "headerColor": "#0070D2",
-         "isabled": false,
-         "onDisabled": false,
-         "eDisabled": false,
-         "label": "Salesforce Optimizer",
-         "mobileStartUrl": null,
-         "navItems": [],
-         "selected": false,
-         "type": "Lightning",
-         "userNavItems": []
-      },
-      {
-         "appId": "",
          "description": "Application for Water users",
          "developerName": "WATER",
          "eTag": "",
