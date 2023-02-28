@@ -30,13 +30,11 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
         });
 
         await test.step('Create new Case', async () => {
-            const lpCaseRecordTypeId = (await actor.api.query("select id from recordtype where name = 'LP Case'") as QueryResult<any>).records[0].Id;
             const lpLeasingTeamQueueId = (await actor.api.query("select id from Group where DeveloperName = 'Leasing_Team'") as QueryResult<any>).records[0].Id;
             const lpCaseData = {
                 Origin: "Web",
                 Status: "New",
                 Type: "Request",
-                RecordTypeId: lpCaseRecordTypeId,
                 OwnerId: lpLeasingTeamQueueId
             }
             const lpCaseId = (await actor.api.create("Case", lpCaseData) as SuccessResult).id;
