@@ -253,19 +253,34 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
             await page.click("//button[descendant::*[text()='Mark as Current Stage']]");
             await page.getByText('Stage changed successfully.').waitFor({state: "visible"});
             await page.getByText('Stage changed successfully.').waitFor({state: "hidden"});
-            await page.click("//button[@name='Opportunity.Create_Contract']");
-            await page.click("//button[text()='Create Contract' and ancestor::*[contains(@class, 'modal')]]");
-            await page.click("//a[ancestor::*[preceding-sibling::*[contains(@class,'test-id__field-label-container') and descendant::span[text()='Contract']]]]");
-            await page.click("//a[@title='Edit']");
-            await page.fill("//input[ancestor::*[preceding-sibling::label[descendant::*[text()='Contract Start Date']]]]", "01/01/2049");
-            await page.fill("//input[ancestor::*[preceding-sibling::label[descendant::*[text()='Contract End Date']]]]", "01/01/2050");
+
+            await page.click("//li[contains(@title,'Contracts')]");
+            await page.click("//*[contains(@data-target-selection-name,'sfdc:StandardButton.Contract.New')]");
+
+            await page.locator('.uiModal.active').locator("//a[ancestor::*[preceding-sibling::span[descendant::*[text()='Status']]]]").click();
+            await page.getByTitle('Draft').click();
+            await page.locator('.uiModal.active').locator("//a[ancestor::*[preceding-sibling::span[descendant::*[text()='Type']]]]").click();
+            await page.getByTitle('Building Lease').click();
+            await page.locator('.uiModal.active').getByLabel('Account Name').type(accountName, {delay: 50});
+            await page.locator('.uiModal.active').getByTitle(accountName).last().click();
+
             await page.type("//input[ancestor::*[preceding-sibling::label[descendant::*[text()='Customer Signed By']]]]", contactName, {delay: 50});
             await page.click(`(//a[@role='option' and descendant::*[contains(text(),'${contactName}')] and ancestor::*[preceding-sibling::label[descendant::*[text()='Customer Signed By']]]])[1]`);
+            await page.getByLabel('Customer Signed Date').fill(new Date().toLocaleString('en-GB').slice(0, 10));
+
             await page.type("//input[ancestor::*[preceding-sibling::label[descendant::*[text()='Company Signed By']]]]", oppOwnerName, {delay: 50});
             await page.click(`//*[@title='${oppOwnerName}']`);
-            await page.click("//button[@title='Save']");
+            await page.getByLabel('Company Signed Date').fill(new Date().toLocaleString('en-GB').slice(0, 10));
+
+            await page.getByTitle('Save', {exact: true}).click();
+            await actor.ui.page.getByText('was created').waitFor({state: "visible"});
+            await actor.ui.page.getByText('was created').waitFor({state: "hidden"});
+
+            await page.locator("table a.textUnderline").last().click();
             await page.click("(//a[@data-tab-name='Activated'])[last()]");
             await page.click("//button[descendant::*[text()='Mark as Current Status']]");
+            await actor.ui.page.getByText('Status changed successfully.').waitFor({state: "visible"});
+            await actor.ui.page.getByText('Status changed successfully.').waitFor({state: "hidden"});
         })
 
         await test.step('Close Opportunity', async() => {
@@ -273,6 +288,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
             await page.click("//a[@data-tab-name='Closed']");
             await page.click("//button[descendant::*[text()='Select Closed Stage']]");
             await page.click("//button[text()='Done']");
+            await actor.ui.page.getByText('Stage changed successfully.').waitFor({state: "visible"});
         })
     });
 });
