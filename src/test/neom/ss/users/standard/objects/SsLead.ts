@@ -9,10 +9,8 @@ export class SsLead extends Sobject implements IsCreatableViaApi{
     }
 
     public async createViaApi(): Promise<string>{
-        const recordTypeId = (await this.user.api.query("select id from recordtype where name = 'Shared Service Lead'") as QueryResult<any>).records[0].Id;
         const data = {
             Status: "Unqualified",
-            RecordTypeId: recordTypeId,
             LastName: faker.name.lastName(),
             Pillars__c: 'Agriculture;Corporate;Novel Foods',
             Company: `${faker.company.name()} ${faker.company.companySuffix()}`

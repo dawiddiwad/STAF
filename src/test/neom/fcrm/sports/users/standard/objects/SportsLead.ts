@@ -9,10 +9,8 @@ export class SportsLead extends Sobject implements IsCreatableViaApi {
     }
     
     public async createViaApi(data?: object): Promise<string>{
-        const recordTypeId = (await this.user.api.query("select id from recordtype where name = 'Sports Lead'") as QueryResult<any>).records[0].Id;
         const mandatoryData = {
             Status: "New",
-            RecordTypeId: recordTypeId,
             LastName: faker.name.lastName(),
             Company: `${faker.company.name()} ${faker.company.companySuffix()}`
         }

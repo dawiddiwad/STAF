@@ -9,12 +9,10 @@ export class SsOpportunity extends Sobject implements IsCreatableViaApi{
     }
 
     public async createViaApi(): Promise<string>{
-        const recordTypeId = (await this.user.api.query("select id from recordtype where name = 'Shared Services'") as QueryResult<any>).records[0].Id;
         const data = {
             AccountId: await (this.user as SsStandardUser).account.createViaApi(),
             CurrencyIsoCode: 'SAR',
             CloseDate: '2050-11-24',
-            RecordTypeId: recordTypeId,
             StageName: 'Pre-Qualification',
             Name: `${faker.commerce.productName()} ${faker.commerce.price()}`
         }

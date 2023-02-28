@@ -9,12 +9,10 @@ export class WaterOpportunity extends Sobject implements IsCreatableViaApi{
     }
 
     public async createViaApi(): Promise<string>{
-        const recordTypeId = (await this.user.api.query("select id from recordtype where name = 'Water Opportunity'") as QueryResult<any>).records[0].Id;
         const data = {
             AccountId: await (this.user as WaterUser).account.createViaApi(),
             CloseDate: '2050-11-24',
             StageName: 'Qualification',
-            RecordTypeId: recordTypeId,
             Name: `${faker.commerce.productName()} ${faker.commerce.price()}`
         }
         return (await this.user.api.create("Opportunity", data) as RecordResult).id;

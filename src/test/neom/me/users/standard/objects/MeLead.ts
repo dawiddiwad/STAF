@@ -11,10 +11,8 @@ export class MeLead extends Sobject implements IsCreatableViaApi, IsConvertable,
     }
 
     public async createViaApi(): Promise<string>{
-        const recordTypeId = (await this.user.api.query("select id from recordtype where name = 'M&E Lead'") as QueryResult<any>).records[0].Id;
         const data = {
             Status: "Unqualified",
-            RecordTypeId: recordTypeId,
             Mode_of_Engagement__c: 'TBD',
             LastName: faker.name.lastName(),
             Pillars__c: 'Operations;Gaming;Fashion',
