@@ -85,6 +85,8 @@ test.describe.serial('@ui @e2e @me path', () => {
 
         await actor.ui.page.locator('.modal-body').getByLabel('Contract Start Date').fill('12/12/2050');
         await actor.ui.page.locator('.modal-body').getByLabel('Contract Term (months)').fill('12');
+        await actor.ui.page.locator('.modal-body').locator("//a[ancestor::*[preceding-sibling::span[descendant::*[text()='Status']]]]").click();
+        await actor.ui.page.getByTitle('Draft').click();
 
         await actor.ui.page.locator('.modal-body').getByTitle('Save', {exact: true}).click();
         await actor.ui.page.getByText('was created').waitFor({state: "visible"});
