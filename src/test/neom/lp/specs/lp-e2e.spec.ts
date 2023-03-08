@@ -62,8 +62,11 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
             await page.locator("button[title='Enable As Partner']").click();
             await (await page.waitForResponse(/managePortalAccount/gm)).ok();
             await page.goBack();
-            await page.locator(`records-hoverable-link:has-text("${contactName}")`).getByRole('link').click()
-            await page.locator("button:has-text('Enable Partner User')").click();
+            await page.locator(`records-hoverable-link:has-text("${contactName}")`).getByRole('link').click();
+            await expect(async () => {
+                await page.reload();
+                await page.locator("button:has-text('Enable Partner User')").click();
+            }).toPass({intervals: [5_000, 10_000]});
             const iframe = "//iframe[contains(@title, 'New User')]";
             const LpCommunityUserProfileId = (await actor.api.query("select id from profile where name = 'LP Partner Community Login User'") as QueryResult<any>).records[0].Id.substring(0,15);
             await page.frameLocator(iframe).locator('select[name="Profile"]').selectOption(LpCommunityUserProfileId);
@@ -210,8 +213,10 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
             await page.click("//button[descendant::*[text()='Mark as Current Stage']]");
             await page.getByText('Stage changed successfully.').waitFor({state: "visible"});
             await page.getByText('Stage changed successfully.').waitFor({state: "hidden"});
-            await page.reload();
-            await page.click("//button[text()='Submit for approval']");
+            await expect(async () => {
+                await page.reload();
+                await page.click("//button[text()='Submit for approval']");
+            }).toPass({intervals: [5_000, 10_000]});
             await page.click("//button[text()='Finish']");
         })
     });
@@ -231,6 +236,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
                 await page.click("//a[@title='Approve']");
                 await page.fill("//textarea[@role='textbox']", "approved by test automation");
                 await page.click("//button[descendant::*[text()='Approve']]");
+                await page.waitForLoadState("networkidle");
                 await actor.ui.logout();
             }
         });
