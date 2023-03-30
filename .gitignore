@@ -5,3 +5,4 @@ node_modules
 /test-results/
 /playwright/.cache/
 /src/test/playwright-report/
+playwright-report*
