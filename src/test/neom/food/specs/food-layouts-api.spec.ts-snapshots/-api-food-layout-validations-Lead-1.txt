@@ -41,6 +41,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
@@ -191,6 +196,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
@@ -341,6 +351,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
@@ -561,6 +576,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
@@ -1042,6 +1062,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
@@ -1577,6 +1602,11 @@
                                  "apiName": "LastName",
                                  "componentType": "Field",
                                  "label": "Last Name"
+                              },
+                              {
+                                 "apiName": "Suffix",
+                                 "componentType": "Field",
+                                 "label": "Suffix"
                               }
                            ],
                            "lookupIdApiName": "Id",
