@@ -699,12 +699,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Number",
+                           "label": "Security Deposit - Number",
                            "layoutComponents": [
                               {
                                  "apiName": "LP___c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Number"
+                                 "label": "Security Deposit - Number"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -714,12 +714,45 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Words",
+                           "label": "Security Deposit - Words",
                            "layoutComponents": [
                               {
                                  "apiName": "LP_rds__c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Words"
+                                 "label": "Security Deposit - Words"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Precinct",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Precinct__c",
+                                 "componentType": "Field",
+                                 "label": "Precinct"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -761,7 +794,7 @@
                      ]
                   }
                ],
-               "rows": 10,
+               "rows": 11,
                "useHeading": true
             },
             {
@@ -796,6 +829,49 @@
                                  "apiName": "LP_ry__c",
                                  "componentType": "Field",
                                  "label": "Guarantor and Beneficiary"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 2,
+               "heading": "Project Milestone Dates",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Project Milestone Dates Required",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Project_Milestone_Dates_Required__c",
+                                 "componentType": "Field",
+                                 "label": "Project Milestone Dates Required"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1223,12 +1299,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Number",
+                           "label": "Security Deposit - Number",
                            "layoutComponents": [
                               {
                                  "apiName": "LP___c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Number"
+                                 "label": "Security Deposit - Number"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1238,12 +1314,45 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Words",
+                           "label": "Security Deposit - Words",
                            "layoutComponents": [
                               {
                                  "apiName": "LP_rds__c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Words"
+                                 "label": "Security Deposit - Words"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Precinct",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Precinct__c",
+                                 "componentType": "Field",
+                                 "label": "Precinct"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1285,7 +1394,7 @@
                      ]
                   }
                ],
-               "rows": 10,
+               "rows": 11,
                "useHeading": true
             },
             {
@@ -1330,6 +1439,117 @@
                   }
                ],
                "rows": 1,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Project Milestone Dates",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Project Milestone Dates Required",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Project_Milestone_Dates_Required__c",
+                                 "componentType": "Field",
+                                 "label": "Project Milestone Dates Required"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Submission Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Submission_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Submission Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Substantial Works Commencement",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_Substantial_Works_Commencement__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Substantial Works Commencement"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Approval Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Approval_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Approval Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Completion Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Completion_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Completion Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 3,
                "useHeading": true
             },
             {
@@ -1791,12 +2011,12 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Number",
+                           "label": "Security Deposit - Number",
                            "layoutComponents": [
                               {
                                  "apiName": "LP___c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Number"
+                                 "label": "Security Deposit - Number"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1806,12 +2026,45 @@
                         {
                            "editableForNew": true,
                            "editableForUpdate": true,
-                           "label": "Performance/Financial Guarantee - Words",
+                           "label": "Security Deposit - Words",
                            "layoutComponents": [
                               {
                                  "apiName": "LP_rds__c",
                                  "componentType": "Field",
-                                 "label": "Performance/Financial Guarantee - Words"
+                                 "label": "Security Deposit - Words"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Precinct",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Precinct__c",
+                                 "componentType": "Field",
+                                 "label": "Precinct"
                               }
                            ],
                            "lookupIdApiName": null,
@@ -1853,7 +2106,7 @@
                      ]
                   }
                ],
-               "rows": 10,
+               "rows": 11,
                "useHeading": true
             },
             {
@@ -1898,6 +2151,117 @@
                   }
                ],
                "rows": 1,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Project Milestone Dates",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Project Milestone Dates Required",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Project_Milestone_Dates_Required__c",
+                                 "componentType": "Field",
+                                 "label": "Project Milestone Dates Required"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Submission Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Submission_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Submission Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Substantial Works Commencement",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_Substantial_Works_Commencement__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Substantial Works Commencement"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Approval Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Approval_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Approval Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Lessee’s Works Completion Date",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LP_Lessee_s_Works_Completion_Date__c",
+                                 "componentType": "Field",
+                                 "label": "Lessee’s Works Completion Date"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 3,
                "useHeading": true
             },
             {
