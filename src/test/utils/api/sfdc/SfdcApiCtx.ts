@@ -20,6 +20,7 @@ export class NoRecordsReturnedError extends Error {
 }
 
 export class SfdcApiCtx extends SfdcCtx {
+	private static version: string = "57.0";
 	private conn: Connection;
 	public Ready: Promise<this>;
 
@@ -31,13 +32,13 @@ export class SfdcApiCtx extends SfdcCtx {
 					this.conn = new Connection({
 						instanceUrl: this.user.credentials.instanceUrl,
 						sessionId: this.user.credentials.sessionId,
-						version: "57.0"
+						version: SfdcApiCtx.version
 					});
 				} else if (this.user.credentials.accessToken) {
 					this.conn = new Connection({
 						instanceUrl: this.user.credentials.instanceUrl,
 						accessToken: this.user.credentials.accessToken,
-						version: "57.0"
+						version: SfdcApiCtx.version
 					});
 				} else throw new Error(`missing user credentials - sessionId or accessToken is requeired to intialize sfdx api context.
             these are credentails received:\n${JSON.stringify(this.user.credentials)}`);
