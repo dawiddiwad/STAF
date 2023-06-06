@@ -13,16 +13,13 @@ export class BigQuery {
     public static async findLeadWith(data: any, user: User) {
         return expect.poll(async () => {
             try {
-                const leadInSf = await user.api.query(`SELECT Id FROM Lead WHERE Name = '${data.FirstName} ${data.LastName}' ORDER BY CreatedDate DESC`);
-                data.Id = leadInSf.records[0].Id
-            } catch (error) {
-            } finally {
-                return data.Id;
-            }
+                const soql = `SELECT Id FROM Lead WHERE Name = '${data.FirstName} ${data.LastName}' ORDER BY CreatedDate DESC`;
+                const queryResult = await user.api.query(soql);
+                data.Id = queryResult.records[0].Id
+            } catch (anyError) { } finally { return data.Id; }
         },
             {
-                intervals: [5_000],
-                timeout: 20000
+                intervals: [5_000], timeout: 20_000
             }).not.toBeNull();
     }
 }

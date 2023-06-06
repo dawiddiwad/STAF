@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { OxagonForm } from "./OxagonForm";
+import { faker } from "@faker-js/faker";
 
 export class InvestInOxagonPage extends OxagonForm{
     protected path = 'invest';
@@ -18,4 +19,24 @@ export class InvestInOxagonPage extends OxagonForm{
     public readonly DESCRIPTION = this.page.getByPlaceholder('Type here...', { exact: true });
     public readonly EXPLAIN_YOUR_CHOICE = this.page.locator(("//textarea[@name='category_interest_comment']"));
     public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });;
+
+    public static getCommonData() {
+        return {
+            Id: null,
+            FirstName: `${faker.name.firstName().replace(/\W/gm, '')} ${faker.random.alpha(5)}`,
+            LastName: `${faker.name.lastName().replace(/\W/gm, '')} test automation`,
+            Email: faker.internet.email(undefined, undefined, 'test.com', { allowSpecialCharacters: false }).toLowerCase(),
+            Phone: `+966${faker.random.numeric(6)}`,
+            GlobalHQLocation__c: 'Afghanistan',
+            Company: faker.company.name(),
+            Website: `${faker.internet.url()}`,
+            JobTitle__c: 'C-suite',
+            Status: 'ICC Review',
+            LeadOwner__c: 'Investor Care Center',
+            LeadSource: 'oxagon_form',
+            LeadType__c: 'invest in oxagon',
+            HasOptedOutOfEmail: false,
+            RecordTypeName__c: 'Other Lead',
+        }
+    }
 }
