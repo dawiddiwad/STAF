@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { WebformPage } from "./Webform";
+import { OxagonForm } from "./OxagonForm";
 
-export class ResearchAndInnovationPage extends WebformPage{
-    protected formUrl = `${this.baseUrl}/research`;
+export class ResearchAndInnovationPage extends OxagonForm{
+    protected path = 'research';
     public readonly FIRST_NAME = this.page.getByLabel('FIRST NAME');
     public readonly LAST_NAME = this.page.getByLabel('LAST NAME');
     public readonly EMAIL = this.page.getByLabel('EMAIL');
@@ -18,8 +18,4 @@ export class ResearchAndInnovationPage extends WebformPage{
     public readonly AREAS_OF_INTEREST = this.page.locator('label')
     public readonly EXPLAIN_YOUR_CHOICE = this.page.getByPlaceholder('PLEASE EXPLAIN YOUR CHOICE');
     public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });;
-    constructor(page: Page){
-        super(page);
-    }
-
 }

@@ -1,9 +1,9 @@
 import { APIResponse, Page, expect } from "@playwright/test";
-export abstract class WebformPage {
+export abstract class OxagonForm {
     private authUrl: string;
     protected page: Page;
     protected baseUrl: string;
-    protected abstract formUrl: string;
+    protected abstract readonly path: string;
     constructor(page: Page) {
         this.page = page;
         this.baseUrl = 'https://staging.neom.com/en-us/oxagon-form';
@@ -22,6 +22,6 @@ export abstract class WebformPage {
     }
 
     public async openForm() {
-        await this.page.goto(this.formUrl);
+        await this.page.goto(`${this.baseUrl}/${this.path}`);
     }
 }
