@@ -7,18 +7,15 @@ export abstract class OxagonForm {
     constructor(page: Page) {
         this.page = page;
         this.baseUrl = 'https://staging.neom.com/en-us/oxagon-form';
-        this.authUrl = 'https://staging.neom.com/libs/granite/core/content/login.html/j_security_check';
+        this.authUrl = 'https://staging.neom.com/libs/granite/core/content/login.html?resource=%2Fcontent%2Fneom%2Fen-us%2Foxagon-form&$$login$$=%24%24login%24%24&j_reason=unknown&j_reason_code=unknown';
     }
 
     public async login() {
-        expect((await this.page.request.post(this.authUrl, {
-            params: {
-                _charset_: 'utf-8',
-                j_username: 'generic-user',
-                j_password: 'l9tE=0',
-                j_validate: true
-            }
-        }) as APIResponse).status()).toBe(200);
+        await this.page.goto(this.authUrl);
+        await this.page.getByText('Sign in locally (admin tasks only)').click();
+        await this.page.getByPlaceholder('User name').fill('generic-user');
+        await this.page.getByPlaceholder('Password', { exact: true }).fill('l9tE=0');
+        await this.page.getByRole('button', { name: 'Sign In', exact: true }).click();
     }
 
     public async openForm() {

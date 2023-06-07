@@ -17,5 +17,5 @@ export class ResearchAndInnovationPage extends OxagonForm{
     public readonly COMPANY_TYPES = this.page.locator('label');
     public readonly AREAS_OF_INTEREST = this.page.locator('label')
     public readonly EXPLAIN_YOUR_CHOICE = this.page.getByPlaceholder('PLEASE EXPLAIN YOUR CHOICE');
-    public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });;
+    public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });
 }
