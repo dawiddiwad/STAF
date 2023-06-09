@@ -11,10 +11,16 @@ export abstract class OxagonForm {
     }
 
     public async login() {
+        const username = process.env.WEBFORM_USERNAME as string;
+        const password = process.env.WEBFORM_PASSWORD as string;
+        if (!password || !username) {
+            throw new Error ('unable to parse username/password for oxagon webform from environment variables. Makes sure to set them up.');
+        }
+        
         await this.page.goto(this.authUrl);
         await this.page.getByText('Sign in locally (admin tasks only)').click();
-        await this.page.getByPlaceholder('User name').fill('generic-user');
-        await this.page.getByPlaceholder('Password', { exact: true }).fill('l9tE=0');
+        await this.page.getByPlaceholder('User name').fill(username);
+        await this.page.getByPlaceholder('Password', { exact: true }).fill(password);
         await this.page.getByRole('button', { name: 'Sign In', exact: true }).click();
     }
 
