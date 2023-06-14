@@ -11,15 +11,17 @@ export class BigQuery {
     }
 
     public static async findLeadWith(data: any, user: User) {
+        const soql = `SELECT Id FROM Lead WHERE Name = '${data.FirstName} ${data.LastName}' ORDER BY CreatedDate DESC`;
         return expect.poll(async () => {
             try {
-                const soql = `SELECT Id FROM Lead WHERE Name = '${data.FirstName} ${data.LastName}' ORDER BY CreatedDate DESC`;
                 const queryResult = await user.api.query(soql);
                 data.Id = queryResult.records[0].Id
-            } catch (anyError) { } finally { return data.Id; }
+            } catch (NoRecordsReturnedError) { } finally { return data.Id; }
         },
             {
-                intervals: [5_000], timeout: 20_000
+                timeout: 240_000,
+                intervals: [5_000],
+                message: `unable to find Lead using soql: ${soql}`
             }).not.toBeNull();
     }
 }

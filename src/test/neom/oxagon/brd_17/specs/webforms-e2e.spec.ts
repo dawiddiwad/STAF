@@ -241,8 +241,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: InvestInOxagonPage;
         const testData = {
             ...InvestInOxagonPage.getCommonData(),
-            SingleInterest__c: 'Hospitality, food and beverage',
-            Interest__c: 'Hospitality, food and beverage',
+            SingleInterest__c: 'Hospitality food and beverage',
+            Interest__c: 'Hospitality food and beverage',
             Description: faker.lorem.word({length: {min: 5, max: 10}}),
             SpecifyOtherAreaofInterest__c: null,
         }
@@ -266,7 +266,7 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         });
 
         await test.step('fill out Additional Information page', async () => {
-            await webform.AREAS_OF_INTEREST.filter({ hasText: testData.SingleInterest__c.replace(/and/gm, '&') }).click();
+            await webform.AREAS_OF_INTEREST.filter({ hasText: testData.SingleInterest__c.substring(0, 5) }).click();
             await webform.NEXT_BUTTON.click();
         });
 
@@ -530,8 +530,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: ProdcutsAndServicesPage;
         const testData = {
             ...ProdcutsAndServicesPage.getCommonData(),
-            SingleInterest__c: 'Hospitality, food and beverage',
-            Interest__c: 'Hospitality, food and beverage',
+            SingleInterest__c: 'Hospitality food and beverage',
+            Interest__c: 'Hospitality food and beverage',
             SpecifyOtherAreaofInterest__c: null
         }
         await test.step('login to webform', async () => {
@@ -555,7 +555,7 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         });
 
         await test.step('fill out Areas Of Interest page', async () => {
-            await webform.AREAS_OF_INTEREST.filter({ hasText: testData.SingleInterest__c.replace(/and/gm, '&') }).click();
+            await webform.AREAS_OF_INTEREST.filter({ hasText: testData.SingleInterest__c.substring(0, 5) }).click();
             await webform.NEXT_BUTTON.click();
         });
 

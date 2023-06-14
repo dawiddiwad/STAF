@@ -18,7 +18,7 @@ export class InvestInOxagonPage extends OxagonForm{
     public readonly AREAS_OF_INTEREST = this.page.locator('span');
     public readonly DESCRIPTION = this.page.getByPlaceholder('Type here...', { exact: true });
     public readonly EXPLAIN_YOUR_CHOICE = this.page.locator(("//textarea[@name='category_interest_comment']"));
-    public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });;
+    public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });
 
     public static getCommonData() {
         return {

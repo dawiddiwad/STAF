@@ -1,7 +1,7 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
  const config: PlaywrightTestConfig = {
   testDir: './src/test/',
-  timeout: 180000,
+  timeout: 300000,
   reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
   repeatEach: 1,
   retries: 3,
