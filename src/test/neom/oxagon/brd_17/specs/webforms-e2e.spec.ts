@@ -22,7 +22,7 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
             Website: `${faker.internet.url()}`,
             CompanyType__c: 'VC',
             JobTitle__c: 'C-suite',
-            SingleInterest__c: 'Autonomous and sustainable mobility',
+            SingleInterest__c: 'Autonomous and Sustainable Mobility',
             Status: 'Business Function Review',
             LeadOwner__c: 'Research & Innovation',
             LeadSource: 'oxagon_form',
@@ -133,8 +133,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: InvestInOxagonPage;
         const testData = {
             ...InvestInOxagonPage.getCommonData(),
-            SingleInterest__c: 'Banking and financial services',
-            Interest__c: 'Banking and financial services',
+            SingleInterest__c: 'Banking and Financial Services',
+            Interest__c: 'Banking and Financial Services',
             Description: faker.lorem.word({length: {min: 5, max: 10}}),
             SpecifyOtherAreaofInterest__c: null,
         }
@@ -187,8 +187,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: InvestInOxagonPage;
         const testData = {
             ...InvestInOxagonPage.getCommonData(),
-            SingleInterest__c: 'Commercial (professional services)',
-            Interest__c: 'Commercial (professional services)',
+            SingleInterest__c: 'Commercial (Professional Services)',
+            Interest__c: 'Commercial (Professional Services)',
             Description: faker.lorem.word({length: {min: 5, max: 10}}),
             SpecifyOtherAreaofInterest__c: null,
         }
@@ -241,8 +241,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: InvestInOxagonPage;
         const testData = {
             ...InvestInOxagonPage.getCommonData(),
-            SingleInterest__c: 'Hospitality food and beverage',
-            Interest__c: 'Hospitality food and beverage',
+            SingleInterest__c: 'Hospitality Food and Beverage',
+            Interest__c: 'Hospitality Food and Beverage',
             Description: faker.lorem.word({length: {min: 5, max: 10}}),
             SpecifyOtherAreaofInterest__c: null,
         }
@@ -410,8 +410,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: ProdcutsAndServicesPage;
         const testData = {
             ...ProdcutsAndServicesPage.getCommonData(),
-            SingleInterest__c: 'Banking and financial services',
-            Interest__c: 'Banking and financial services',
+            SingleInterest__c: 'Banking and Financial Services',
+            Interest__c: 'Banking and Financial Services',
             SpecifyOtherAreaofInterest__c: null
         }
         await test.step('login to webform', async () => {
@@ -470,8 +470,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: ProdcutsAndServicesPage;
         const testData = {
             ...ProdcutsAndServicesPage.getCommonData(),
-            SingleInterest__c: 'Commercial (professional services)',
-            Interest__c: 'Commercial (professional services)',
+            SingleInterest__c: 'Commercial (Professional Services)',
+            Interest__c: 'Commercial (Professional Services)',
             SpecifyOtherAreaofInterest__c: null
         }
         await test.step('login to webform', async () => {
@@ -530,8 +530,8 @@ test.describe.parallel('@ui @e2e @oxagon @brd17 @webform @ri', () => {
         let webform: ProdcutsAndServicesPage;
         const testData = {
             ...ProdcutsAndServicesPage.getCommonData(),
-            SingleInterest__c: 'Hospitality food and beverage',
-            Interest__c: 'Hospitality food and beverage',
+            SingleInterest__c: 'Hospitality Food and Beverage',
+            Interest__c: 'Hospitality Food and Beverage',
             SpecifyOtherAreaofInterest__c: null
         }
         await test.step('login to webform', async () => {
