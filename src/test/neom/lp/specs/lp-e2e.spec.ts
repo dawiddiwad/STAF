@@ -2,10 +2,13 @@ import { faker } from "@faker-js/faker";
 import { test, expect } from "@playwright/test";
 import { QueryResult, SuccessResult } from "jsforce";
 import { AdminUser } from "../../common/users/AdminUser";
+import { LpStandardUser } from "../users/standard/User";
+import { LpCase } from "../users/standard/objects/LpCase";
 
 test.use({video: 'on', screenshot: 'off'});
 test.describe.serial('@ui @e2e @lp sales path', () => {
-    let actor: AdminUser;
+    let admin: AdminUser;
+    let lpUser: LpStandardUser;
     let leasingTeamUserId;
     let leaseeUsername;
     let leaseeApp;
@@ -13,47 +16,33 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
     let accountName;
 
     test.beforeAll(async () => {
-        actor = await (new AdminUser()).Ready;
-        leasingTeamUserId = (await actor.api.query("select Id, AssigneeId from PermissionSetAssignment where PermissionSet.Name = 'LP_App_Permission_Set' and Assignee.IsActive = true and Assignee.Profile.Name = 'LP Standard User' limit 1") as QueryResult<any>).records[0].AssigneeId;
+        admin = await (new AdminUser()).Ready;
+        leasingTeamUserId = (await admin.api.query("select Id, AssigneeId from PermissionSetAssignment where PermissionSet.Name = 'LP_App_Permission_Set' and Assignee.IsActive = true and Assignee.Profile.Name = 'LP Standard User' limit 1") as QueryResult<any>).records[0].AssigneeId;
         leaseeUsername = faker.internet.email();
         contactName = faker.name.firstName();
         accountName = `${faker.commerce.productName()} ${faker.company.companySuffix()}`;
     });
 
     test.beforeEach(async ({page}) => {
-        await actor.workOnPage(page);
+        lpUser = await (new LpStandardUser(page)).Ready;
     })
 
     test('Leasing Team enables new Customer', async ({page}) => {
-        await test.step('login to SFDC as LP Leasing Team', async () => {
-            await actor.ui.loginAsCrmUser(leasingTeamUserId);
-        });
-
         await test.step('Create new Case', async () => {
-            const lpLeasingTeamQueueId = (await actor.api.query("select id from Group where DeveloperName = 'Leasing_Team'") as QueryResult<any>).records[0].Id;
+            const lpLeasingTeamQueueId = (await admin.api.query("select id from Group where DeveloperName = 'Leasing_Team'") as QueryResult<any>).records[0].Id;
             const lpCaseData = {
                 Origin: "Web",
                 Status: "New",
                 Type: "Request",
                 OwnerId: lpLeasingTeamQueueId
             }
-            const lpCaseId = (await actor.api.create("Case", lpCaseData) as SuccessResult).id;
-            await actor.ui.navigateToResource(lpCaseId);
+            const lpCaseId = (await admin.api.create("Case", lpCaseData)).id;
+            await lpUser.ui.navigateToResource(lpCaseId);
         });
 
         await test.step('Create new Contact/Account and link it to the Case', async () => {
-            await page.getByTitle('Edit Contact Name').click();
-            await page.getByRole('tabpanel').getByPlaceholder('Search Contacts...').click();
-            await page.getByTitle('New Contact').click();
-            await page.getByPlaceholder('Last Name').fill(contactName);
-            await page.getByPlaceholder('Search Accounts...').click();
-            await page.getByTitle('New Account').click();
-            await page.getByLabel('Company Registration Number').fill(faker.finance.account());
-            await page.locator('.uiModal.active').getByLabel('Account Name').first().fill(accountName);
-            await page.locator('.uiModal.active').getByTitle('Save', {exact: true}).click();
-            await (await page.waitForResponse(/saveRecord/gm)).ok();
-            await page.locator('.uiModal.active').getByTitle('Save', {exact: true}).click();
-            await page.locator("button[name='SaveEdit']").click();
+            const lpCase = new LpCase(lpUser);
+            await lpCase.linkNewContactWithNewAccountViaUi(contactName, accountName);
         });
 
         await test.step('Enable Account and Contact as Partner', async () => {
@@ -68,7 +57,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
                 await page.locator("button:has-text('Enable Partner User')").click();
             }).toPass({intervals: [5_000, 10_000]});
             const iframe = "//iframe[contains(@title, 'New User')]";
-            const LpCommunityUserProfileId = (await actor.api.query("select id from profile where name = 'LP Partner Community Login User'") as QueryResult<any>).records[0].Id.substring(0,15);
+            const LpCommunityUserProfileId = (await admin.api.query("select id from profile where name = 'LP Partner Community Login User'") as QueryResult<any>).records[0].Id.substring(0,15);
             await page.frameLocator(iframe).locator('select[name="Profile"]').selectOption(LpCommunityUserProfileId);
             await page.frameLocator(iframe).locator("//input[@id='Email']").fill(leaseeUsername);
             await page.frameLocator(iframe).locator("(//input[@title='Save'])[last()]").click();
@@ -81,7 +70,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
                 throw new Error(`unable to find Leasee User: ${username}`);
             }
             try {
-                return (await actor.api.query(`select id from user where username = '${leaseeUsername}'`) as QueryResult<any>).records[0].Id;
+                return (await admin.api.query(`select id from user where username = '${leaseeUsername}'`) as QueryResult<any>).records[0].Id;
             } catch (error) {
                 if ((error as Error).message.includes('no records returned')){
                     await page.waitForTimeout(1000);
@@ -92,7 +81,7 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
 
         await test.step('Login to Portal', async() => {
             const leaseeUserId = await getLeaseeIdFor(leaseeUsername);
-            await actor.ui.loginAsPortalUser(leaseeUserId, 'Logistics_Park');
+            await admin.ui.loginAsPortalUser(leaseeUserId, 'Logistics_Park');
         });
 
         await test.step('Fill new Application Form', async() => {
@@ -168,12 +157,12 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
 
     test('Leasing Team processes Opportunity until Document Approval', async ({page}) => {
         await test.step('login to SFDC as LP Leasing Team', async () => {
-            await actor.ui.loginAsCrmUser(leasingTeamUserId);
+            await admin.ui.loginAsCrmUser(leasingTeamUserId);
         });
 
         await test.step('Navigate to recently Submitted Opportunity', async () => {
-            leaseeApp = (await actor.api.query(`select id, name from Opportunity where CreatedBy.Username = '${leaseeUsername}' and Application_Status__c = 'Submitted' order by CreatedDate desc limit 1`) as QueryResult<any>).records[0];
-            await actor.ui.navigateToResource(leaseeApp.Id);
+            leaseeApp = (await admin.api.query(`select id, name from Opportunity where CreatedBy.Username = '${leaseeUsername}' and Application_Status__c = 'Submitted' order by CreatedDate desc limit 1`) as QueryResult<any>).records[0];
+            await admin.ui.navigateToResource(leaseeApp.Id);
         });
 
         await test.step('Eligibility check', async () => {
@@ -224,35 +213,35 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
     test('Approval team reviews Approval Request', async ({page}) => {
         let approvalRequests;
         await test.step('retrieve Approval Requests for the Opportunity', async () => {
-            approvalRequests = (await actor.api.query(`select id from Approval_Request__c where Opportunity__r.Id = '${leaseeApp.Id}' and Status__c = 'Submitted'`) as QueryResult<any>).records;
+            approvalRequests = (await admin.api.query(`select id from Approval_Request__c where Opportunity__r.Id = '${leaseeApp.Id}' and Status__c = 'Submitted'`) as QueryResult<any>).records;
             expect(approvalRequests).toHaveLength(7);
         });
 
         await test.step('Approve all Requests as individual Approvers', async () => {
             for (const record of approvalRequests){
-                const approverId = (await actor.api.query(`select ActorId from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId = '${record.Id}'`) as QueryResult<any>).records[0].ActorId;
-                await actor.ui.loginAsCrmUser(approverId);
-                await actor.ui.navigateToResource(record.Id);
+                const approverId = (await admin.api.query(`select ActorId from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId = '${record.Id}'`) as QueryResult<any>).records[0].ActorId;
+                await admin.ui.loginAsCrmUser(approverId);
+                await admin.ui.navigateToResource(record.Id);
                 await page.click("//a[@title='Approve']");
                 await page.fill("//textarea[@role='textbox']", "approved by test automation");
                 await page.click("//button[descendant::*[text()='Approve']]");
                 await page.waitForLoadState("networkidle");
-                await actor.ui.logout();
+                await admin.ui.logout();
             }
         });
     });
 
     test('Leasing Team finalizes Opportunity process', async ({page}) => {
         await test.step('login to SFDC as LP Leasing Team', async () => {
-            await actor.ui.loginAsCrmUser(leasingTeamUserId);
+            await admin.ui.loginAsCrmUser(leasingTeamUserId);
         });
 
         await test.step('Navigate to recently Submitted Opportunity', async () => {
-            await actor.ui.navigateToResource(leaseeApp.Id);
+            await admin.ui.navigateToResource(leaseeApp.Id);
         });
 
         await test.step('Contract Activation', async() => {
-            const oppOwnerName = (await actor.api.query(`select Id, Owner.Name from Opportunity where id = '${leaseeApp.Id}'`) as QueryResult<any>).records[0].Owner.Name;
+            const oppOwnerName = (await admin.api.query(`select Id, Owner.Name from Opportunity where id = '${leaseeApp.Id}'`) as QueryResult<any>).records[0].Owner.Name;
             await page.click("//a[@data-tab-name='Contract Approval']");
             await page.click("//button[descendant::*[text()='Mark as Current Stage']]");
             await page.getByText('Stage changed successfully.').waitFor({state: "visible"});
@@ -277,22 +266,22 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
             await page.getByLabel('Company Signed Date').fill(new Date().toLocaleString('en-GB').slice(0, 10));
 
             await page.getByTitle('Save', {exact: true}).click();
-            await actor.ui.page.getByText('was created').waitFor({state: "visible"});
-            await actor.ui.page.getByText('was created').waitFor({state: "hidden"});
+            await admin.ui.page.getByText('was created').waitFor({state: "visible"});
+            await admin.ui.page.getByText('was created').waitFor({state: "hidden"});
 
             await page.locator("table a.textUnderline").last().click();
             await page.click("(//a[@data-tab-name='Activated'])[last()]");
             await page.click("//button[descendant::*[text()='Mark as Current Status']]");
-            await actor.ui.page.getByText('Status changed successfully.').waitFor({state: "visible"});
-            await actor.ui.page.getByText('Status changed successfully.').waitFor({state: "hidden"});
+            await admin.ui.page.getByText('Status changed successfully.').waitFor({state: "visible"});
+            await admin.ui.page.getByText('Status changed successfully.').waitFor({state: "hidden"});
         })
 
         await test.step('Close Opportunity', async() => {
-            await actor.ui.navigateToResource(leaseeApp.Id);
+            await admin.ui.navigateToResource(leaseeApp.Id);
             await page.click("//a[@data-tab-name='Closed']");
             await page.click("//button[descendant::*[text()='Select Closed Stage']]");
             await page.click("//button[text()='Done']");
-            await actor.ui.page.getByText('Stage changed successfully.').waitFor({state: "visible"});
+            await admin.ui.page.getByText('Stage changed successfully.').waitFor({state: "visible"});
         })
     });
 });
