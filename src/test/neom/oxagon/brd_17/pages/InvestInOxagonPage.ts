@@ -1,5 +1,4 @@
-import { Page } from "@playwright/test";
-import { OxagonForm } from "./OxagonForm";
+import { OxagonForm, OxagonFormTestData } from "./OxagonForm";
 import { faker } from "@faker-js/faker";
 
 export class InvestInOxagonPage extends OxagonForm{
@@ -20,7 +19,7 @@ export class InvestInOxagonPage extends OxagonForm{
     public readonly EXPLAIN_YOUR_CHOICE = this.page.locator(("//textarea[@name='category_interest_comment']"));
     public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });
 
-    public static getCommonData() {
+    public static getCommonData(): OxagonFormTestData {
         return {
             Id: null,
             FirstName: `${faker.name.firstName().replace(/\W/gm, '')} ${faker.random.alpha(5)}`,
@@ -37,6 +36,23 @@ export class InvestInOxagonPage extends OxagonForm{
             LeadType__c: 'invest in oxagon',
             HasOptedOutOfEmail: false,
             RecordTypeName__c: 'Other Lead',
+            SingleInterest__c: null, 
+            Interest__c: null, 
+            Description: null,
+            SpecifyOtherAreaofInterest__c: null
         }
+    }
+
+    public async fillDetailsPageWith(data: OxagonFormTestData) {
+        await this.FIRST_NAME.fill(data.FirstName);
+        await this.LAST_NAME.fill(data.LastName);
+        await this.EMAIL.fill(data.Email);
+        await this.PHONE.fill(data.Phone);
+        await this.LOCATION.selectOption(data.GlobalHQLocation__c);
+        await this.COMPANY_NAME.fill(data.Company);
+        await this.COMPANY_WEBSITE.fill(data.Website);
+        await this.JOB_TITLE.selectOption(data.JobTitle__c);
+        await this.CONSENT_YES_CHECKBOX.click();
+        await this.NEXT_BUTTON.click();
     }
 }

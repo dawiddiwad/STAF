@@ -8,7 +8,7 @@ import { LpCase } from "../users/standard/objects/LpCase";
 test.use({video: 'on', screenshot: 'off'});
 test.describe.serial('@ui @e2e @lp sales path', () => {
     let admin: AdminUser;
-    let lpUser: LpStandardUser;
+    let leasingTeam: LpStandardUser;
     let leasingTeamUserId;
     let leaseeUsername;
     let leaseeApp;
@@ -24,25 +24,26 @@ test.describe.serial('@ui @e2e @lp sales path', () => {
     });
 
     test.beforeEach(async ({page}) => {
-        lpUser = await (new LpStandardUser(page)).Ready;
+        leasingTeam = await (new LpStandardUser(page)).Ready;
     })
 
     test('Leasing Team enables new Customer', async ({page}) => {
+        const caseCtx = new LpCase(leasingTeam);
+        
         await test.step('Create new Case', async () => {
-            const lpLeasingTeamQueueId = (await admin.api.query("select id from Group where DeveloperName = 'Leasing_Team'") as QueryResult<any>).records[0].Id;
-            const lpCaseData = {
+            const leasingTeamQueueId = (await admin.api.query("select id from Group where DeveloperName = 'Leasing_Team'") as QueryResult<any>).records[0].Id;
+            const caseData = {
                 Origin: "Web",
                 Status: "New",
                 Type: "Request",
-                OwnerId: lpLeasingTeamQueueId
+                OwnerId: leasingTeamQueueId
             }
-            const lpCaseId = (await admin.api.create("Case", lpCaseData)).id;
-            await lpUser.ui.navigateToResource(lpCaseId);
+            const caseId = (await admin.api.create("Case", caseData)).id;
+            await leasingTeam.ui.navigateToResource(caseId);
         });
 
         await test.step('Create new Contact/Account and link it to the Case', async () => {
-            const lpCase = new LpCase(lpUser);
-            await lpCase.linkNewContactWithNewAccountViaUi(contactName, accountName);
+            await caseCtx.linkNewContactWithNewAccountViaUi(contactName, accountName);
         });
 
         await test.step('Enable Account and Contact as Partner', async () => {

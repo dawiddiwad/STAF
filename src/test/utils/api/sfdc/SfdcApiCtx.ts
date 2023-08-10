@@ -133,10 +133,23 @@ export class SfdcApiCtx extends SfdcCtx {
 
 		const modes = () => {
 			let modes = '';
-			options?.Full ? null : (options as any).Full = options?.Compact;
-			options?.Full?.Create ? modes += 'Create' : null;
-			options?.Full?.Edit ? modes ? modes += ',Edit' : modes += 'Edit' : null;
-			options?.Full?.View ? modes ? modes += ',View' : modes += 'View' : null;
+			if (options && options.Full) {
+				if (!(options as any).Full) {
+					(options as any).Full = options.Compact;
+				}
+
+				if (options.Full.Create) {
+					modes += 'Create';
+				}
+
+				if (options.Full.Edit) {
+					modes += modes ? ',Edit' : 'Edit';
+				}
+
+				if (options.Full.View) {
+					modes += modes ? ',View' : 'View';
+				}
+			}
 			if (!modes) throw new Error(`missing layout modes for ui-record request:\n${JSON.stringify(options)}`);
 			else return modes;
 		};

@@ -1,9 +1,32 @@
-import { APIResponse, Page, expect } from "@playwright/test";
+import { Page } from "@playwright/test";
+
+export interface OxagonFormTestData {
+    Id,
+    FirstName,
+    LastName,
+    Email,
+    Phone,
+    GlobalHQLocation__c,
+    Company,
+    Website,
+    JobTitle__c,
+    Status,
+    LeadOwner__c,
+    LeadSource,
+    LeadType__c,
+    HasOptedOutOfEmail: boolean,
+    RecordTypeName__c,
+    SingleInterest__c,
+    Interest__c,
+    Description,
+    SpecifyOtherAreaofInterest__c
+}
 export abstract class OxagonForm {
     private authUrl: string;
     protected page: Page;
     protected baseUrl: string;
     protected abstract readonly path: string;
+
     constructor(page: Page) {
         this.page = page;
         this.baseUrl = 'https://staging.neom.com/en-us/oxagon-form';
