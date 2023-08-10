@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { OxagonForm } from "./OxagonForm";
+import { OxagonForm, OxagonFormData } from "./OxagonForm";
 
 export class ProdcutsAndServicesPage extends OxagonForm {
     protected path = 'service';
@@ -27,7 +27,7 @@ export class ProdcutsAndServicesPage extends OxagonForm {
     public readonly SUB_CATEGORY = this.page.getByRole('combobox', { name: 'Sub-category' });
     public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });
 
-    public static getCommonData() {
+    getMandatoryData(): OxagonFormData {
         return {
             Category__c: 'Groceries',
             Company: faker.company.name(),
@@ -51,6 +51,34 @@ export class ProdcutsAndServicesPage extends OxagonForm {
             Status: 'ICC Review',
             SubCategory__c: 'Specialty food store',
             Website: `${faker.internet.url()}`,
+            SingleInterest__c: null, 
+            Interest__c: null, 
+            Description: null, 
+            SpecifyOtherAreaofInterest__c: null,
+            CompanyType__c: null
         }
+    }
+
+    public async fillContactAndCompanyDetails(){
+        await this.FIRST_NAME.fill(this.data.FirstName);
+        await this.LAST_NAME.fill(this.data.LastName);
+        await this.EMAIL.fill(this.data.Email);
+        await this.PHONE.fill(this.data.Phone);
+        await this.LOCATION.selectOption(this.data.GlobalHQLocation__c);
+        await this.COMPANY_NAME.fill(this.data.Company);
+        await this.COMPANY_WEBSITE.fill(this.data.Website);
+        await this.COMPANY_SIZE.selectOption(this.data.CompanySize__c);
+        await this.JOB_TITLE.selectOption(this.data.JobTitle__c);
+        await this.CONSENT_YES_CHECKBOX.click();
+        await this.NEXT_BUTTON.click();
+    }
+
+    public async fillBrandInformation(){
+        await this.BRAND_GROUP_NAME.fill(this.data.CompanyGroupName__c);
+        await this.CATEGORY.selectOption(this.data.Category__c);
+        await this.SUB_CATEGORY.selectOption(this.data.SubCategory__c);
+        await this.FRANCHISE_YES.click();
+        await this.FRANCHISE_NAME.fill(this.data.FranchiseeName__c);
+        await this.NUMBER_OF_RETAIL_STORES_IN_KSA.selectOption(this.data.RetailStoresNumber__c);
     }
 }

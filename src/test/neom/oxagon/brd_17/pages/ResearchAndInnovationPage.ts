@@ -1,5 +1,5 @@
-import { Page } from "@playwright/test";
-import { OxagonForm } from "./OxagonForm";
+import { faker } from "@faker-js/faker";
+import { OxagonForm, OxagonFormData } from "./OxagonForm";
 
 export class ResearchAndInnovationPage extends OxagonForm{
     protected path = 'research';
@@ -18,4 +18,36 @@ export class ResearchAndInnovationPage extends OxagonForm{
     public readonly AREAS_OF_INTEREST = this.page.locator('label')
     public readonly EXPLAIN_YOUR_CHOICE = this.page.getByPlaceholder('PLEASE EXPLAIN YOUR CHOICE');
     public readonly THANK_YOU_MESSAGE = this.page.getByRole('heading', { name: 'Thank you, we’ll be in touch soon.' });
+
+    getMandatoryData(): OxagonFormData {
+        return {
+            Id: null,
+            FirstName: `${faker.name.firstName().replace(/\W/gm, '')} ${faker.random.alpha(5)}`,
+            LastName: `${faker.name.lastName().replace(/\W/gm, '')} test automation`,
+            Email: faker.internet.email(undefined, undefined, 'test.com', { allowSpecialCharacters: false }).toLowerCase(),
+            Phone: `+966${faker.random.numeric(6)}`,
+            GlobalHQLocation__c: 'Afghanistan',
+            Company: faker.company.name(),
+            Website: `${faker.internet.url()}`,
+            CompanyType__c: 'VC',
+            JobTitle__c: 'C-suite',
+            SingleInterest__c: 'Autonomous and Sustainable Mobility',
+            Status: 'Business Function Review',
+            LeadOwner__c: 'Research & Innovation',
+            LeadSource: 'oxagon_form',
+            HasOptedOutOfEmail: false,
+            RecordTypeName__c: 'RI Lead',
+            LeadType__c: null, 
+            Interest__c: null, 
+            Description: null, 
+            SpecifyOtherAreaofInterest__c: null,
+            CompanySize__c: null, 
+            Category__c: null, 
+            CompanyGroupName__c: null,
+            FranchiseCompanyActive__c: null, 
+            FranchiseeName__c: null,
+            RetailStoresNumber__c: null, 
+            SubCategory__c: null
+        }
+    }
 }
