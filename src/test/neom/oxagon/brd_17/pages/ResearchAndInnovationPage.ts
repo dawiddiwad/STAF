@@ -21,7 +21,7 @@ export class ResearchAndInnovationPage extends OxagonForm{
 
     getMandatoryData(): OxagonFormData {
         return {
-            Id: null,
+            ...super.getMandatoryData(),
             FirstName: `${faker.name.firstName().replace(/\W/gm, '')} ${faker.random.alpha(5)}`,
             LastName: `${faker.name.lastName().replace(/\W/gm, '')} test automation`,
             Email: faker.internet.email(undefined, undefined, 'test.com', { allowSpecialCharacters: false }).toLowerCase(),
@@ -36,18 +36,7 @@ export class ResearchAndInnovationPage extends OxagonForm{
             LeadOwner__c: 'Research & Innovation',
             LeadSource: 'oxagon_form',
             HasOptedOutOfEmail: false,
-            RecordTypeName__c: 'RI Lead',
-            LeadType__c: null, 
-            Interest__c: null, 
-            Description: null, 
-            SpecifyOtherAreaofInterest__c: null,
-            CompanySize__c: null, 
-            Category__c: null, 
-            CompanyGroupName__c: null,
-            FranchiseCompanyActive__c: null, 
-            FranchiseeName__c: null,
-            RetailStoresNumber__c: null, 
-            SubCategory__c: null
+            RecordTypeName__c: 'RI Lead'
         }
     }
 }

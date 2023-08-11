@@ -29,6 +29,7 @@ export class ProdcutsAndServicesPage extends OxagonForm {
 
     getMandatoryData(): OxagonFormData {
         return {
+            ...super.getMandatoryData(),
             Category__c: 'Groceries',
             Company: faker.company.name(),
             CompanyGroupName__c: 'test brand group name',
@@ -39,7 +40,6 @@ export class ProdcutsAndServicesPage extends OxagonForm {
             FranchiseeName__c: 'test franchise name',
             GlobalHQLocation__c: 'Afghanistan',
             HasOptedOutOfEmail: false,
-            Id: null,
             JobTitle__c: 'C-suite',
             LastName: `${faker.name.lastName().replace(/\W/gm, '')} test automation`,
             LeadOwner__c: 'Investor Care Center',
@@ -50,12 +50,7 @@ export class ProdcutsAndServicesPage extends OxagonForm {
             RetailStoresNumber__c: '1-10',
             Status: 'ICC Review',
             SubCategory__c: 'Specialty food store',
-            Website: `${faker.internet.url()}`,
-            SingleInterest__c: null, 
-            Interest__c: null, 
-            Description: null, 
-            SpecifyOtherAreaofInterest__c: null,
-            CompanyType__c: null
+            Website: `${faker.internet.url()}`
         }
     }
 

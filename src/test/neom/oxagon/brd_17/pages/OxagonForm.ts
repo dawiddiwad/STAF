@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 import { AdminUser } from "../../../common/users/AdminUser";
 import { BigQuery } from "../utils/BigQuery";
 
-export interface OxagonFormData {
+export type OxagonFormData = {
     Id,
     FirstName,
     LastName,
@@ -45,7 +45,37 @@ export abstract class OxagonForm {
         this.authUrl = 'https://staging.neom.com/libs/granite/core/content/login.html?resource=%2Fcontent%2Fneom%2Fen-us%2Foxagon-form&$$login$$=%24%24login%24%24&j_reason=unknown&j_reason_code=unknown';
     }
 
-    abstract getMandatoryData(): OxagonFormData;
+    protected getMandatoryData(): OxagonFormData{
+        return {
+            Id: null,
+            FirstName: null,
+            LastName: null,
+            Email: null,
+            Phone: null,
+            GlobalHQLocation__c: null,
+            Company: null,
+            Website: null,
+            JobTitle__c: null,
+            Status: null,
+            LeadOwner__c: null,
+            LeadSource: null,
+            LeadType__c: null,
+            HasOptedOutOfEmail: null,
+            RecordTypeName__c: null,
+            SingleInterest__c: null,
+            Interest__c: null,
+            Description: null,
+            SpecifyOtherAreaofInterest__c: null,
+            CompanySize__c: null,
+            Category__c: null,
+            CompanyGroupName__c: null,
+            FranchiseCompanyActive__c: null,
+            FranchiseeName__c: null,
+            RetailStoresNumber__c: null,
+            SubCategory__c: null,
+            CompanyType__c: null,
+        }
+    };
 
     private getCredentials(){
         const username = process.env.WEBFORM_USERNAME as string;
