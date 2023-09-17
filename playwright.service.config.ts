@@ -1,8 +1,8 @@
 import { defineConfig } from '@playwright/test';
 import config from './playwright.config';
-import dotenv from 'dotenv';
+import { config as envConfig } from "dotenv";
 
-dotenv.config();
+envConfig();
 
 // Name the test run if it's not named yet.
 process.env.PLAYWRIGHT_SERVICE_RUN_ID = process.env.PLAYWRIGHT_SERVICE_RUN_ID || new Date().toISOString();

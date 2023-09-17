@@ -1,6 +1,10 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
- const config: PlaywrightTestConfig = {
-  testDir: './src/test/',
+import { defineConfig } from '@playwright/test';
+import { config as envConfig } from "dotenv";
+
+envConfig();
+
+export default defineConfig({
+  testDir: './src/test/neom',
   timeout: 300000,
   reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
   repeatEach: 1,
@@ -31,6 +35,4 @@ import type { PlaywrightTestConfig } from '@playwright/test';
       }
     },
   },
-};
-
-export default config;
+});

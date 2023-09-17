@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { User } from "../../../../utils/common/User";
+import { User } from "test/utils/common/User";
 
 export class ResearchAndInnovationUser extends User{
     constructor(page: Page){

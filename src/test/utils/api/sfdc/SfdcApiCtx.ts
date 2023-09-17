@@ -1,17 +1,9 @@
 import { expect } from "@playwright/test";
-import {
-	Connection,
-	ExecuteAnonymousResult,
-	QueryResult,
-	Record,
-	RecordResult,
-	SalesforceId,
-	MetadataInfo
-} from "jsforce";
+import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
 import { SfdcCtx } from "../../common/context/SfdcCtx";
-import { User } from "../../common/User";
+import { User } from "test/utils/common/User";
 import { writeFile } from "fs/promises"
-import { RecordUiData, UiLayout } from "./UiLayout";
+import { RecordUiData, UiLayout } from "test/utils/api/sfdc/UiLayout";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {

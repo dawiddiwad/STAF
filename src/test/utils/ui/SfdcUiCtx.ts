@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
-import { SfdxExecutor } from "../CI/SfdxExecutor";
+import { SfdxExecutor } from "test/utils/ci/SfdxExecutor";
 import { SfdcCtx } from "../common/context/SfdcCtx";
-import { User } from "../common/User";
+import { User } from "test/utils/common/User";
 import { QueryResult } from "jsforce";
 
 export class SfdcUiCtx extends SfdcCtx {

@@ -1,7 +1,7 @@
 import { Page } from "@playwright/test";
-import { SfdcApiCtx } from "../API/sfdc/SfdcApiCtx";
-import { SfdxExecutor } from "../CI/SfdxExecutor";
-import { SfdcUiCtx } from "../UI/SfdcUiCtx";
+import { SfdcApiCtx } from "test/utils/api/sfdc/SfdcApiCtx";
+import { SfdxExecutor } from "test/utils/ci/SfdxExecutor";
+import { SfdcUiCtx } from "test/utils/ui/SfdcUiCtx";
 
 export interface UserDefinition {
     profileName: string,
