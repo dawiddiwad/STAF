@@ -7,6 +7,7 @@ export interface UserDefinition {
     profileName: string,
     roleName?: string,
     permsetNames?: string[],
+    localeKey?: string
     page?: Page
 }
 
@@ -24,6 +25,7 @@ export abstract class User {
     protected readonly permissionSetNames?: string[];
     protected readonly profileName: string;
     protected readonly roleName: string;
+    protected readonly localeKey: string;
     protected readonly sfdx: SfdxExecutor;
 
     public readonly Ready: Promise<this>;
@@ -36,6 +38,7 @@ export abstract class User {
         this.permissionSetNames = data.permsetNames;
         this.profileName = data.profileName;
         this.roleName = data.roleName as string;
+        this.localeKey = data.localeKey;
         this.sfdx = new SfdxExecutor('sfdx');
         this.Ready = new Promise(async (makeReady) => {
             try {
@@ -98,7 +101,7 @@ export abstract class User {
             return (await this.api.query(`
             SELECT Id, Username FROM User
             WHERE IsActive = true
-            AND LocaleSidKey = 'en_GB'
+            AND LocaleSidKey = ${`'${this.localeKey}'` ? `'${this.localeKey}'` : 'en_GB'}
             AND Profile.Name = '${this.profileName}'
             AND UserRole.Name = '${this.roleName}'
             AND Id NOT IN 
@@ -120,7 +123,7 @@ export abstract class User {
             FROM PermissionSetAssignment 
             WHERE IsActive = true
             AND Assignee.IsActive = true
-            AND Assignee.LocaleSidKey = 'en_GB'
+            AND Assignee.LocaleSidKey = ${`'${this.localeKey}'` ? `'${this.localeKey}'` : 'en_GB'}
             AND PermissionSet.IsOwnedByProfile = false
             AND Assignee.UserRole.Name = '${this.roleName}'
             AND Assignee.Profile.Name = '${this.profileName}'

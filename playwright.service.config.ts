@@ -13,17 +13,23 @@ export default defineConfig({
     // expect: {
     //   timeout: 10000,
     // },
+    timeout: 300000,
+    expect: {
+      timeout: 20000
+    },
+    reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
     testDir: './src/test/neom/',
-    grep: /@api/gm,
+    grep: /@retail/gm,
+    repeatEach: 50,
     retries: 0,
-    use: {
+    use: { ...config.use,
     connectOptions: {
       // Specify the service endpoint.
       wsEndpoint: `${process.env.PLAYWRIGHT_SERVICE_URL}?cap=${JSON.stringify({
         os: process.env.PLAYWRIGHT_SERVICE_OS || 'linux',
         runId: process.env.PLAYWRIGHT_SERVICE_RUN_ID
       })}`,
-      timeout: 30000,
+      timeout: 300000,
       headers: {
         'x-mpt-access-key': process.env.PLAYWRIGHT_SERVICE_ACCESS_KEY!
       },
