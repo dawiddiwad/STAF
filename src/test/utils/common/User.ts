@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
 import { SfdcApiCtx } from "test/utils/api/sfdc/SfdcApiCtx";
-import { SfdxExecutor } from "test/utils/ci/SfdxExecutor";
+import { SalesforceCliHandler } from "test/utils/ci/SfdxExecutor";
 import { SfdcUiCtx } from "test/utils/ui/SfdcUiCtx";
 
 export interface UserDefinition {
@@ -26,7 +26,7 @@ export abstract class User {
     protected readonly profileName: string;
     protected readonly roleName: string;
     protected readonly localeKey: string;
-    protected readonly sfdx: SfdxExecutor;
+    protected readonly sfdx: SalesforceCliHandler;
 
     public readonly Ready: Promise<this>;
     public static sfdxCredentials: UserInfo;
@@ -39,7 +39,7 @@ export abstract class User {
         this.profileName = data.profileName;
         this.roleName = data.roleName as string;
         this.localeKey = data.localeKey;
-        this.sfdx = new SfdxExecutor('sfdx');
+        this.sfdx = new SalesforceCliHandler('sfdx');
         this.Ready = new Promise(async (makeReady) => {
             try {
                 this.credentials = await this.authorize(data.page);

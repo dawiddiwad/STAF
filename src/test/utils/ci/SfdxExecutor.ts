@@ -1,11 +1,11 @@
 import { exec } from 'child_process';
 
-interface SdfxParameters {
+interface SalesforceCliParameters {
     cmd: string,
     f?: Array<string>,
     log?: boolean
 }
-export class SfdxExecutor {
+export class SalesforceCliHandler {
     private path: string;
 
     constructor(sfdxEnvPathVariable: string) {
@@ -35,7 +35,7 @@ export class SfdxExecutor {
         return JSON.stringify(this.parseResponse(message), null, 3);
     }
 
-    public exec({ cmd, f: flags, log }: SdfxParameters): Promise<Object> {
+    public exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<Object> {
         cmd = `${this.path} ${cmd} ${flags ? this.pass(flags) : null}`;
         if (log) console.info(`executing SFDX command: ${cmd}`);
         return new Promise<Object>((success) => {

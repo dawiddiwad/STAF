@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test"
-import { SfdxExecutor } from "../ci/SfdxExecutor"
+import { SalesforceCliHandler } from "../ci/SfdxExecutor"
 import { SalesforceNavigator } from "../salesforce/Navigator"
 
 export type UsernamePassword = {
@@ -34,11 +34,11 @@ export type BackendAuthenticator = {
     loginToBackend(): Promise<void>
 }
 
-export class Sfdx implements FrontendAuthenticator, BackendAuthenticator{
-    private sfdxExecutor: SfdxExecutor
+export class SalesforceCli implements FrontendAuthenticator, BackendAuthenticator{
+    private cliHandler: SalesforceCliHandler
     private frontdoorData: SalesforceFrontdoorData
-    constructor(sfdxExecutor: SfdxExecutor){
-        this.sfdxExecutor = sfdxExecutor
+    constructor(cliHandler: SalesforceCliHandler){
+        this.cliHandler = cliHandler
     }
   storageState: StorageState
 

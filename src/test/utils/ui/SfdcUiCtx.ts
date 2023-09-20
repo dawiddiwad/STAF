@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { SfdxExecutor } from "test/utils/ci/SfdxExecutor";
+import { SalesforceCliHandler } from "test/utils/ci/SfdxExecutor";
 import { SfdcCtx } from "../common/context/SfdcCtx";
 import { User } from "test/utils/common/User";
 import { QueryResult } from "jsforce";
@@ -36,7 +36,7 @@ export class SfdcUiCtx extends SfdcCtx {
     }
 
     public async login(): Promise<void> {
-        const sfdx = new SfdxExecutor('sfdx');
+        const sfdx = new SalesforceCliHandler('sfdx');
         const response: any = await sfdx.exec({
             cmd: 'force:org:open',
             f: ['--json',
