@@ -7,6 +7,20 @@ export type UsernamePassword = {
     password: string
 }
 
+export type StorageState = {
+  cookies: { 
+    name: string; 
+    value: string; 
+    url?: string; 
+    domain?: string; 
+    path?: string; 
+    expires?: number; 
+    httpOnly?: boolean; 
+    secure?: boolean; 
+    sameSite?: "Strict" | "Lax" | "None"; }[],
+  origins: {}[]
+}
+
 export type SalesforceFrontdoorData = {
     sessionId: string,
     instance: URL
@@ -76,6 +90,7 @@ export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
 }
 
 export class SalesforceAuthenticator {
+    static storageState: StorageState
     handler: BySfdx | BySessionId | ByUsernamePassword
 
     constructor(method: BySfdx | BySessionId | ByUsernamePassword){
