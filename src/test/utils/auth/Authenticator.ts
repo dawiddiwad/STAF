@@ -1,4 +1,6 @@
+import { Page } from "@playwright/test"
 import { SfdxExecutor } from "../ci/SfdxExecutor"
+import { SalesforceNavigator } from "../salesforce/Navigator"
 
 export type UsernamePassword = {
     username: string,
@@ -11,11 +13,11 @@ export type SalesforceFrontdoorData = {
 }
 
 export type FrontendAuthenticator = {
-    loginToFrontend(): Promise<void>
+    loginToFrontend(page: Page): Promise<void>
 }
 
 export type BackendAuthenticator = {
-    loginToBackend(): Promise<void>
+    loginToBackend(args: any): Promise<void>
 }
 
 export class BySfdx implements FrontendAuthenticator, BackendAuthenticator{
@@ -40,10 +42,10 @@ export class ByUsernamePassword implements FrontendAuthenticator, BackendAuthent
         this.credentials = credentials
         switch (instance) {
             case 'PRODUCTION':
-                this.instance = new URL('https://login.salesforce.com/')
+                this.instance = SalesforceNavigator.PRODUCTION_LOGIN_URL
                 break;
             case 'SANDBOX':
-                this.instance = new URL('https://test.salesforce.com/')
+                this.instance = SalesforceNavigator.SANDBOX_LOGIN_URL
                 break;
             default:
                 this.instance = instance
@@ -64,8 +66,9 @@ export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
         this.frontdoorData = frontdoorData
     }
 
-    async loginToFrontend() {
-        throw new Error("Method not implemented.")
+    async loginToFrontend(page: Page) {
+        const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontdoorData)
+        await page.goto(loginUrl.toString())
     }
     async loginToBackend() {
         throw new Error("Method not implemented.")
@@ -73,9 +76,9 @@ export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
 }
 
 export class SalesforceAuthenticator {
-    authMethod: BySfdx | BySessionId | ByUsernamePassword
+    handler: BySfdx | BySessionId | ByUsernamePassword
 
-    constructor(authMethod: BySfdx | BySessionId | ByUsernamePassword){
-        this.authMethod = authMethod
+    constructor(method: BySfdx | BySessionId | ByUsernamePassword){
+        this.handler = method
     }
 }
