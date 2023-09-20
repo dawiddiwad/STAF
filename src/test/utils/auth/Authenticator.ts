@@ -27,21 +27,22 @@ export type SalesforceFrontdoorData = {
 }
 
 export type FrontendAuthenticator = {
-    loginToFrontend(page: Page): Promise<void>
+    loginToFrontend(page: Page): Promise<StorageState>
 }
 
 export type BackendAuthenticator = {
-    loginToBackend(args: any): Promise<void>
+    loginToBackend(): Promise<void>
 }
 
-export class BySfdx implements FrontendAuthenticator, BackendAuthenticator{
+export class Sfdx implements FrontendAuthenticator, BackendAuthenticator{
     private sfdxExecutor: SfdxExecutor
     private frontdoorData: SalesforceFrontdoorData
     constructor(sfdxExecutor: SfdxExecutor){
         this.sfdxExecutor = sfdxExecutor
     }
+  storageState: StorageState
 
-    async loginToFrontend() {
+    async loginToFrontend(): Promise<StorageState> {
         throw new Error("Method not implemented.")
     }
     async loginToBackend() {
@@ -49,7 +50,7 @@ export class BySfdx implements FrontendAuthenticator, BackendAuthenticator{
     }
 }
 
-export class ByUsernamePassword implements FrontendAuthenticator, BackendAuthenticator{
+export class Credentials implements FrontendAuthenticator, BackendAuthenticator{
     private credentials: UsernamePassword
     instance: URL
     constructor(credentials: {username: string, password: string}, instance: 'SANDBOX' | 'PRODUCTION' | URL){
@@ -65,8 +66,9 @@ export class ByUsernamePassword implements FrontendAuthenticator, BackendAuthent
                 this.instance = instance
         }
     }
+  storageState: StorageState
 
-    async loginToFrontend() {
+    async loginToFrontend(): Promise<StorageState> {
         throw new Error("Method not implemented.")
     }
     async loginToBackend() {
@@ -74,15 +76,16 @@ export class ByUsernamePassword implements FrontendAuthenticator, BackendAuthent
     }
 }
 
-export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
+export class SessionId implements FrontendAuthenticator, BackendAuthenticator{
     private frontdoorData: SalesforceFrontdoorData
     constructor(frontdoorData: {sessionId: string, instance: URL}){
         this.frontdoorData = frontdoorData
     }
 
-    async loginToFrontend(page: Page) {
+    async loginToFrontend(page: Page): Promise<StorageState> {
         const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontdoorData)
         await page.goto(loginUrl.toString())
+        return await page.context().storageState()
     }
     async loginToBackend() {
         throw new Error("Method not implemented.")
@@ -90,10 +93,12 @@ export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
 }
 
 export class SalesforceAuthenticator {
-    static storageState: StorageState
-    handler: BySfdx | BySessionId | ByUsernamePassword
+    storageState: StorageState
 
-    constructor(method: BySfdx | BySessionId | ByUsernamePassword){
-        this.handler = method
+    async loginToFrontendBy(authorizationMethod: FrontendAuthenticator, page: Page){
+      this.storageState = await authorizationMethod.loginToFrontend(page);
+    }
+    async loginToBackendBy(authorizationMethod: BackendAuthenticator){
+      await authorizationMethod.loginToBackend()
     }
 }
