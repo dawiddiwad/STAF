@@ -1,70 +1,81 @@
 import { SfdxExecutor } from "../ci/SfdxExecutor"
 
 export type UsernamePassword = {
-    usenrname: string,
+    username: string,
     password: string
 }
 
-export type UiAuthenticator = {
-    loginToApi(): Promise<void>
+export type SalesforceFrontdoorData = {
+    sessionId: string,
+    instance: URL
 }
 
-export type ApiAuthenticator = {
-    loginToApi(): Promise<void>
+export type FrontendAuthenticator = {
+    loginToFrontend(): Promise<void>
 }
 
-export class BySfdx{
-    sfdxExecutor: SfdxExecutor 
+export type BackendAuthenticator = {
+    loginToBackend(): Promise<void>
+}
+
+export class BySfdx implements FrontendAuthenticator, BackendAuthenticator{
+    private sfdxExecutor: SfdxExecutor
+    private frontdoorData: SalesforceFrontdoorData
     constructor(sfdxExecutor: SfdxExecutor){
         this.sfdxExecutor = sfdxExecutor
     }
+
+    async loginToFrontend() {
+        throw new Error("Method not implemented.")
+    }
+    async loginToBackend() {
+        throw new Error("Method not implemented.")
+    }
 }
 
-export class ByUsernamePassword{
-    credentials: UsernamePassword
-    constructor(credentials: UsernamePassword){
+export class ByUsernamePassword implements FrontendAuthenticator, BackendAuthenticator{
+    private credentials: UsernamePassword
+    instance: URL
+    constructor(credentials: {username: string, password: string}, instance: 'SANDBOX' | 'PRODUCTION' | URL){
         this.credentials = credentials
+        switch (instance) {
+            case 'PRODUCTION':
+                this.instance = new URL('https://login.salesforce.com/')
+                break;
+            case 'SANDBOX':
+                this.instance = new URL('https://test.salesforce.com/')
+                break;
+            default:
+                this.instance = instance
+        }
+    }
+
+    async loginToFrontend() {
+        throw new Error("Method not implemented.")
+    }
+    async loginToBackend() {
+        throw new Error("Method not implemented.")
     }
 }
 
-export class BySessionId{
-    sessionId: string
-    constructor(sessionId: string){
-        this.sessionId = sessionId
+export class BySessionId implements FrontendAuthenticator, BackendAuthenticator{
+    private frontdoorData: SalesforceFrontdoorData
+    constructor(frontdoorData: {sessionId: string, instance: URL}){
+        this.frontdoorData = frontdoorData
+    }
+
+    async loginToFrontend() {
+        throw new Error("Method not implemented.")
+    }
+    async loginToBackend() {
+        throw new Error("Method not implemented.")
     }
 }
 
-export class SalesforceAuthenticator implements UiAuthenticator, ApiAuthenticator {
+export class SalesforceAuthenticator {
     authMethod: BySfdx | BySessionId | ByUsernamePassword
-    sessionId: string
-    Ready: Promise<this>
 
     constructor(authMethod: BySfdx | BySessionId | ByUsernamePassword){
         this.authMethod = authMethod
-        this.Ready = new Promise(async (makeReady) => {
-            if (this.authMethod instanceof BySfdx){
-                this.sessionId = await this.getSessionIdBySFDX(this.authMethod.sfdxExecutor)
-            } else if (this.authMethod instanceof ByUsernamePassword){
-                this.sessionId = await this.getSessionIdBySOAP(this.authMethod.credentials)
-            } else {
-                this.sessionId = await this.authMethod.sessionId
-            }
-            makeReady(this);
-        })
-    }
-
-    async loginToUi() {
-        throw new Error("Method not implemented.")
-    }
-    async loginToApi() {
-        throw new Error("Method not implemented.")
-    }
-
-    private getSessionIdBySFDX(sfdxExecutor: SfdxExecutor): Promise<string> {
-        throw new Error('method not implemented!')
-    }
-
-    private getSessionIdBySOAP(credentials: UsernamePassword): Promise<string> {
-        throw new Error('method not implemented!')
     }
 }
