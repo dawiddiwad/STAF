@@ -1,41 +1,29 @@
 import { expect } from "@playwright/test";
 import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
-import { SfdcCtx } from "../../common/context/SfdcCtx";
-import { User } from "test/utils/common/User";
 import { writeFile } from "fs/promises"
 import { RecordUiData, UiLayout } from "test/utils/api/sfdc/UiLayout";
+import { SalesforceFrontdoorData } from "test/utils/auth/Authenticator";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {
-		super(msg);
+		super(msg)
 	}
 }
-/**
- * @deprecated use {@link SalesforceApi} 
- */
-export class SfdcApiCtx extends SfdcCtx {
-	private static version: string = "57.0";
+
+export class SalesforceApi {
+	private version: string
 	private conn: Connection;
 	public Ready: Promise<this>;
 
-	constructor(user: User) {
-		super(user);
+	constructor(frontDoorData: SalesforceFrontdoorData, version?: string) {
+        version ? this.version = version : this.version = '57.0'
 		this.Ready = new Promise<this>((connect) => {
 			try {
-				if (this.user.credentials.sessionId) {
-					this.conn = new Connection({
-						instanceUrl: this.user.credentials.instanceUrl,
-						sessionId: this.user.credentials.sessionId,
-						version: SfdcApiCtx.version
-					});
-				} else if (this.user.credentials.accessToken) {
-					this.conn = new Connection({
-						instanceUrl: this.user.credentials.instanceUrl,
-						accessToken: this.user.credentials.accessToken,
-						version: SfdcApiCtx.version
-					});
-				} else throw new Error(`missing user credentials - sessionId or accessToken is requeired to intialize sfdx api context.
-            these are credentails received:\n${JSON.stringify(this.user.credentials)}`);
+                this.conn = new Connection({
+                    instanceUrl: frontDoorData.instance.toString(),
+                    sessionId: frontDoorData.sessionId,
+                    version: this.version
+                });
 				connect(this);
 			} catch (error) {
 				throw new Error(`unable to initialize SFDC API due to:\n${error}`);
@@ -206,29 +194,29 @@ export class SfdcApiCtx extends SfdcCtx {
 	public async validateVisibleRecordLayouts(recordId: string, options?: RecordUiData): Promise<void> {
 		try {
 			const orgLayouts = this.readLayoutsFromOrg(recordId, options);
-			await Promise.allSettled([
-				orgLayouts,
-				this.user.ui.navigateToResource(recordId)
-					.then(() => this.user.ui.page.waitForLoadState('networkidle'))
-			]);
+			// await Promise.allSettled([
+			// 	orgLayouts,
+			// 	this.user.ui.navigateToResource(recordId)
+			// 		.then(() => this.user.ui.page.waitForLoadState('networkidle'))
+			// ]);
 			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
 		} catch (error) {
-			throw new Error(`Layouts validation via UI-API failed for user ${this.user.credentials.id} ${this.user.credentials.username} due to:\n${error}`);
+			throw new Error(`Layouts validation via UI-API failed due to:\n${error}`);
 		}
 	}
 
 	public async validateAvailableApps(): Promise<void> {
 		try {
 			const orgApps = this.readApps();
-			await Promise.allSettled([
-				orgApps,
-				this.user.ui.page.click('.appLauncher button')
-					.then(() => this.user.ui.page.waitForResponse(/getAppLauncherMenuData/gm)
-						.then((response) => response.ok()))
-			])
+			// await Promise.allSettled([
+			// 	orgApps,
+			// 	this.user.ui.page.click('.appLauncher button')
+			// 		.then(() => this.user.ui.page.waitForResponse(/getAppLauncherMenuData/gm)
+			// 			.then((response) => response.ok()))
+			// ])
 			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
 		} catch (error) {
-			throw new Error(`Apps validation via UI-API failed for user ${this.user.credentials.id} ${this.user.credentials.username} due to:\n${error}`);
+			throw new Error(`Apps validation via UI-API failed due to:\n${error}`);
 		}
 	}
 

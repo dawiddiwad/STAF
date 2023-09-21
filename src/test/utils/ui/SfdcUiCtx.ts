@@ -1,5 +1,5 @@
 import { Page } from "@playwright/test";
-import { SalesforceCliHandler } from "test/utils/ci/SfdxExecutor";
+import { SalesforceCliHandler } from "test/utils/ci/SalesforceCli";
 import { SfdcCtx } from "../common/context/SfdcCtx";
 import { User } from "test/utils/common/User";
 import { QueryResult } from "jsforce";

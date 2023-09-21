@@ -1,6 +1,6 @@
 import { Page } from "@playwright/test";
 import { SfdcApiCtx } from "test/utils/api/sfdc/SfdcApiCtx";
-import { SalesforceCliHandler } from "test/utils/ci/SfdxExecutor";
+import { SalesforceCliHandler } from "test/utils/ci/SalesforceCli";
 import { SfdcUiCtx } from "test/utils/ui/SfdcUiCtx";
 
 export interface UserDefinition {
