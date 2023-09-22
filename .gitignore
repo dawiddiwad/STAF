@@ -8,4 +8,4 @@ node_modules
 /src/test/playwright-report/
 playwright-report*
 debug*
-auth*
+auth.json*

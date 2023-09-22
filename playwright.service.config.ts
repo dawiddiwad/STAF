@@ -19,8 +19,8 @@ export default defineConfig({
     },
     reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
     testDir: './src/test/neom/',
-    grep: /@retail/gm,
-    repeatEach: 50,
+    grep: /@debug/gm,
+    repeatEach: 1,
     retries: 0,
     use: { ...config.use,
     connectOptions: {

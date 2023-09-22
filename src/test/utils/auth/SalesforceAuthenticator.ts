@@ -2,29 +2,44 @@ import { Page } from "@playwright/test"
 import { SalesforceCliHandler } from "../ci/SalesforceCli"
 import { SalesforceNavigator } from "../salesforce/Navigator"
 import { SalesforceApi } from "../api/sfdc/SalesforceApi"
+import { ApiGateway, DefaultCliUserInfo, SalesforceFrontdoorData, SalesforceInstance, StorageState, UiGateway, UsernamePassword } from "./Types"
+import { SalesforceLoginPage } from "../common/pages/SalesforceLogin"
 
-class CliDefaultUserHandler implements UiGateway, ApiGateway{
-    private cliHandler: SalesforceCliHandler
-    private frontdoorData: SalesforceFrontdoorData
-    private _defaultUserData: Promise<DefaultCliUserInfo>
-    constructor(cliHandler: SalesforceCliHandler){
-        this.cliHandler = cliHandler
+class storageStateHandler implements UiGateway {
+    private storageState: StorageState
+    constructor(storageState: StorageState){
+        this.storageState = storageState
     }
-    storageState: StorageState
+
+    async loginToUi(page: Page): Promise<StorageState> {
+        await page.context().addCookies(this.storageState.cookies)
+        return this.storageState
+    }
+}
+
+class DefaultCliUserHandler implements UiGateway, ApiGateway{
+    private cli: SalesforceCliHandler
+    private _defaultUserData: Promise<DefaultCliUserInfo>
+
+    constructor(cliHandler: SalesforceCliHandler){
+        this.cli = cliHandler
+    }
 
     private get defaultUserData() {
         try {
             if (!this._defaultUserData){
-                this._defaultUserData = this.cliHandler.exec({
+                this._defaultUserData = this.cli.exec({
                     cmd: 'org open',
                     f: ['--json', '-r']
                 }) as unknown as Promise<DefaultCliUserInfo>
             }
         } catch (error) {
-            throw new Error(`unable to parse data for default cli user\ndata recieved: ${JSON.stringify(this.defaultUserData)}\ndue to:\n${error}`);
-        } finally {
-            return this._defaultUserData
+            throw new Error(`unable to parse data for default cli user
+                \ndata recieved: ${JSON.stringify(this.defaultUserData)}
+                \ndue to:
+                \n${error}`);
         }
+        return this._defaultUserData
     }
     
 
@@ -46,7 +61,7 @@ class CliDefaultUserHandler implements UiGateway, ApiGateway{
     }
 }
 
-class CredentialsHandler implements UiGateway, ApiGateway{
+class CredentialsHandler implements UiGateway {
     private credentials: UsernamePassword
     instance: URL
     constructor(credentials: UsernamePassword, instance: SalesforceInstance){
@@ -62,13 +77,10 @@ class CredentialsHandler implements UiGateway, ApiGateway{
                 this.instance = instance
         }
     }
-  storageState: StorageState
 
-    async loginToUi(): Promise<StorageState> {
-        throw new Error("Method not implemented.")
-    }
-    async loginToApi() {
-        throw new Error("Method not implemented.")
+    async loginToUi(page: Page): Promise<StorageState> {
+        return new SalesforceLoginPage(page, this.instance)
+            .loginUsing(this.credentials)
     }
 }
 
@@ -83,58 +95,18 @@ class SessionIdHandler implements UiGateway, ApiGateway{
         await page.goto(loginUrl.toString())
         return await page.context().storageState()
     }
-    async loginToApi() {
-        throw new Error("Method not implemented.")
+    async loginToApi(): Promise<SalesforceApi> {
+        return await new SalesforceApi(this.frontdoorData).Ready
     }
 }
 
 export class SalesforceAuthenticator {
-    usingSessionId = (data: SalesforceFrontdoorData) => new SessionIdHandler(data)
-    usingCli = (handler: SalesforceCliHandler) => new CliDefaultUserHandler(handler)
-    usingCredentials = (credentials: UsernamePassword, instance: SalesforceInstance) => new CredentialsHandler(credentials, instance)
-}
-
-export type SalesforceInstance = 
-    'SANDBOX' | 'PRODUCTION' | URL
-
-export type UsernamePassword = {
-    username: string,
-    password: string
-}
-
-export type StorageState = {
-  cookies: { 
-    name: string; 
-    value: string; 
-    url?: string; 
-    domain?: string; 
-    path?: string; 
-    expires?: number; 
-    httpOnly?: boolean; 
-    secure?: boolean; 
-    sameSite?: "Strict" | "Lax" | "None"; }[],
-  origins: {}[]
-}
-
-export type DefaultCliUserInfo = {
-    status: number,
-    result: {
-        orgId: string,
-        url: string,
-        username: string
-    },
-    warnings: string[]
-}
-
-export type SalesforceFrontdoorData = {
-    sessionId: string,
-    instance: URL
-}
-
-export type UiGateway = {
-    loginToUi(page: Page): Promise<StorageState>
-}
-
-export type ApiGateway = {
-    loginToApi()
+    usingStorageState = (data: StorageState) => 
+        new storageStateHandler(data)
+    usingSessionId = (data: SalesforceFrontdoorData) => 
+        new SessionIdHandler(data)
+    usingCli = (handler: SalesforceCliHandler) => 
+        new DefaultCliUserHandler(handler)
+    usingCredentials = (credentials: UsernamePassword, instance: SalesforceInstance) => 
+        new CredentialsHandler(credentials, instance)
 }

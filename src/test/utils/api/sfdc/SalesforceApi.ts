@@ -2,7 +2,8 @@ import { expect } from "@playwright/test";
 import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
 import { writeFile } from "fs/promises"
 import { RecordUiData, UiLayout } from "test/utils/api/sfdc/UiLayout";
-import { SalesforceFrontdoorData } from "test/utils/auth/Authenticator";
+import { SalesforceFrontdoorData } from "test/utils/auth/Types";
+import { Api } from "../Api";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {
@@ -10,18 +11,19 @@ export class NoRecordsReturnedError extends Error {
 	}
 }
 
-export class SalesforceApi {
+export class SalesforceApi extends Api {
 	private version: string
 	private conn: Connection;
-	public Ready: Promise<this>;
+	Ready: Promise<this>;
 
-	constructor(frontDoorData: SalesforceFrontdoorData, version?: string) {
+	constructor(frontdoorData: SalesforceFrontdoorData, version?: string) {
+		super()
         version ? this.version = version : this.version = '57.0'
 		this.Ready = new Promise<this>((connect) => {
 			try {
-                this.conn = new Connection({
-                    instanceUrl: frontDoorData.instance.toString(),
-                    sessionId: frontDoorData.sessionId,
+                this.conn = new Connection({			
+                    instanceUrl: frontdoorData.instance.toString(),
+                    sessionId: frontdoorData.sessionId,
                     version: this.version
                 });
 				connect(this);
@@ -44,7 +46,7 @@ export class SalesforceApi {
 		) as UiLayout;
 	}
 
-	public async create(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
+	async create(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
 		try {
 			return await this.conn.create(sobject, data, { allOrNone: true });
 		} catch (error) {
@@ -52,7 +54,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async update(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
+	async update(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
 		try {
 			return await this.conn.update(sobject, data, { allOrNone: true });
 		} catch (error) {
@@ -60,7 +62,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async delete(sobject: string, id: SalesforceId | SalesforceId[]): Promise<RecordResult | RecordResult[]> {
+	async delete(sobject: string, id: SalesforceId | SalesforceId[]): Promise<RecordResult | RecordResult[]> {
 		try {
 			return await this.conn.delete(sobject, id);
 		} catch (error) {
@@ -68,7 +70,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]> {
+	async read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]> {
 		try {
 			return await this.conn.retrieve(sobject, id);
 		} catch (error) {
@@ -76,7 +78,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async query(soql: string): Promise<QueryResult<unknown>> {
+	async query(soql: string): Promise<QueryResult<unknown>> {
 		let result: QueryResult<unknown>;
 		try {
 			result = await this.conn.query(soql);
@@ -88,7 +90,7 @@ export class SalesforceApi {
 		} else return result;
 	}
 
-	public async executeApex(apexBody: string): Promise<ExecuteAnonymousResult> {
+	async executeApex(apexBody: string): Promise<ExecuteAnonymousResult> {
 		let result: ExecuteAnonymousResult;
 		try {
 			result = await this.conn.tooling.executeAnonymous(apexBody);
@@ -100,7 +102,7 @@ export class SalesforceApi {
 		} else return result;
 	}
 
-	public async readRecordUi(recordId: string, options?: RecordUiData): Promise<MetadataInfo | MetadataInfo[]> {
+	async readRecordUi(recordId: string, options?: RecordUiData): Promise<MetadataInfo | MetadataInfo[]> {
 		options = options ? options : {
 			Full: { Edit: true, Create: true, View: true },
 			Compact: { Edit: true, Create: true, View: true }
@@ -144,7 +146,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async readApps(formFactor?: 'Large' | 'Medium' | 'Small', userCustomizations?: boolean): Promise<MetadataInfo | MetadataInfo[]> {
+	async readApps(formFactor?: 'Large' | 'Medium' | 'Small', userCustomizations?: boolean): Promise<MetadataInfo | MetadataInfo[]> {
 		const formFactorParam = formFactor ? `?formFactor=${formFactor}` : `?formFactor=Large`;
 		const userCustomizationsParam = userCustomizations ? `&userCustomizations=${userCustomizations}` : '';
 		const resource = `/ui-api/apps${formFactorParam}${userCustomizationsParam}`;
@@ -162,7 +164,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async readRelatedListsUi(object: string, recordTypeId?: string): Promise<MetadataInfo | MetadataInfo[]> {
+	async readRelatedListsUi(object: string, recordTypeId?: string): Promise<MetadataInfo | MetadataInfo[]> {
 		recordTypeId = recordTypeId ? `?recordTypeId=${recordTypeId}` : '';
 		const resource = `/ui-api/related-list-info/${object}${recordTypeId}`;
 		try {
@@ -172,7 +174,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async readLayoutsFromOrg(recordId: string, options?: RecordUiData): Promise<UiLayout> {
+	async readLayoutsFromOrg(recordId: string, options?: RecordUiData): Promise<UiLayout> {
 		try {
 			let data = Object.values((await this.readRecordUi(recordId, options) as any).layouts)[0];
 			data = this.parseLayoutFromLayoutResponse(data as RecordUiData);
@@ -182,7 +184,7 @@ export class SalesforceApi {
 		}
 	}
 
-	public async writeLayoutSectionsToFileFromOrg(filePath: string, recordId: string, dataToFetch: RecordUiData): Promise<void> {
+	async writeLayoutSectionsToFileFromOrg(filePath: string, recordId: string, dataToFetch: RecordUiData): Promise<void> {
 		try {
 			const layoutData = await this.readLayoutsFromOrg(recordId, dataToFetch);
 			await writeFile(filePath, JSON.stringify(layoutData, null, 1));
@@ -191,36 +193,25 @@ export class SalesforceApi {
 		}
 	}
 
-	public async validateVisibleRecordLayouts(recordId: string, options?: RecordUiData): Promise<void> {
+	async validateVisibleRecordLayouts(recordId: string, options?: RecordUiData): Promise<void> {
 		try {
 			const orgLayouts = this.readLayoutsFromOrg(recordId, options);
-			// await Promise.allSettled([
-			// 	orgLayouts,
-			// 	this.user.ui.navigateToResource(recordId)
-			// 		.then(() => this.user.ui.page.waitForLoadState('networkidle'))
-			// ]);
 			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Layouts validation via UI-API failed due to:\n${error}`);
 		}
 	}
 
-	public async validateAvailableApps(): Promise<void> {
+	async validateAvailableApps(): Promise<void> {
 		try {
 			const orgApps = this.readApps();
-			// await Promise.allSettled([
-			// 	orgApps,
-			// 	this.user.ui.page.click('.appLauncher button')
-			// 		.then(() => this.user.ui.page.waitForResponse(/getAppLauncherMenuData/gm)
-			// 			.then((response) => response.ok()))
-			// ])
 			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Apps validation via UI-API failed due to:\n${error}`);
 		}
 	}
 
-	public async writeAppsToFileFromOrg(filePath: string): Promise<void> {
+	async writeAppsToFileFromOrg(filePath: string): Promise<void> {
 		try {
 			const appsData = await this.readApps();
 			await writeFile(filePath, JSON.stringify(appsData, null, 1));
