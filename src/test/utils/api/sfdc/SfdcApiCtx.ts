@@ -11,7 +11,7 @@ export class NoRecordsReturnedError extends Error {
 	}
 }
 /**
- * @deprecated use {@link SalesforceApi} 
+ * @deprecated use SalesforceApi
  */
 export class SfdcApiCtx extends SfdcCtx {
 	private static version: string = "57.0";

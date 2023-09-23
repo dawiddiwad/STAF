@@ -7,6 +7,7 @@ import { SalesforceLoginPage } from "../common/pages/SalesforceLogin"
 
 class storageStateHandler implements UiGateway {
     private storageState: StorageState
+
     constructor(storageState: StorageState){
         this.storageState = storageState
     }
@@ -19,13 +20,13 @@ class storageStateHandler implements UiGateway {
 
 class DefaultCliUserHandler implements UiGateway, ApiGateway{
     private cli: SalesforceCliHandler
-    private _defaultUserData: Promise<DefaultCliUserInfo>
+    _defaultUserData: Promise<DefaultCliUserInfo>
 
     constructor(cliHandler: SalesforceCliHandler){
         this.cli = cliHandler
     }
 
-    private get defaultUserData() {
+    get defaultUserData() {
         try {
             if (!this._defaultUserData){
                 this._defaultUserData = this.cli.exec({
@@ -52,7 +53,7 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
     }
 
     async loginToUi(page: Page): Promise<StorageState> {
-        await page.goto((await this.defaultUserData).result.url)
+        await page.goto((await this.defaultUserData).result.url, {waitUntil: 'commit'})
         return await page.context().storageState()
     }
 
@@ -64,6 +65,7 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
 class CredentialsHandler implements UiGateway {
     private credentials: UsernamePassword
     instance: URL
+
     constructor(credentials: UsernamePassword, instance: SalesforceInstance){
         this.credentials = credentials
         switch (instance) {
@@ -85,18 +87,20 @@ class CredentialsHandler implements UiGateway {
 }
 
 class SessionIdHandler implements UiGateway, ApiGateway{
-    private frontdoorData: SalesforceFrontdoorData
-    constructor(frontdoorData: SalesforceFrontdoorData){
-        this.frontdoorData = frontdoorData
+    private frontDoor: SalesforceFrontdoorData
+
+    constructor(frontDoor: SalesforceFrontdoorData){
+        this.frontDoor = frontDoor
     }
 
     async loginToUi(page: Page): Promise<StorageState> {
-        const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontdoorData)
+        const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontDoor)
         await page.goto(loginUrl.toString())
         return await page.context().storageState()
     }
+    
     async loginToApi(): Promise<SalesforceApi> {
-        return await new SalesforceApi(this.frontdoorData).Ready
+        return await new SalesforceApi(this.frontDoor).Ready
     }
 }
 
