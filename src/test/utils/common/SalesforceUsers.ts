@@ -1,4 +1,4 @@
-import { Page, chromium, expect } from "@playwright/test";
+import { Browser, Page, chromium, expect } from "@playwright/test";
 import { DefaultCliUserInfo, StorageState } from "../auth/Types";
 import { SalesforceAuthenticator } from "../auth/SalesforceAuthenticator";
 import { SalesforceCliHandler } from "../ci/SalesforceCli";
@@ -19,6 +19,7 @@ export interface SalesforceUserDefinition {
 
 export class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>
+    private browser: Browser
     authorizationState: StorageState
     info: DefaultCliUserInfo
     ui: Page
@@ -30,8 +31,9 @@ export class SalesforceDefaultCliUser {
             const handler = authenticator.usingCli(new SalesforceCliHandler())
             this.info = await handler.defaultUserData
             this.api = await handler.loginToApi()
-            this.ui = await (await (await chromium.launch({headless: true})).newContext()).newPage()
-            this.authorizationState = await handler.loginToUi(this.ui);
+            this.browser = await chromium.launch({headless: true})
+            this.ui = await this.browser.newContext().then(context => context.newPage())
+            this.authorizationState = await handler.loginToUi(this.ui)
             makeReady(this)
         })
     }
@@ -50,17 +52,19 @@ export class SalesforceDefaultCliUser {
             orgId: this.info.result.orgId,
             targetUserId: salesforceUserId
         }).toString()
-        await this.ui.goto(impersonationUrl, {waitUntil: 'commit'})
-        const otherCrmUserStorageData = await this.ui.context().storageState()
-        const errorMsg = `something went wrong during impersonation of user ${salesforceUserId}`
-        expect(this.authorizationState, errorMsg).not.toEqual(otherCrmUserStorageData)
+        const isolatedPage = await this.browser.newContext().then(context => context.newPage())
+        await isolatedPage.context().addCookies(this.authorizationState.cookies)
+        await isolatedPage.goto(impersonationUrl, {waitUntil: 'commit'})
+        const otherCrmUserStorageData = await isolatedPage.context().storageState()
+        await isolatedPage.context().close()
+        expect(this.authorizationState, `error impersonating user ${salesforceUserId}`)
+            .not.toEqual(otherCrmUserStorageData)
         return otherCrmUserStorageData
     }
 }
 
 export abstract class SalesforceUser {
-    static pool: SalesforceUser[]
-    authorizationState: StorageState
+    private static cached: Promise<StorageState>
     ui: Page
     api: SalesforceApi
     Ready: Promise<this>
@@ -70,13 +74,15 @@ export abstract class SalesforceUser {
             //TODO
         })
     }
+
+    async use(page: Page){
+        this.ui = page
+        await this.ui.context().addCookies((await SalesforceUser.cached).cookies)
+    }
 }
 
-export class EndUser extends SalesforceUser {
-    constructor(){
-        const definition = {
-            userData: {}
-        }
+export class EndUserExample extends SalesforceUser {
+    constructor(definition: SalesforceUserDefinition){
         super(definition)
     }
 }

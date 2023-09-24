@@ -54,11 +54,11 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
 
     async loginToUi(page: Page): Promise<StorageState> {
         await page.goto((await this.defaultUserData).result.url, {waitUntil: 'commit'})
-        return await page.context().storageState()
+        return page.context().storageState()
     }
 
     async loginToApi(): Promise<SalesforceApi> {
-        return await new SalesforceApi(await this.parseFrontDoorData()).Ready
+        return new SalesforceApi(await this.parseFrontDoorData()).Ready
     }
 }
 
@@ -96,11 +96,11 @@ class SessionIdHandler implements UiGateway, ApiGateway{
     async loginToUi(page: Page): Promise<StorageState> {
         const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontDoor)
         await page.goto(loginUrl.toString())
-        return await page.context().storageState()
+        return page.context().storageState()
     }
     
     async loginToApi(): Promise<SalesforceApi> {
-        return await new SalesforceApi(this.frontDoor).Ready
+        return new SalesforceApi(this.frontDoor).Ready
     }
 }
 
