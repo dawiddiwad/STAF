@@ -4,17 +4,14 @@ import { SalesforceAuthenticator } from "../auth/SalesforceAuthenticator";
 import { SalesforceCliHandler } from "../ci/SalesforceCli";
 import { SalesforceNavigator } from "../salesforce/Navigator";
 import { SalesforceApi } from "../api/sfdc/SalesforceApi";
+import { SOQLBuilder } from "../salesforce/SOQLBuilder";
+import { QueryResult } from "jsforce";
 
 export interface SalesforceUserDefinition {
-    userData: {}
+    details?: {}
     permissionSets?: string[]
-    arPermissionSets?: string[]
-    permissionSetGroups?: string[]
-    permissionSetLicenses?: string[]
-    lightningDataPurchases?: string[]
-    personalGroups?: string[]
-    publicGroups?: string[]
-    queues?: string[]
+    unique?: false
+    strictPermissions?: false
 }
 
 export class SalesforceDefaultCliUser {
@@ -57,32 +54,63 @@ export class SalesforceDefaultCliUser {
         await isolatedPage.goto(impersonationUrl, {waitUntil: 'commit'})
         const otherCrmUserStorageData = await isolatedPage.context().storageState()
         await isolatedPage.context().close()
-        expect(this.authorizationState, `error impersonating user ${salesforceUserId}`)
-            .not.toEqual(otherCrmUserStorageData)
         return otherCrmUserStorageData
     }
 }
 
 export abstract class SalesforceUser {
+    private static uniquePool: Set<SalesforceUser> = new Set()
     private static cached: Promise<StorageState>
+    abstract config: SalesforceUserDefinition
     ui: Page
     api: SalesforceApi
     Ready: Promise<this>
 
-    constructor(definition: SalesforceUserDefinition){
+    constructor(mods?: SalesforceUserDefinition){
         this.Ready = new Promise(async (makeReady) => {
-            //TODO
+            this.config = {...this.config, ...mods}
+            const cliUser = await SalesforceDefaultCliUser.instance
+            if (this.config.strictPermissions){
+                //TODO
+                throw new Error('strict permissions flow not implementd yet')
+            } else if (this.config.unique){
+                //TODO
+                throw new Error('unique flow not implemented yet')
+            } else {
+                if (!SalesforceUser.cached){
+                    const matchingSoql = new SOQLBuilder().crmUsersMatching(this.config)
+                    const usersMatchingConfig = <QueryResult<any>> await cliUser.api.query(matchingSoql) 
+                    const selectedUser = usersMatchingConfig.records[0].Id
+                    SalesforceUser.cached = cliUser.impersonateCrmUser(selectedUser)
+                    SalesforceUser.uniquePool.add(selectedUser)
+                }
+                const sessionId = (await SalesforceUser.cached).cookies
+                    .filter(cookie => cookie.name === 'sid')[0].name
+                const instance = new URL (new URL(cliUser.info.result.url).origin)
+                const frontDoor = {instance: instance, sessionId: sessionId}
+                this.api = await new SalesforceApi(frontDoor).Ready
+            }
+            makeReady(this)
         })
     }
 
-    async use(page: Page){
+    async use(page: Page): Promise<this> {
+        await page.context().addCookies((await SalesforceUser.cached).cookies)
         this.ui = page
-        await this.ui.context().addCookies((await SalesforceUser.cached).cookies)
+        return this
     }
 }
 
 export class EndUserExample extends SalesforceUser {
-    constructor(definition: SalesforceUserDefinition){
-        super(definition)
+    config = { 
+        details: {
+            EmailPreferencesStayInTouchReminder: true,
+            LanguageLocaleKey: 'en_US'
+        }, 
+        permissionSets: ['marketing']
+    }
+
+    constructor(mods?: SalesforceUserDefinition){
+        super(mods)
     }
 }

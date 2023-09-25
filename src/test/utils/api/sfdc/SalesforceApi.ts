@@ -86,7 +86,7 @@ export class SalesforceApi extends Api {
 			throw new Error(`unable to execute soql:\n${soql}\ndue to:\n$\n${error}`);
 		}
 		if (!result.records.length) {
-			throw new NoRecordsReturnedError(`no records returned by soql:\n${soql}}`);
+			throw new NoRecordsReturnedError(`no records returned by soql:\n${soql}`);
 		} else return result;
 	}
 
