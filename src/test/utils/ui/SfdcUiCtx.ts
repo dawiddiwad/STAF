@@ -4,6 +4,9 @@ import { SfdcCtx } from "../common/context/SfdcCtx";
 import { User } from "test/utils/common/User";
 import { QueryResult } from "jsforce";
 
+/**
+ * @deprecated use SalesforceStandardUsers
+ */
 export class SfdcUiCtx extends SfdcCtx {
     Ready: Promise<this>;
     page: Page;

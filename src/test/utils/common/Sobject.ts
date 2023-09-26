@@ -1,6 +1,9 @@
 import { SfdcCtx } from "./context/SfdcCtx";
 import { User } from "./User";
 
+/**
+ * @deprecated
+ */
 export abstract class Sobject {
     public readonly user: User;
 

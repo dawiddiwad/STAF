@@ -1,4 +1,4 @@
-import { Browser, Page, chromium, expect } from "@playwright/test";
+import { Browser, Page, chromium } from "@playwright/test";
 import { DefaultCliUserInfo, StorageState } from "../auth/Types";
 import { SalesforceAuthenticator } from "../auth/SalesforceAuthenticator";
 import { SalesforceCliHandler } from "../ci/SalesforceCli";

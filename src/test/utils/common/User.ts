@@ -3,6 +3,7 @@ import { SfdcApiCtx } from "test/utils/api/sfdc/SfdcApiCtx";
 import { SalesforceCliHandler } from "test/utils/ci/SalesforceCli";
 import { SfdcUiCtx } from "test/utils/ui/SfdcUiCtx";
 
+
 export interface UserDefinition {
     profileName: string,
     roleName?: string,
@@ -21,6 +22,9 @@ export interface UserInfo {
     sessionId: string;
 }
 
+/**
+ * @deprecated use SalesforceStandardUsers
+ */
 export abstract class User {
     protected readonly permissionSetNames?: string[];
     protected readonly profileName: string;
