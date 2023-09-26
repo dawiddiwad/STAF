@@ -33,11 +33,11 @@ export class SalesforceCliHandler {
 
     public async exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any> {
         const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ''}`
-        if (log) console.info(`Executing SFDX command: ${fullCommand}`)
+        if (log) console.info(`Executing ${this.path} command: ${fullCommand}`)
         return new Promise<any>((resolve, reject) => {
             exec(fullCommand, (error, stdout) => {
                 if (error && error.code === 1) {
-                    reject(new Error(`SFDX command failed with exit code: ${error.code} caused by:\n${error.message}\nError details:\n${JSON.stringify(this.parseResponse(stdout), null, 3)}`))
+                    reject(new Error(`${this.path} command failed with exit code: ${error.code} caused by:\n${error.message}\nError details:\n${JSON.stringify(this.parseResponse(stdout), null, 3)}`))
                 } else {
                     resolve(flags?.includes('--json') ? this.parseResponse(stdout) : stdout)
                 }
