@@ -13,7 +13,7 @@ export class SalesforceNavigator {
 
     private constructor(){}
 
-    static buildLoginUrl(frontdoorData: {sessionId: string, instance: URL}): URL{
+    static buildLoginUrl(frontdoorData: {sessionId: string, instance: string}): URL{
         const url = new URL(SalesforceNavigator.FRONTDOOR_PATH, frontdoorData.instance)
         url.searchParams.append(SalesforceNavigator.SESSIONID_PARAM, frontdoorData.sessionId)
         return url

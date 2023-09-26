@@ -35,7 +35,7 @@ export type DefaultCliUserInfo = {
 
 export type SalesforceFrontdoorData = {
     sessionId: string,
-    instance: URL
+    instance: string
 }
 
 export type UiGateway = {

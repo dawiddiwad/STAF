@@ -58,8 +58,8 @@ export class SalesforceDefaultCliUser {
     }
 }
 
-export abstract class SalesforceUser {
-    private static uniquePool: Set<SalesforceUser> = new Set()
+export abstract class SalesforceStandardUsers {
+    private static uniquePool: Set<SalesforceStandardUsers> = new Set()
     private static _cached: Map<string, Promise<StorageState>> = new Map()
     abstract config: SalesforceUserDefinition
     ui: Page
@@ -69,7 +69,8 @@ export abstract class SalesforceUser {
     constructor(mods?: SalesforceUserDefinition){
         this.Ready = new Promise(async (makeReady) => {
             const config = {...this.config, ...mods}
-            const cliUser = await SalesforceDefaultCliUser.instance
+            const frontdoor = await SalesforceDefaultCliUser.instance
+                .then(instance => instance.info.result.url)
             if (config.strictPermissions){
                 //TODO
                 throw new Error('strict permissions flow not implementd yet')
@@ -79,9 +80,9 @@ export abstract class SalesforceUser {
             } else {
                 const sessionId = (await this.cached).cookies
                     .filter(cookie => cookie.name === 'sid' && 
-                        cliUser.info.result.url.includes(cookie.domain)
+                        frontdoor.includes(cookie.domain)
                     )[0].value
-                const instance = new URL (new URL(cliUser.info.result.url).origin)
+                const instance = new URL(frontdoor).origin
                 const frontDoor = {instance: instance, sessionId: sessionId}
                 this.api = await new SalesforceApi(frontDoor).Ready
             }
@@ -90,27 +91,28 @@ export abstract class SalesforceUser {
     }
 
     get cached() {
-        if (!SalesforceUser._cached.get(this.constructor.name)){
+        if (!SalesforceStandardUsers._cached.get(this.constructor.name)){
             return SalesforceDefaultCliUser.instance.then(cliUser => {
                 const users = new SOQLBuilder().crmUsersMatching(this.config)
                 return cliUser.api.query(users).then(result => {
                     const selected = (result as QueryResult<any>).records[0].Id
-                    SalesforceUser.uniquePool.add(selected)
-                    SalesforceUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
-                    return SalesforceUser._cached.get(this.constructor.name)
+                    SalesforceStandardUsers.uniquePool.add(selected)
+                    SalesforceStandardUsers._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
+                    return SalesforceStandardUsers._cached.get(this.constructor.name)
                 })
             })
-        } else return SalesforceUser._cached.get(this.constructor.name)
+        } else return SalesforceStandardUsers._cached.get(this.constructor.name)
     }
 
-    async use(page: Page): Promise<this> {
-        await page.context().addCookies((await this.cached).cookies)
-        this.ui = page
+    async use(browser: Browser): Promise<this> {
+        const context = await browser.newContext()
+        await context.addCookies((await this.cached).cookies)
+        this.ui = await context.newPage()
         return this
     }
 }
 
-export class EndUserExample extends SalesforceUser {
+export class EndUserExample extends SalesforceStandardUsers {
     config = { 
         details: {
             EmailPreferencesStayInTouchReminder: true,
@@ -123,7 +125,7 @@ export class EndUserExample extends SalesforceUser {
     }
 }
 
-export class EndUserExample2 extends SalesforceUser {
+export class EndUserExample2 extends SalesforceStandardUsers {
     config = { 
         details: {
             LocaleSidKey: 'en_AE'

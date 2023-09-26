@@ -47,7 +47,7 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
     private async parseFrontDoorData(): Promise<SalesforceFrontdoorData> {
         const loginUrl = new URL((await this.defaultUserData).result.url)
         return {
-            instance: new URL(loginUrl.origin),
+            instance: loginUrl.origin,
             sessionId: loginUrl.searchParams.get(SalesforceNavigator.SESSIONID_PARAM)
         }
     }

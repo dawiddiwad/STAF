@@ -22,7 +22,7 @@ export class SalesforceApi extends Api {
 		this.Ready = new Promise<this>((connect) => {
 			try {
                 this.conn = new Connection({			
-                    instanceUrl: frontdoorData.instance.toString(),
+                    instanceUrl: frontdoorData.instance,
                     sessionId: frontdoorData.sessionId,
                     version: this.version
                 });
