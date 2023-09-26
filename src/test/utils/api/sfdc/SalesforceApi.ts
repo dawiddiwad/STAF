@@ -1,9 +1,10 @@
-import { expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
 import { writeFile } from "fs/promises"
 import { RecordUiData, UiLayout } from "test/utils/api/sfdc/UiLayout";
 import { SalesforceFrontdoorData } from "test/utils/auth/Types";
 import { Api } from "../Api";
+import { SalesforceNavigator } from "test/utils/salesforce/Navigator";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {
@@ -193,18 +194,41 @@ export class SalesforceApi extends Api {
 		}
 	}
 
-	async validateVisibleRecordLayouts(recordId: string, options?: RecordUiData): Promise<void> {
+	async validateVisibleRecordLayouts(recordId: string, page?: Page, options?: RecordUiData): Promise<void> {
 		try {
 			const orgLayouts = this.readLayoutsFromOrg(recordId, options);
+			if (page && this.testInfo){
+				await Promise.all([
+					orgLayouts,
+					SalesforceNavigator.openResource(recordId, page)
+						.then( async () => {
+							await page.waitForLoadState('networkidle')
+							const screenshot = await page.screenshot({fullPage: true});
+  							await this.testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' })
+						})
+				]);
+			}
 			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Layouts validation via UI-API failed due to:\n${error}`);
 		}
 	}
 
-	async validateAvailableApps(): Promise<void> {
+	async validateAvailableApps(page?: Page): Promise<void> {
 		try {
 			const orgApps = this.readApps();
+			if (page && this.testInfo){
+				await Promise.all([
+					orgApps,
+					SalesforceNavigator.openHome(page).then(() => page.getByRole('button', { name: 'App Launcher' }).click()
+						.then(() => page.waitForResponse(/getAppLauncherMenuData/gm)
+							.then( async (response) => {
+								await response.ok()
+								const screenshot = await page.screenshot({fullPage: true});
+  								await this.testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' })
+					})))
+				])
+			}
 			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
 		} catch (error) {
 			throw new Error(`Apps validation via UI-API failed due to:\n${error}`);

@@ -1,0 +1,2325 @@
+{
+   "Compact": {
+      "Create": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Compact",
+         "mode": "Create",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": null,
+               "id": null,
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Owner",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "OwnerId",
+                                 "componentType": "Field",
+                                 "label": "Owner"
+                              }
+                           ],
+                           "lookupIdApiName": "OwnerId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 7,
+               "useHeading": false
+            }
+         ]
+      },
+      "Edit": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Compact",
+         "mode": "Edit",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": null,
+               "id": null,
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Owner",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "OwnerId",
+                                 "componentType": "Field",
+                                 "label": "Owner"
+                              }
+                           ],
+                           "lookupIdApiName": "OwnerId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 7,
+               "useHeading": false
+            }
+         ]
+      },
+      "View": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Compact",
+         "mode": "View",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": null,
+               "id": null,
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Owner",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "OwnerId",
+                                 "componentType": "Field",
+                                 "label": "Owner"
+                              }
+                           ],
+                           "lookupIdApiName": "OwnerId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 7,
+               "useHeading": false
+            }
+         ]
+      }
+   },
+   "Full": {
+      "Create": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Full",
+         "mode": "Create",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": false,
+               "columns": 2,
+               "heading": "Account Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Parent Account",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ParentId",
+                                 "componentType": "Field",
+                                 "label": "Parent Account ID"
+                              }
+                           ],
+                           "lookupIdApiName": "ParentId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Legal Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LegalName__c",
+                                 "componentType": "Field",
+                                 "label": "Legal Name"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Industry",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Industry__c",
+                                 "componentType": "Field",
+                                 "label": "Industry"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Category__c",
+                                 "componentType": "Field",
+                                 "label": "Category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Commercial Registration Number",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "tionNumber__c",
+                                 "componentType": "Field",
+                                 "label": "Commercial Registration Number"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Sub-category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "SubCategory__c",
+                                 "componentType": "Field",
+                                 "label": "Sub-category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Activities on Commercial Registration",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "on__c",
+                                 "componentType": "Field",
+                                 "label": "Activities on Commercial Registration"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 5,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "Description",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Description",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Description",
+                                 "componentType": "Field",
+                                 "label": "Account Description"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "New Section",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Manufacturing Footprint Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "rintLocation__c",
+                                 "componentType": "Field",
+                                 "label": "Manufacturing Footprint Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": false
+            },
+            {
+               "collapsible": false,
+               "columns": 2,
+               "heading": "Company Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Active in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ActiveInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Active in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Joint Venture?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsJointVenture__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Joint Venture?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Revenue",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualRevenue",
+                                 "componentType": "Field",
+                                 "label": "Annual Revenue"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Profit",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualProfit__c",
+                                 "componentType": "Field",
+                                 "label": "Annual Profit"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of retail stores in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "esInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Number of retail stores in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of Employees",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "NumberOfEmployees",
+                                 "componentType": "Field",
+                                 "label": "Number of Employees"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 4,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 2,
+               "heading": "Contact Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Global HQ Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Global_HQ__c",
+                                 "componentType": "Field",
+                                 "label": "Global HQ Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Region",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Region__c",
+                                 "componentType": "Field",
+                                 "label": "Region"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Operating Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ShippingStreet",
+                                 "componentType": "Field",
+                                 "label": "Operating Street"
+                              },
+                              {
+                                 "apiName": "ShippingState",
+                                 "componentType": "Field",
+                                 "label": "Operating State/Province"
+                              },
+                              {
+                                 "apiName": "",
+                                 "componentType": "Field",
+                                 "label": "Operating Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "ShippingCity",
+                                 "componentType": "Field",
+                                 "label": "Operating City"
+                              },
+                              {
+                                 "apiName": "ShippingCountry",
+                                 "componentType": "Field",
+                                 "label": "Operating Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Billing Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "BillingStreet",
+                                 "componentType": "Field",
+                                 "label": "Billing Street"
+                              },
+                              {
+                                 "apiName": "BillingState",
+                                 "componentType": "Field",
+                                 "label": "Billing State/Province"
+                              },
+                              {
+                                 "apiName": "BillingPostalCode",
+                                 "componentType": "Field",
+                                 "label": "Billing Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "BillingCity",
+                                 "componentType": "Field",
+                                 "label": "Billing City"
+                              },
+                              {
+                                 "apiName": "BillingCountry",
+                                 "componentType": "Field",
+                                 "label": "Billing Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 3,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 2,
+               "heading": "System Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Source",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AccountSource",
+                                 "componentType": "Field",
+                                 "label": "Source"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": true
+            }
+         ]
+      },
+      "Edit": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Full",
+         "mode": "Edit",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Account Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Parent Account",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ParentId",
+                                 "componentType": "Field",
+                                 "label": "Parent Account ID"
+                              }
+                           ],
+                           "lookupIdApiName": "ParentId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Legal Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LegalName__c",
+                                 "componentType": "Field",
+                                 "label": "Legal Name"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Industry",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Industry__c",
+                                 "componentType": "Field",
+                                 "label": "Industry"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Category__c",
+                                 "componentType": "Field",
+                                 "label": "Category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Commercial Registration Number",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "tionNumber__c",
+                                 "componentType": "Field",
+                                 "label": "Commercial Registration Number"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Sub-category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "SubCategory__c",
+                                 "componentType": "Field",
+                                 "label": "Sub-category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Activities on Commercial Registration",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "on__c",
+                                 "componentType": "Field",
+                                 "label": "Activities on Commercial Registration"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 5,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "Description",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Description",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Description",
+                                 "componentType": "Field",
+                                 "label": "Account Description"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": false
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "New Section",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Manufacturing Footprint Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "rintLocation__c",
+                                 "componentType": "Field",
+                                 "label": "Manufacturing Footprint Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": false
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Company Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Active in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ActiveInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Active in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Joint Venture?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsJointVenture__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Joint Venture?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Revenue",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualRevenue",
+                                 "componentType": "Field",
+                                 "label": "Annual Revenue"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Profit",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualProfit__c",
+                                 "componentType": "Field",
+                                 "label": "Annual Profit"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of retail stores in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "esInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Number of retail stores in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of Employees",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "NumberOfEmployees",
+                                 "componentType": "Field",
+                                 "label": "Number of Employees"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 4,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Contact Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Global HQ Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Global_HQ__c",
+                                 "componentType": "Field",
+                                 "label": "Global HQ Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Region",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Region__c",
+                                 "componentType": "Field",
+                                 "label": "Region"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Operating Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ShippingStreet",
+                                 "componentType": "Field",
+                                 "label": "Operating Street"
+                              },
+                              {
+                                 "apiName": "ShippingState",
+                                 "componentType": "Field",
+                                 "label": "Operating State/Province"
+                              },
+                              {
+                                 "apiName": "",
+                                 "componentType": "Field",
+                                 "label": "Operating Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "ShippingCity",
+                                 "componentType": "Field",
+                                 "label": "Operating City"
+                              },
+                              {
+                                 "apiName": "ShippingCountry",
+                                 "componentType": "Field",
+                                 "label": "Operating Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Billing Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "BillingStreet",
+                                 "componentType": "Field",
+                                 "label": "Billing Street"
+                              },
+                              {
+                                 "apiName": "BillingState",
+                                 "componentType": "Field",
+                                 "label": "Billing State/Province"
+                              },
+                              {
+                                 "apiName": "BillingPostalCode",
+                                 "componentType": "Field",
+                                 "label": "Billing Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "BillingCity",
+                                 "componentType": "Field",
+                                 "label": "Billing City"
+                              },
+                              {
+                                 "apiName": "BillingCountry",
+                                 "componentType": "Field",
+                                 "label": "Billing Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 3,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "System Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Owner",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Owner__c",
+                                 "componentType": "Field",
+                                 "label": "Owner"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Source",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AccountSource",
+                                 "componentType": "Field",
+                                 "label": "Source"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Created By",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "CreatedById",
+                                 "componentType": "Field",
+                                 "label": "Created By ID"
+                              },
+                              {
+                                 "apiName": "CreatedDate",
+                                 "componentType": "Field",
+                                 "label": "Created Date"
+                              }
+                           ],
+                           "lookupIdApiName": "CreatedById",
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Last Modified By",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LastModifiedById",
+                                 "componentType": "Field",
+                                 "label": "Last Modified By ID"
+                              },
+                              {
+                                 "apiName": "LastModifiedDate",
+                                 "componentType": "Field",
+                                 "label": "Last Modified Date"
+                              }
+                           ],
+                           "lookupIdApiName": "LastModifiedById",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 2,
+               "useHeading": true
+            }
+         ]
+      },
+      "View": {
+         "eTag": "",
+         "id": "",
+         "layoutType": "Full",
+         "mode": "View",
+         "objectApiName": "Account",
+         "recordTypeId": "",
+         "saveOptions": [],
+         "sections": [
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Account Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Account Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Name",
+                                 "componentType": "Field",
+                                 "label": "Account Name"
+                              }
+                           ],
+                           "lookupIdApiName": "Id",
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Parent Account",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ParentId",
+                                 "componentType": "Field",
+                                 "label": "Parent Account ID"
+                              }
+                           ],
+                           "lookupIdApiName": "ParentId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Legal Name",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LegalName__c",
+                                 "componentType": "Field",
+                                 "label": "Legal Name"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Industry",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Industry__c",
+                                 "componentType": "Field",
+                                 "label": "Industry"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Category__c",
+                                 "componentType": "Field",
+                                 "label": "Category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Record Type",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "RecordTypeId",
+                                 "componentType": "Field",
+                                 "label": "Record Type"
+                              }
+                           ],
+                           "lookupIdApiName": "RecordTypeId",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Commercial Registration Number",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "tionNumber__c",
+                                 "componentType": "Field",
+                                 "label": "Commercial Registration Number"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Sub-category",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "SubCategory__c",
+                                 "componentType": "Field",
+                                 "label": "Sub-category"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Activities on Commercial Registration",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "on__c",
+                                 "componentType": "Field",
+                                 "label": "Activities on Commercial Registration"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "",
+                           "layoutComponents": [
+                              {
+                                 "apiName": null,
+                                 "componentType": "EmptySpace"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 5,
+               "useHeading": true
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "Description",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Description",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Description",
+                                 "componentType": "Field",
+                                 "label": "Account Description"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": false
+            },
+            {
+               "collapsible": false,
+               "columns": 1,
+               "heading": "New Section",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Manufacturing Footprint Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "rintLocation__c",
+                                 "componentType": "Field",
+                                 "label": "Manufacturing Footprint Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 1,
+               "useHeading": false
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Company Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Active in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ActiveInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Active in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Joint Venture?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsJointVenture__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Joint Venture?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Owner?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOwner__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Owner?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Is it a Brand Operator?",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "IsBrandOperator__c",
+                                 "componentType": "Field",
+                                 "label": "Is it a Brand Operator?"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Revenue",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualRevenue",
+                                 "componentType": "Field",
+                                 "label": "Annual Revenue"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Annual Profit",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AnnualProfit__c",
+                                 "componentType": "Field",
+                                 "label": "Annual Profit"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of retail stores in KSA",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "esInKSA__c",
+                                 "componentType": "Field",
+                                 "label": "Number of retail stores in KSA"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Number of Employees",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "NumberOfEmployees",
+                                 "componentType": "Field",
+                                 "label": "Number of Employees"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 4,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "Contact Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Global HQ Location",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Global_HQ__c",
+                                 "componentType": "Field",
+                                 "label": "Global HQ Location"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": true,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Region",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Region__c",
+                                 "componentType": "Field",
+                                 "label": "Region"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Website",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Website",
+                                 "componentType": "Field",
+                                 "label": "Website"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Phone",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Phone",
+                                 "componentType": "Field",
+                                 "label": "Account Phone"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Operating Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "ShippingStreet",
+                                 "componentType": "Field",
+                                 "label": "Operating Street"
+                              },
+                              {
+                                 "apiName": "ShippingState",
+                                 "componentType": "Field",
+                                 "label": "Operating State/Province"
+                              },
+                              {
+                                 "apiName": "",
+                                 "componentType": "Field",
+                                 "label": "Operating Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "ShippingCity",
+                                 "componentType": "Field",
+                                 "label": "Operating City"
+                              },
+                              {
+                                 "apiName": "ShippingCountry",
+                                 "componentType": "Field",
+                                 "label": "Operating Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Billing Address",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "BillingStreet",
+                                 "componentType": "Field",
+                                 "label": "Billing Street"
+                              },
+                              {
+                                 "apiName": "BillingState",
+                                 "componentType": "Field",
+                                 "label": "Billing State/Province"
+                              },
+                              {
+                                 "apiName": "BillingPostalCode",
+                                 "componentType": "Field",
+                                 "label": "Billing Zip/Postal Code"
+                              },
+                              {
+                                 "apiName": "BillingCity",
+                                 "componentType": "Field",
+                                 "label": "Billing City"
+                              },
+                              {
+                                 "apiName": "BillingCountry",
+                                 "componentType": "Field",
+                                 "label": "Billing Country"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 3,
+               "useHeading": true
+            },
+            {
+               "collapsible": true,
+               "columns": 2,
+               "heading": "System Information",
+               "id": "",
+               "layoutRows": [
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Owner",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "Owner__c",
+                                 "componentType": "Field",
+                                 "label": "Owner"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": true,
+                           "editableForUpdate": true,
+                           "label": "Source",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "AccountSource",
+                                 "componentType": "Field",
+                                 "label": "Source"
+                              }
+                           ],
+                           "lookupIdApiName": null,
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  },
+                  {
+                     "layoutItems": [
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Created By",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "CreatedById",
+                                 "componentType": "Field",
+                                 "label": "Created By ID"
+                              },
+                              {
+                                 "apiName": "CreatedDate",
+                                 "componentType": "Field",
+                                 "label": "Created Date"
+                              }
+                           ],
+                           "lookupIdApiName": "CreatedById",
+                           "required": false,
+                           "sortable": false
+                        },
+                        {
+                           "editableForNew": false,
+                           "editableForUpdate": false,
+                           "label": "Last Modified By",
+                           "layoutComponents": [
+                              {
+                                 "apiName": "LastModifiedById",
+                                 "componentType": "Field",
+                                 "label": "Last Modified By ID"
+                              },
+                              {
+                                 "apiName": "LastModifiedDate",
+                                 "componentType": "Field",
+                                 "label": "Last Modified Date"
+                              }
+                           ],
+                           "lookupIdApiName": "LastModifiedById",
+                           "required": false,
+                           "sortable": false
+                        }
+                     ]
+                  }
+               ],
+               "rows": 2,
+               "useHeading": true
+            }
+         ]
+      }
+   }
+}

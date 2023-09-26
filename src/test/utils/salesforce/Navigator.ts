@@ -1,3 +1,6 @@
+import { Page } from "@playwright/test"
+import { SalesforceDefaultCliUser } from "../common/SalesforceUsers"
+
 export class SalesforceNavigator {
     static readonly PRODUCTION_LOGIN_URL = new URL('https://login.salesforce.com/')
     static readonly SANDBOX_LOGIN_URL = new URL('https://test.salesforce.com/')
@@ -26,5 +29,15 @@ export class SalesforceNavigator {
         url.searchParams.append(SalesforceNavigator.TARGET_ULR_PARAM, SalesforceNavigator.HOME_PATH)
         url.searchParams.append(SalesforceNavigator.RETURN_URL_PARAM, SalesforceNavigator.HOME_PATH)
         return url
+    }
+
+    static async openResource(resource: string, page: Page){
+        const origin = new URL((await SalesforceDefaultCliUser._instance).info.result.url).origin
+        return page.goto(`${origin}/${resource}`)
+    }
+
+    static async openHome(page: Page){
+        const origin = new URL((await SalesforceDefaultCliUser._instance).info.result.url).origin
+        return page.goto(origin)
     }
 }

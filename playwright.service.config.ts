@@ -1,9 +1,9 @@
 import { defineConfig } from '@playwright/test';
 import config from './playwright.config';
 import { config as envConfig } from "dotenv";
+import { EndUserExample, EndUserExample2, SalesforceDefaultCliUser } from 'test/utils/common/SalesforceUsers';
 
 envConfig();
-
 // Name the test run if it's not named yet.
 process.env.PLAYWRIGHT_SERVICE_RUN_ID = process.env.PLAYWRIGHT_SERVICE_RUN_ID || new Date().toISOString();
 
@@ -19,7 +19,7 @@ export default defineConfig({
     },
     reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
     testDir: './src/test/neom/',
-    grep: /@debug/gm,
+    grep: /@retail/gm,
     repeatEach: 1,
     retries: 0,
     use: { ...config.use,

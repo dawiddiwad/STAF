@@ -2,7 +2,7 @@ import { SfdcCtx } from "./context/SfdcCtx";
 import { User } from "./User";
 
 /**
- * @deprecated
+ * @deprecated use SalesforceObject
  */
 export abstract class Sobject {
     public readonly user: User;

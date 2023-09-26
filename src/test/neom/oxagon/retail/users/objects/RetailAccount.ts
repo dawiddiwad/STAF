@@ -1,9 +1,10 @@
-import { IsCreatableViaApi, Sobject } from "test/utils/common/Sobject";
+import { IsCreatableViaApi } from "test/utils/common/Sobject";
 import { RetailUser } from "../User";
 import { faker } from "@faker-js/faker";
 import { SuccessResult } from "jsforce/record-result";
+import { SalesforceObject } from "test/utils/common/SalesforceObject";
 
-export class RetailAccount extends Sobject implements IsCreatableViaApi{
+export class RetailAccount extends SalesforceObject implements IsCreatableViaApi{
     constructor(user: RetailUser){
         super(user)
     }
