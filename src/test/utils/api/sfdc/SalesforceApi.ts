@@ -201,11 +201,7 @@ export class SalesforceApi extends Api {
 				await Promise.all([
 					orgLayouts,
 					SalesforceNavigator.openResource(recordId, page)
-						.then( async () => {
-							await page.waitForLoadState('networkidle')
-							const screenshot = await page.screenshot({fullPage: true});
-  							await this.testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' })
-						})
+						.then(() => this.captureFullPageScreenshot(page))
 				]);
 			}
 			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
@@ -220,13 +216,10 @@ export class SalesforceApi extends Api {
 			if (page && this.testInfo){
 				await Promise.all([
 					orgApps,
-					SalesforceNavigator.openHome(page).then(() => page.getByRole('button', { name: 'App Launcher' }).click()
-						.then(() => page.waitForResponse(/getAppLauncherMenuData/gm)
-							.then( async (response) => {
-								await response.ok()
-								const screenshot = await page.screenshot({fullPage: true});
-  								await this.testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' })
-					})))
+					SalesforceNavigator.openHome(page)
+						.then(() => page.getByRole('button', { name: 'App Launcher' }).click()
+							.then(() => page.waitForResponse(/getAppLauncherMenuData/gm)
+								.then(() => this.captureScreenshot({page: page}))))
 				])
 			}
 			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
