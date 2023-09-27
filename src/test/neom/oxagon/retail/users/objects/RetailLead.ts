@@ -1,6 +1,5 @@
-import { SalesforceObject } from "test/utils/common/SalesforceObject";
+import { IsCreatableViaApi, SalesforceObject } from "test/utils/common/SalesforceObject";
 import { RetailUser } from "../User";
-import { IsCreatableViaApi } from "test/utils/common/Sobject";
 import { faker } from "@faker-js/faker";
 import { SuccessResult } from "jsforce";
 
