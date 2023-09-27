@@ -31,13 +31,13 @@ export class SalesforceNavigator {
         return url
     }
 
-    static async openResource(resource: string, page: Page){
+    static async openResource(resourcePath: string, page: Page){
         const origin = new URL((await SalesforceDefaultCliUser._instance).info.result.url).origin
-        return page.goto(`${origin}/${resource}`)
+        const resourceUrl = new URL(resourcePath, origin).toString()
+        return page.goto(resourceUrl)
     }
 
     static async openHome(page: Page){
-        const origin = new URL((await SalesforceDefaultCliUser._instance).info.result.url).origin
-        return page.goto(origin)
+        return SalesforceNavigator.openResource(SalesforceNavigator.HOME_PATH, page)
     }
 }
