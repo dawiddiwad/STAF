@@ -111,28 +111,3 @@ export abstract class SalesforceStandardUsers {
         return this
     }
 }
-
-export class EndUserExample extends SalesforceStandardUsers {
-    config = { 
-        details: {
-            EmailPreferencesStayInTouchReminder: true,
-            LocaleSidKey: 'en_AE'
-        }, 
-        permissionSets: ['marketing']
-    }
-    constructor(mods?: SalesforceUserDefinition){
-        super(mods)
-    }
-}
-
-export class EndUserExample2 extends SalesforceStandardUsers {
-    config = { 
-        details: {
-            LocaleSidKey: 'en_AE'
-        }, 
-        permissionSets: ['MEDSupportGroup']
-    }
-    constructor(mods?: SalesforceUserDefinition){
-        super(mods)
-    }
-}
