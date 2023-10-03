@@ -10,6 +10,31 @@ test.describe.parallel('@api @oxagon @retail layout validations', async () => {
         actor.api.testInfo = testInfo
     });
 
+    test('Contact', async() => {
+        let contactID;
+
+        await test.step('create Account record', async () => {
+            contactID = await actor.contact.createViaApi();
+        })
+
+        await test.step('validate layouts', async() => {
+            await actor.api.validateVisibleRecordLayouts(contactID, actor.ui)
+        })
+    })
+
+    test('Opportunity', async() => {
+        let opportunityID;
+
+        await test.step('create Opportunity record', async () => {
+            opportunityID = await actor.opportunity.createViaApi();
+        })
+
+        await test.step('validate layouts', async() => {
+            await actor.api.validateVisibleRecordLayouts(opportunityID, actor.ui)
+        })
+    })
+
+
     test('Account', async() => {
         let accountId;
 
