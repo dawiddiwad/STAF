@@ -8,9 +8,9 @@ export default defineConfig({
   timeout: 300000,
   reporter: [['html', { outputFolder: './src/test/playwright-report' }], ['list']],
   repeatEach: 1,
-  retries: 3,
+  retries: 0,
   workers: '50%',
-  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}{ext}',
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/[snapshot] {testFileName}{testName}{ext}',
   expect: {
     timeout: 20000
   },
