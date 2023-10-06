@@ -1,11 +1,3 @@
-.sf
-.env
-.sfdx
 .DS_STORE
 node_modules
-/test-results/
-/playwright/.cache/
-/src/test/playwright-report/
-playwright-report*
-debug*
-auth.json*
+.env

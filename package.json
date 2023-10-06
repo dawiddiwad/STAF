@@ -1,12 +1,9 @@
 {
-  "name": "staf",
-  "version": "0.1.0",
+  "name": "salesforce-test-automation-framework",
+  "version": "1.0.0",
   "description": "STAF - Salesforce test automation framework",
-  "scripts": {
-    "test": "npx playwright test --config=config/default.config.ts",
-    "test-api": "npx playwright test --config=config/neom-api.config.ts",
-    "test-e2e": "npx playwright test --config=config/neom-e2e.config.ts"
-  },
+  "author": "Dawid Dobrowolski SoftQA",
+  "license": "MIT",
   "keywords": [
     "salesforce",
     "test",
@@ -16,17 +13,29 @@
     "api",
     "ui"
   ],
-  "author": "Dawid Dobrowolski SoftQA",
-  "license": "MIT",
-  "dependencies": {
-    "@faker-js/faker": "^7.6.0",
-    "@playwright/test": "^1.38.0",
-    "dotenv": "^16.3.1",
-    "jsforce": "^1.11.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.9.5"
+  "scripts": {
+    "build": "tsup",
+    "test": "jest",
+    "prepare": "husky install"
   },
-"devDependencies": {
-  "@types/jsforce": "^1.11.2"
-}
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@playwright/test": "^1.38.0",
+    "jsforce": "^1.11.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.5",
+    "@types/jsforce": "^1.11.2",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "tsup": "^7.2.0",
+    "typescript": "^4.9.5"
+  }
 }
