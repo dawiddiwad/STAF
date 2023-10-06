@@ -4,6 +4,16 @@
   "description": "STAF - Salesforce Test Automation Framework",
   "author": "Dawid Dobrowolski SoftQA",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dawiddiwad/STAF.git"
+  },
+  "maintainers": [
+    {
+      "name": "Dawid Dobrowolski",
+      "email": "dawid89dobrowolski@gmail.com"
+    }
+  ],
   "keywords": [
     "salesforce",
     "test",
