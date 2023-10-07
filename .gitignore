@@ -1,5 +1,6 @@
 .sf
 .env
+*tgz
 .sfdx
 .DS_STORE
 node_modules
