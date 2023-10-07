@@ -64,7 +64,7 @@ __export(src_exports, {
   SalesforceLoginPage: () => SalesforceLoginPage,
   SalesforceNavigator: () => SalesforceNavigator,
   SalesforceObject: () => SalesforceObject,
-  SalesforceStandardUsers: () => SalesforceStandardUsers,
+  SalesforceStandardUser: () => SalesforceStandardUser,
   UiLayout: () => UiLayout
 });
 module.exports = __toCommonJS(src_exports);
@@ -347,7 +347,7 @@ var SalesforceDefaultCliUser = class _SalesforceDefaultCliUser {
     });
   }
 };
-var _SalesforceStandardUsers = class _SalesforceStandardUsers {
+var _SalesforceStandardUser = class _SalesforceStandardUser {
   constructor(mods) {
     this.Ready = new Promise((makeReady) => __async(this, null, function* () {
       this.config = __spreadValues(__spreadValues({}, this.config), mods);
@@ -362,18 +362,18 @@ var _SalesforceStandardUsers = class _SalesforceStandardUsers {
     }));
   }
   get cached() {
-    if (!_SalesforceStandardUsers._cached.get(this.constructor.name)) {
+    if (!_SalesforceStandardUser._cached.get(this.constructor.name)) {
       return SalesforceDefaultCliUser.instance.then((cliUser) => {
         const users = new SOQLBuilder().crmUsersMatching(this.config);
         return cliUser.api.query(users).then((result) => {
           const selected = result.records[0].Id;
-          _SalesforceStandardUsers.uniquePool.add(selected);
-          _SalesforceStandardUsers._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected));
-          return _SalesforceStandardUsers._cached.get(this.constructor.name);
+          _SalesforceStandardUser.uniquePool.add(selected);
+          _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected));
+          return _SalesforceStandardUser._cached.get(this.constructor.name);
         });
       });
     } else
-      return _SalesforceStandardUsers._cached.get(this.constructor.name);
+      return _SalesforceStandardUser._cached.get(this.constructor.name);
   }
   use(browser) {
     return __async(this, null, function* () {
@@ -384,9 +384,9 @@ var _SalesforceStandardUsers = class _SalesforceStandardUsers {
     });
   }
 };
-_SalesforceStandardUsers.uniquePool = /* @__PURE__ */ new Set();
-_SalesforceStandardUsers._cached = /* @__PURE__ */ new Map();
-var SalesforceStandardUsers = _SalesforceStandardUsers;
+_SalesforceStandardUser.uniquePool = /* @__PURE__ */ new Set();
+_SalesforceStandardUser._cached = /* @__PURE__ */ new Map();
+var SalesforceStandardUser = _SalesforceStandardUser;
 
 // src/common/SalesforceNavigator.ts
 var _SalesforceNavigator = class _SalesforceNavigator {
@@ -711,7 +711,7 @@ var SalesforceObject = class {
   SalesforceLoginPage,
   SalesforceNavigator,
   SalesforceObject,
-  SalesforceStandardUsers,
+  SalesforceStandardUser,
   UiLayout
 });
 //# sourceMappingURL=index.js.map
