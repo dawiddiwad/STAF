@@ -15,11 +15,11 @@ export interface SalesforceUserDefinition {
 export class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>
     private browser: Browser
+    private Ready: Promise<this>
     authorizationState: StorageState
     info: DefaultCliUserInfo
     ui: Page
     api: SalesforceApi
-    Ready: Promise<this>
 
     private constructor(authenticator: SalesforceAuthenticator){
         this.Ready = new Promise(async (makeReady) => {
@@ -56,8 +56,8 @@ export class SalesforceDefaultCliUser {
     }
 }
 
-export abstract class SalesforceStandardUsers {
-    private static uniquePool: Set<SalesforceStandardUsers> = new Set()
+export abstract class SalesforceStandardUser {
+    private static uniquePool: Set<SalesforceStandardUser> = new Set()
     private static _cached: Map<string, Promise<StorageState>> = new Map()
     abstract config: SalesforceUserDefinition
     ui: Page
@@ -81,17 +81,17 @@ export abstract class SalesforceStandardUsers {
     }
 
     get cached() {
-        if (!SalesforceStandardUsers._cached.get(this.constructor.name)){
+        if (!SalesforceStandardUser._cached.get(this.constructor.name)){
             return SalesforceDefaultCliUser.instance.then(cliUser => {
                 const users = new SOQLBuilder().crmUsersMatching(this.config)
                 return cliUser.api.query(users).then(result => {
                     const selected = (result as QueryResult<any>).records[0].Id
-                    SalesforceStandardUsers.uniquePool.add(selected)
-                    SalesforceStandardUsers._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
-                    return SalesforceStandardUsers._cached.get(this.constructor.name)
+                    SalesforceStandardUser.uniquePool.add(selected)
+                    SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
+                    return SalesforceStandardUser._cached.get(this.constructor.name)
                 })
             })
-        } else return SalesforceStandardUsers._cached.get(this.constructor.name)
+        } else return SalesforceStandardUser._cached.get(this.constructor.name)
     }
 
     async use(browser: Browser): Promise<this> {

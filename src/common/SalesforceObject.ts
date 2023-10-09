@@ -1,9 +1,9 @@
-import { SalesforceStandardUsers } from "common/SalesforceUsers";
+import { SalesforceStandardUser } from "common/SalesforceUsers";
 
 export abstract class SalesforceObject {
-    public readonly user: SalesforceStandardUsers;
+    public readonly user: SalesforceStandardUser;
 
-    constructor (user: SalesforceStandardUsers){
+    constructor (user: SalesforceStandardUser){
         this.user = user;
     }
 }

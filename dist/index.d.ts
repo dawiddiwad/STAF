@@ -148,16 +148,16 @@ interface SalesforceUserDefinition {
 declare class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>;
     private browser;
+    private Ready;
     authorizationState: StorageState;
     info: DefaultCliUserInfo;
     ui: Page;
     api: SalesforceApi;
-    Ready: Promise<this>;
     private constructor();
     static get instance(): Promise<SalesforceDefaultCliUser>;
     impersonateCrmUser(salesforceUserId: string): Promise<StorageState>;
 }
-declare abstract class SalesforceStandardUsers {
+declare abstract class SalesforceStandardUser {
     private static uniquePool;
     private static _cached;
     abstract config: SalesforceUserDefinition;
@@ -201,8 +201,8 @@ declare class SalesforceNavigator {
 }
 
 declare abstract class SalesforceObject {
-    readonly user: SalesforceStandardUsers;
-    constructor(user: SalesforceStandardUsers);
+    readonly user: SalesforceStandardUser;
+    constructor(user: SalesforceStandardUser);
 }
 interface IsCreatableViaApi {
     createViaApi: (data?: any) => Promise<string>;
@@ -225,4 +225,4 @@ declare class SalesforceLoginPage extends AbstractPage {
     loginUsing(credentials: UsernamePassword): Promise<StorageState>;
 }
 
-export { AbstractPage, Api, ApiGateway, DefaultCliUserInfo, IsCreatableViaApi, IsCreatableViaUi, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUsers, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword };
+export { AbstractPage, Api, ApiGateway, DefaultCliUserInfo, IsCreatableViaApi, IsCreatableViaUi, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword };
