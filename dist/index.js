@@ -150,10 +150,14 @@ var DefaultCliUserHandler = class {
   get defaultUserData() {
     try {
       if (!this._defaultUserData) {
-        this._defaultUserData = this.cli.exec({
-          cmd: "org open",
-          f: ["--json", "-r"]
-        });
+        if (!process.env.SFDX_DEFAULT_USER) {
+          this._defaultUserData = this.cli.exec({
+            cmd: "org open",
+            f: ["--json", "-r"]
+          });
+        } else {
+          this._defaultUserData = JSON.parse(process.env.SFDX_DEFAULT_USER);
+        }
       }
     } catch (error) {
       throw new Error(`unable to parse data for default cli user

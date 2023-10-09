@@ -29,10 +29,14 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
     get defaultUserData() {
         try {
             if (!this._defaultUserData){
-                this._defaultUserData = this.cli.exec({
-                    cmd: 'org open',
-                    f: ['--json', '-r']
-                }) as unknown as Promise<DefaultCliUserInfo>
+                if(!process.env.SFDX_DEFAULT_USER){
+                    this._defaultUserData = this.cli.exec({
+                        cmd: 'org open',
+                        f: ['--json', '-r']
+                    }) as unknown as Promise<DefaultCliUserInfo>
+                } else {
+                    this._defaultUserData = JSON.parse(process.env.SFDX_DEFAULT_USER)
+                }
             }
         } catch (error) {
             throw new Error(`unable to parse data for default cli user

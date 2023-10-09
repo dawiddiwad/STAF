@@ -15,11 +15,11 @@ export interface SalesforceUserDefinition {
 export class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>
     private browser: Browser
+    private Ready: Promise<this>
     authorizationState: StorageState
     info: DefaultCliUserInfo
     ui: Page
     api: SalesforceApi
-    Ready: Promise<this>
 
     private constructor(authenticator: SalesforceAuthenticator){
         this.Ready = new Promise(async (makeReady) => {

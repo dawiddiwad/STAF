@@ -148,11 +148,11 @@ interface SalesforceUserDefinition {
 declare class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>;
     private browser;
+    private Ready;
     authorizationState: StorageState;
     info: DefaultCliUserInfo;
     ui: Page;
     api: SalesforceApi;
-    Ready: Promise<this>;
     private constructor();
     static get instance(): Promise<SalesforceDefaultCliUser>;
     impersonateCrmUser(salesforceUserId: string): Promise<StorageState>;
