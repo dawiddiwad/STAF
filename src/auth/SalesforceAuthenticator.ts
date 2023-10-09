@@ -40,7 +40,6 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
             }
         } catch (error) {
             throw new Error(`unable to parse data for default cli user
-                \ndata recieved: ${JSON.stringify(this.defaultUserData)}
                 \ndue to:
                 \n${error}`);
         }

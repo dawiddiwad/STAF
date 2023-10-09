@@ -162,8 +162,6 @@ var DefaultCliUserHandler = class {
     } catch (error) {
       throw new Error(`unable to parse data for default cli user
                 
-data recieved: ${JSON.stringify(this.defaultUserData)}
-                
 due to:
                 
 ${error}`);
