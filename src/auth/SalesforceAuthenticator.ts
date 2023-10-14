@@ -29,13 +29,21 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
     get defaultUserData() {
         try {
             if (!this._defaultUserData){
-                if(!process.env.SFDX_DEFAULT_USER){
+                if(!process.env.CI){
                     this._defaultUserData = this.cli.exec({
                         cmd: 'org open',
                         f: ['--json', '-r']
                     }) as unknown as Promise<DefaultCliUserInfo>
                 } else {
-                    this._defaultUserData = JSON.parse(process.env.SFDX_DEFAULT_USER)
+                    this._defaultUserData = this.cli.exec({
+                        cmd: 'sf org login sfdx-url',
+                        f: ['--sfdx-url-file authFile.json', '-s']
+                    }).then(() => {
+                        return this.cli.exec({
+                            cmd: 'org open',
+                            f: ['--json', '-r']
+                        }) as unknown as Promise<DefaultCliUserInfo>
+                    })
                 }
             }
         } catch (error) {
