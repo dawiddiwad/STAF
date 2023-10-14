@@ -123,8 +123,8 @@ var DefaultCliUserHandler = class {
           });
         } else {
           this._defaultUserData = this.cli.exec({
-            cmd: "sf org login sfdx-url",
-            f: ["--sfdx-url-file authFile.json", "-s"]
+            cmd: "org login sfdx-url",
+            f: ["--sfdx-url-file authFile.json", "--set-default"]
           }).then(() => {
             return this.cli.exec({
               cmd: "org open",
