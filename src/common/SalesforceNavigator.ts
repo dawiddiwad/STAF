@@ -13,6 +13,10 @@ export class SalesforceNavigator {
     static readonly TARGET_ULR_PARAM = 'targetURL'
     static readonly RETURN_URL_PARAM = 'retURL'
     static readonly APP_OR_TAB_SET_ID_PARAM = 'tsid'
+    static readonly FLEXIPAGE_COMPONENT_TAG = 'flexipage-component2'
+    static readonly FLEXIPAGE_COMPONENT_ID = 'data-component-id'
+    static readonly FLEXIPAGE_FIELD_LABEL = '.test-id__field-label'
+    static readonly FLEXIPAGE_HIGHLIGHTS_ITEM = 'records-highlights-details-item'
 
     private constructor(){}
 

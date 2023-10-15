@@ -116,17 +116,13 @@ var DefaultCliUserHandler = class {
   get defaultUserData() {
     try {
       if (!this._defaultUserData) {
-        if (!process.env.SFDX_DEFAULT_USER) {
-          this._defaultUserData = this.cli.exec({
-            cmd: "org open",
-            f: ["--json", "-r"]
-          });
-        } else {
-          this._defaultUserData = JSON.parse(process.env.SFDX_DEFAULT_USER);
-        }
+        this._defaultUserData = this.cli.exec({
+          cmd: "org open",
+          f: ["--json", "-r"]
+        });
       }
     } catch (error) {
-      throw new Error(`unable to parse data for default cli user
+      throw new Error(`unable to authorize default cli user
                 
 due to:
                 
@@ -224,21 +220,19 @@ due to:
 ${error}`);
     }
   }
-  handleError(message) {
-    return JSON.stringify(this.parseResponse(message), null, 3);
-  }
   exec(_0) {
     return __async(this, arguments, function* ({ cmd, f: flags, log }) {
       const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ""}`;
       if (log)
         console.info(`Executing ${this.path} command: ${fullCommand}`);
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         exec(fullCommand, (error, stdout) => {
           if (error && error.code === 1) {
-            reject(new Error(`${this.path} command failed with exit code: ${error.code} caused by:
+            throw new Error(`${this.path} command failed with exit code: ${error.code} caused by:
 ${error.message}
+                        
 Error details:
-${JSON.stringify(this.parseResponse(stdout), null, 3)}`));
+${JSON.stringify(this.parseResponse(stdout), null, 3)}`);
           } else {
             resolve((flags == null ? void 0 : flags.includes("--json")) ? this.parseResponse(stdout) : stdout);
           }
@@ -397,6 +391,10 @@ _SalesforceNavigator.IMPERSONATION_USER_ID_PARAM = "suorgadminid";
 _SalesforceNavigator.TARGET_ULR_PARAM = "targetURL";
 _SalesforceNavigator.RETURN_URL_PARAM = "retURL";
 _SalesforceNavigator.APP_OR_TAB_SET_ID_PARAM = "tsid";
+_SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG = "flexipage-component2";
+_SalesforceNavigator.FLEXIPAGE_COMPONENT_ID = "data-component-id";
+_SalesforceNavigator.FLEXIPAGE_FIELD_LABEL = ".test-id__field-label";
+_SalesforceNavigator.FLEXIPAGE_HIGHLIGHTS_ITEM = "records-highlights-details-item";
 var SalesforceNavigator = _SalesforceNavigator;
 
 // src/api/SalesforceApi.ts
@@ -661,9 +659,102 @@ ${error}`);
 };
 
 // src/common/SalesforceObject.ts
+import { expect as expect2 } from "@playwright/test";
 var SalesforceObject = class {
   constructor(user) {
     this.user = user;
+  }
+  handleFlexipageSnapshots(parsedComponents, recordId) {
+    return __async(this, null, function* () {
+      yield this.scrollPageBottomTop();
+      try {
+        yield expect2(this.user.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+        yield this.user.api.testInfo.attach("screenshot", { body: yield this.user.ui.screenshot({ fullPage: true }), contentType: "image/png" });
+      } catch (error) {
+        yield this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
+      } finally {
+        yield this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
+        yield this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
+      }
+      expect2(parsedComponents).toMatchSnapshot();
+    });
+  }
+  scrollPageBottomTop() {
+    return __async(this, null, function* () {
+      yield this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      yield this.user.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
+    });
+  }
+  scrollPageTopBottom() {
+    return __async(this, null, function* () {
+      yield this.user.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
+      yield this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    });
+  }
+  validateVisibleFlexigpage(recordId) {
+    return __async(this, null, function* () {
+      yield SalesforceNavigator.openResource(recordId, this.user.ui);
+      yield this.user.ui.waitForLoadState("networkidle");
+      yield this.scrollPageBottomTop();
+      const snapshot = [];
+      yield this.user.ui.locator(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG).elementHandles().then((flexipageComponents) => __async(this, null, function* () {
+        for (const component of flexipageComponents) {
+          if (!(yield component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG)).length) {
+            const parseComponentId = () => __async(this, null, function* () {
+              yield component.scrollIntoViewIfNeeded();
+              yield this.user.ui.waitForLoadState("networkidle");
+              snapshot.push(`[FLEXCOMPONENT] ${yield component.getAttribute(SalesforceNavigator.FLEXIPAGE_COMPONENT_ID)}`);
+            });
+            const parseLabeledFields = () => __async(this, null, function* () {
+              for (const field of yield component.$$(SalesforceNavigator.FLEXIPAGE_FIELD_LABEL)) {
+                const label = yield field.innerText();
+                if (label) {
+                  snapshot.push(`[FIELD] ${label}`);
+                }
+              }
+            });
+            const parseHighlightFields = () => __async(this, null, function* () {
+              for (const field of yield component.$$(SalesforceNavigator.FLEXIPAGE_HIGHLIGHTS_ITEM)) {
+                for (const paragraph of yield field.$$("*")) {
+                  const title = yield paragraph.getAttribute("title");
+                  if (title && !title.toLowerCase().includes("preview") && !(yield paragraph.getAttribute("src"))) {
+                    snapshot.push(`[FIELD] ${title}`);
+                  }
+                }
+              }
+            });
+            const parseButtons = () => __async(this, null, function* () {
+              for (const action of yield component.$$("button")) {
+                const actionText = yield action.innerText();
+                if (actionText && !actionText.toLowerCase().includes("preview")) {
+                  snapshot.push(`[BUTTON] ${yield action.innerText()}`);
+                }
+              }
+            });
+            const parseLinks = () => __async(this, null, function* () {
+              for (const hyperlink of yield component.$$("a")) {
+                const title = yield hyperlink.getAttribute("title");
+                if (title && !(yield hyperlink.getAttribute("class")).toLowerCase().includes("outputlookuplink")) {
+                  snapshot.push(`[LINK] ${title}`);
+                }
+              }
+            });
+            const createSnapshotFooter = () => {
+              snapshot.push("------");
+              snapshot.push("");
+            };
+            yield parseComponentId();
+            yield parseLabeledFields();
+            yield parseHighlightFields();
+            yield parseButtons();
+            yield parseLinks();
+            createSnapshotFooter();
+          }
+        }
+      }));
+      const parsedComponents = snapshot.join("\n");
+      yield this.handleFlexipageSnapshots(parsedComponents, recordId);
+    });
   }
 };
 export {
