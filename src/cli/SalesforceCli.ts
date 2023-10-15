@@ -27,17 +27,14 @@ export class SalesforceCliHandler {
         }
     }
 
-    private handleError(message: string): string {
-        return JSON.stringify(this.parseResponse(message), null, 3)
-    }
-
     public async exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any> {
         const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ''}`
         if (log) console.info(`Executing ${this.path} command: ${fullCommand}`)
-        return new Promise<any>((resolve, reject) => {
+        return new Promise<any>((resolve) => {
             exec(fullCommand, (error, stdout) => {
                 if (error && error.code === 1) {
-                    reject(new Error(`${this.path} command failed with exit code: ${error.code} caused by:\n${error.message}\nError details:\n${JSON.stringify(this.parseResponse(stdout), null, 3)}`))
+                    throw new Error(`${this.path} command failed with exit code: ${error.code} caused by:\n${error.message}
+                        \nError details:\n${JSON.stringify(this.parseResponse(stdout), null, 3)}`)
                 } else {
                     resolve(flags?.includes('--json') ? this.parseResponse(stdout) : stdout)
                 }

@@ -104,7 +104,6 @@ declare class SalesforceCliHandler {
     constructor(path?: string);
     private pass;
     private parseResponse;
-    private handleError;
     exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any>;
 }
 
