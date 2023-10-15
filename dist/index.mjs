@@ -116,25 +116,13 @@ var DefaultCliUserHandler = class {
   get defaultUserData() {
     try {
       if (!this._defaultUserData) {
-        if (!process.env.CI) {
-          this._defaultUserData = this.cli.exec({
-            cmd: "org open",
-            f: ["--json", "-r"]
-          });
-        } else {
-          this._defaultUserData = this.cli.exec({
-            cmd: "org login sfdx-url",
-            f: ["--sfdx-url-file authFile.json", "--set-default"]
-          }).then(() => {
-            return this.cli.exec({
-              cmd: "org open",
-              f: ["--json", "-r"]
-            });
-          });
-        }
+        this._defaultUserData = this.cli.exec({
+          cmd: "org open",
+          f: ["--json", "-r"]
+        });
       }
     } catch (error) {
-      throw new Error(`unable to parse data for default cli user
+      throw new Error(`unable to authorize default cli user
                 
 due to:
                 
@@ -232,21 +220,19 @@ due to:
 ${error}`);
     }
   }
-  handleError(message) {
-    return JSON.stringify(this.parseResponse(message), null, 3);
-  }
   exec(_0) {
     return __async(this, arguments, function* ({ cmd, f: flags, log }) {
       const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ""}`;
       if (log)
         console.info(`Executing ${this.path} command: ${fullCommand}`);
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         exec(fullCommand, (error, stdout) => {
           if (error && error.code === 1) {
-            reject(new Error(`${this.path} command failed with exit code: ${error.code} caused by:
+            throw new Error(`${this.path} command failed with exit code: ${error.code} caused by:
 ${error.message}
+                        
 Error details:
-${JSON.stringify(this.parseResponse(stdout), null, 3)}`));
+${JSON.stringify(this.parseResponse(stdout), null, 3)}`);
           } else {
             resolve((flags == null ? void 0 : flags.includes("--json")) ? this.parseResponse(stdout) : stdout);
           }
