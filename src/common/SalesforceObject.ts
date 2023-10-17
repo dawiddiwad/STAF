@@ -33,7 +33,7 @@ export abstract class SalesforceObject {
         await this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     }
 
-    public async validateVisibleFlexigpage(recordId: string){
+    public async validateFlexiPageFor(recordId: string){
         await SalesforceNavigator.openResource(recordId, this.user.ui)
         await this.user.ui.waitForLoadState('networkidle')
         await this.scrollPageBottomTop()

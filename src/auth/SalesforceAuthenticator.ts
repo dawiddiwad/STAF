@@ -5,19 +5,6 @@ import { SalesforceApi } from "api/SalesforceApi"
 import { ApiGateway, DefaultCliUserInfo, SalesforceFrontdoorData, SalesforceInstance, StorageState, UiGateway, UsernamePassword } from "auth/AuthorizationTypes"
 import { SalesforceLoginPage } from "common/pages/SalesforceLoginPage"
 
-class storageStateHandler implements UiGateway {
-    private storageState: StorageState
-
-    constructor(storageState: StorageState){
-        this.storageState = storageState
-    }
-
-    async loginToUi(page: Page): Promise<StorageState> {
-        await page.context().addCookies(this.storageState.cookies)
-        return this.storageState
-    }
-}
-
 class DefaultCliUserHandler implements UiGateway, ApiGateway{
     private cli: SalesforceCliHandler
     _defaultUserData: Promise<DefaultCliUserInfo>
@@ -85,29 +72,7 @@ class CredentialsHandler implements UiGateway {
     }
 }
 
-class SessionIdHandler implements UiGateway, ApiGateway{
-    private frontDoor: SalesforceFrontdoorData
-
-    constructor(frontDoor: SalesforceFrontdoorData){
-        this.frontDoor = frontDoor
-    }
-
-    async loginToUi(page: Page): Promise<StorageState> {
-        const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontDoor)
-        await page.goto(loginUrl.toString())
-        return page.context().storageState()
-    }
-    
-    async loginToApi(): Promise<SalesforceApi> {
-        return new SalesforceApi(this.frontDoor).Ready
-    }
-}
-
 export class SalesforceAuthenticator {
-    usingStorageState = (data: StorageState) => 
-        new storageStateHandler(data)
-    usingSessionId = (data: SalesforceFrontdoorData) => 
-        new SessionIdHandler(data)
     usingCli = (handler: SalesforceCliHandler) => 
         new DefaultCliUserHandler(handler)
     usingCredentials = (credentials: UsernamePassword, instance: SalesforceInstance) => 
