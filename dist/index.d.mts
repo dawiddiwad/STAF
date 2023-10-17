@@ -107,11 +107,6 @@ declare class SalesforceCliHandler {
     exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any>;
 }
 
-declare class storageStateHandler implements UiGateway {
-    private storageState;
-    constructor(storageState: StorageState);
-    loginToUi(page: Page): Promise<StorageState>;
-}
 declare class DefaultCliUserHandler implements UiGateway, ApiGateway {
     private cli;
     _defaultUserData: Promise<DefaultCliUserInfo>;
@@ -127,15 +122,7 @@ declare class CredentialsHandler implements UiGateway {
     constructor(credentials: UsernamePassword, instance: SalesforceInstance);
     loginToUi(page: Page): Promise<StorageState>;
 }
-declare class SessionIdHandler implements UiGateway, ApiGateway {
-    private frontDoor;
-    constructor(frontDoor: SalesforceFrontdoorData);
-    loginToUi(page: Page): Promise<StorageState>;
-    loginToApi(): Promise<SalesforceApi>;
-}
 declare class SalesforceAuthenticator {
-    usingStorageState: (data: StorageState) => storageStateHandler;
-    usingSessionId: (data: SalesforceFrontdoorData) => SessionIdHandler;
     usingCli: (handler: SalesforceCliHandler) => DefaultCliUserHandler;
     usingCredentials: (credentials: UsernamePassword, instance: SalesforceInstance) => CredentialsHandler;
 }
@@ -209,7 +196,7 @@ declare abstract class SalesforceObject {
     private handleFlexipageSnapshots;
     scrollPageBottomTop(): Promise<void>;
     scrollPageTopBottom(): Promise<void>;
-    validateVisibleFlexigpage(recordId: string): Promise<void>;
+    validateFlexiPageFor(recordId: string): Promise<void>;
 }
 interface IsCreatableViaApi {
     createViaApi: (data?: any) => Promise<string>;

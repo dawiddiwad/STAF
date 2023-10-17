@@ -98,17 +98,6 @@ var SalesforceLoginPage = class extends AbstractPage {
 };
 
 // src/auth/SalesforceAuthenticator.ts
-var storageStateHandler = class {
-  constructor(storageState) {
-    this.storageState = storageState;
-  }
-  loginToUi(page) {
-    return __async(this, null, function* () {
-      yield page.context().addCookies(this.storageState.cookies);
-      return this.storageState;
-    });
-  }
-};
 var DefaultCliUserHandler = class {
   constructor(cliHandler) {
     this.cli = cliHandler;
@@ -171,27 +160,8 @@ var CredentialsHandler = class {
     });
   }
 };
-var SessionIdHandler = class {
-  constructor(frontDoor) {
-    this.frontDoor = frontDoor;
-  }
-  loginToUi(page) {
-    return __async(this, null, function* () {
-      const loginUrl = SalesforceNavigator.buildLoginUrl(this.frontDoor);
-      yield page.goto(loginUrl.toString());
-      return page.context().storageState();
-    });
-  }
-  loginToApi() {
-    return __async(this, null, function* () {
-      return new SalesforceApi(this.frontDoor).Ready;
-    });
-  }
-};
 var SalesforceAuthenticator = class {
   constructor() {
-    this.usingStorageState = (data) => new storageStateHandler(data);
-    this.usingSessionId = (data) => new SessionIdHandler(data);
     this.usingCli = (handler) => new DefaultCliUserHandler(handler);
     this.usingCredentials = (credentials, instance) => new CredentialsHandler(credentials, instance);
   }
@@ -691,7 +661,7 @@ var SalesforceObject = class {
       yield this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
     });
   }
-  validateVisibleFlexigpage(recordId) {
+  validateFlexiPageFor(recordId) {
     return __async(this, null, function* () {
       yield SalesforceNavigator.openResource(recordId, this.user.ui);
       yield this.user.ui.waitForLoadState("networkidle");
