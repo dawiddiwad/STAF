@@ -37,24 +37,10 @@ var __async = (__this, __arguments, generator) => {
 
 // src/api/Api.ts
 var Api = class {
-  captureScreenshot(options) {
-    return __async(this, null, function* () {
-      yield options.page.waitForLoadState("networkidle");
-      const screenshot = yield options.page.screenshot({ fullPage: options.fullPage });
-      yield this.testInfo.attach("screenshot", { body: screenshot, contentType: "image/png" });
-    });
-  }
-  captureFullPageScreenshot(page) {
-    return __async(this, null, function* () {
-      yield page.waitForLoadState("networkidle");
-      yield page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-      yield page.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
-      yield this.captureScreenshot({ page, fullPage: true });
-    });
-  }
 };
 
 // src/api/SalesforceApi.ts
+import { expect } from "@playwright/test";
 import { Connection } from "jsforce";
 
 // src/api/UiLayout.ts
@@ -73,6 +59,25 @@ var AbstractPage = class {
   constructor(page) {
     this.ui = page;
   }
+  attachScreenshotToTestInfo(screenshot, testInfo) {
+    return __async(this, null, function* () {
+      yield testInfo.attach("screenshot", { body: screenshot, contentType: "image/png" });
+    });
+  }
+  captureScreenshot(options) {
+    return __async(this, null, function* () {
+      yield this.ui.waitForLoadState("networkidle");
+      return this.ui.screenshot({ fullPage: options.fullPage });
+    });
+  }
+  captureFullPageScreenshot() {
+    return __async(this, null, function* () {
+      yield this.ui.waitForLoadState("networkidle");
+      yield this.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      yield this.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
+      return this.captureScreenshot({ fullPage: true });
+    });
+  }
   scrollPageBottomTop() {
     return __async(this, null, function* () {
       yield this.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
@@ -87,8 +92,12 @@ var AbstractPage = class {
   }
 };
 
+// src/common/pages/SalesforcePage.ts
+var SalesforcePage = class extends AbstractPage {
+};
+
 // src/common/pages/SalesforceLoginPage.ts
-var SalesforceLoginPage = class extends AbstractPage {
+var SalesforceLoginPage = class extends SalesforcePage {
   constructor(page, instance) {
     super(page);
     this.username = this.ui.getByLabel("Username");
@@ -568,34 +577,47 @@ ${result.exceptionStackTrace}`);
         return result;
     });
   }
-  parsedRecordLayouts(recordId, page, options) {
+  validateRecordLayoutsFor(recordId, page, options) {
     return __async(this, null, function* () {
       try {
         const orgLayouts = this.readLayoutsFromOrg(recordId, options);
         if (page && this.testInfo) {
           yield Promise.all([
             orgLayouts,
-            SalesforceNavigator.openResource(recordId, page).then(() => this.captureFullPageScreenshot(page))
+            SalesforceNavigator.openResource(recordId, page).then(() => __async(this, null, function* () {
+              const currentPage = new SalesforcePage(page);
+              yield currentPage.attachScreenshotToTestInfo(
+                yield currentPage.captureFullPageScreenshot(),
+                this.testInfo
+              );
+            }))
           ]);
         }
-        return JSON.stringify(yield orgLayouts, null, 3);
+        expect(JSON.stringify(yield orgLayouts, null, 3)).toMatchSnapshot();
       } catch (error) {
         throw new Error(`Layouts validation via UI-API failed due to:
 ${error}`);
       }
     });
   }
-  parsedAppsAndTabsFor(page) {
+  validateAppsAndTabsFor(page) {
     return __async(this, null, function* () {
       try {
         const orgApps = this.readApps();
         if (page && this.testInfo) {
           yield Promise.all([
             orgApps,
-            SalesforceNavigator.openHome(page).then(() => page.getByRole("button", { name: "App Launcher" }).click().then(() => page.waitForResponse(/getAppLauncherMenuData/gm).then(() => this.captureScreenshot({ page }))))
+            SalesforceNavigator.openHome(page).then(() => __async(this, null, function* () {
+              yield page.getByRole("button", { name: "App Launcher" }).click();
+              const currentPage = new SalesforcePage(page);
+              yield currentPage.attachScreenshotToTestInfo(
+                yield currentPage.captureScreenshot({ fullPage: false }),
+                this.testInfo
+              );
+            }))
           ]);
         }
-        return JSON.stringify(yield orgApps, null, 3);
+        expect(JSON.stringify(yield orgApps, null, 3)).toMatchSnapshot;
       } catch (error) {
         throw new Error(`Apps validation via UI-API failed due to:
 ${error}`);
@@ -605,10 +627,10 @@ ${error}`);
 };
 
 // src/common/SalesforceObject.ts
-import { expect } from "@playwright/test";
+import { expect as expect2 } from "@playwright/test";
 
 // src/common/pages/FlexiPage.ts
-var FlexiPage = class extends AbstractPage {
+var FlexiPage = class extends SalesforcePage {
   getComponentsFor(recordId) {
     return __async(this, null, function* () {
       yield SalesforceNavigator.openResource(recordId, this.ui);
@@ -680,20 +702,22 @@ var SalesforceObject = class {
   constructor(user) {
     this.user = user;
     this.flexipage = {
-      parsedComponentsFor: (recordId) => __async(this, null, function* () {
+      validateComponentsFor: (recordId) => __async(this, null, function* () {
         const flexipage = new FlexiPage(this.user.ui);
         const parsedComponents = yield flexipage.getComponentsFor(recordId);
-        try {
-          yield flexipage.scrollPageBottomTop();
-          yield expect(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
-          yield this.user.api.testInfo.attach("screenshot", { body: yield flexipage.ui.screenshot({ fullPage: true }), contentType: "image/png" });
-        } catch (error) {
-          yield this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
-        } finally {
-          yield this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
-          yield this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
-          return parsedComponents;
+        if (this.user.api.testInfo) {
+          try {
+            yield flexipage.scrollPageBottomTop();
+            yield expect2(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+            yield this.user.api.testInfo.attach("screenshot", { body: yield flexipage.ui.screenshot({ fullPage: true }), contentType: "image/png" });
+          } catch (error) {
+            yield this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
+          } finally {
+            yield this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
+            yield this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
+          }
         }
+        expect2(parsedComponents).toMatchSnapshot();
       })
     };
   }

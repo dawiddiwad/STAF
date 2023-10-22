@@ -1,8 +1,8 @@
 import { Page } from "@playwright/test";
-import { AbstractPage } from "common/pages/AbstractPage";
 import { StorageState, UsernamePassword } from "auth/AuthorizationTypes";
+import { SalesforcePage } from "./SalesforcePage";
 
-export class SalesforceLoginPage extends AbstractPage {
+export class SalesforceLoginPage extends SalesforcePage {
     readonly instance: URL
     readonly username = this.ui.getByLabel('Username')
     readonly password = this.ui.getByLabel('Password')

@@ -5,11 +5,6 @@ import * as playwright_core from 'playwright-core';
 declare abstract class Api {
     testInfo: TestInfo;
     abstract Ready: Promise<Api>;
-    protected captureScreenshot(options: {
-        page: Page;
-        fullPage?: boolean;
-    }): Promise<void>;
-    protected captureFullPageScreenshot(page: Page): Promise<void>;
 }
 
 interface RecordUiData {
@@ -87,8 +82,8 @@ declare class SalesforceApi extends Api {
     read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]>;
     query(soql: string): Promise<QueryResult<unknown>>;
     executeApex(apexBody: string): Promise<ExecuteAnonymousResult>;
-    parsedRecordLayouts(recordId: string, page?: Page, options?: RecordUiData): Promise<string>;
-    parsedAppsAndTabsFor(page?: Page): Promise<string>;
+    validateRecordLayoutsFor(recordId: string, page?: Page, options?: RecordUiData): Promise<void>;
+    validateAppsAndTabsFor(page?: Page): Promise<void>;
 }
 
 interface SalesforceCliParameters {
@@ -190,7 +185,7 @@ declare class SalesforceNavigator {
 declare abstract class SalesforceObject {
     readonly user: SalesforceStandardUser;
     flexipage: {
-        parsedComponentsFor: (recordId: string) => Promise<string>;
+        validateComponentsFor: (recordId: string) => Promise<void>;
     };
     constructor(user: SalesforceStandardUser);
 }
@@ -204,11 +199,19 @@ interface IsCreatableViaUi {
 declare abstract class AbstractPage {
     ui: Page;
     constructor(page: Page);
+    attachScreenshotToTestInfo(screenshot: Buffer, testInfo: TestInfo): Promise<void>;
+    captureScreenshot(options: {
+        fullPage?: boolean;
+    }): Promise<Buffer>;
+    captureFullPageScreenshot(): Promise<Buffer>;
     scrollPageBottomTop(): Promise<void>;
     scrollPageTopBottom(): Promise<void>;
 }
 
-declare class SalesforceLoginPage extends AbstractPage {
+declare class SalesforcePage extends AbstractPage {
+}
+
+declare class SalesforceLoginPage extends SalesforcePage {
     readonly instance: URL;
     readonly username: playwright_core.Locator;
     readonly password: playwright_core.Locator;

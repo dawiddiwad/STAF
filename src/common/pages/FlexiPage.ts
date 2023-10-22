@@ -1,8 +1,7 @@
-import { expect } from "@playwright/test";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
-import { AbstractPage } from "./AbstractPage";
+import { SalesforcePage } from "./SalesforcePage";
 
-export class FlexiPage extends AbstractPage {
+export class FlexiPage extends SalesforcePage {
     public async getComponentsFor(recordId: string): Promise<string> {
         await SalesforceNavigator.openResource(recordId, this.ui)
         await this.ui.waitForResponse(/ui-force-components-controllers-slds/);
