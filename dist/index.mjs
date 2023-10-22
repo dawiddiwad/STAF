@@ -55,9 +55,7 @@ var Api = class {
 };
 
 // src/api/SalesforceApi.ts
-import { expect } from "@playwright/test";
 import { Connection } from "jsforce";
-import { writeFile } from "fs/promises";
 
 // src/api/UiLayout.ts
 var UiLayout = class {
@@ -73,7 +71,19 @@ import { chromium } from "@playwright/test";
 // src/common/pages/AbstractPage.ts
 var AbstractPage = class {
   constructor(page) {
-    this.page = page;
+    this.ui = page;
+  }
+  scrollPageBottomTop() {
+    return __async(this, null, function* () {
+      yield this.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+      yield this.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
+    });
+  }
+  scrollPageTopBottom() {
+    return __async(this, null, function* () {
+      yield this.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
+      yield this.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    });
   }
 };
 
@@ -81,18 +91,18 @@ var AbstractPage = class {
 var SalesforceLoginPage = class extends AbstractPage {
   constructor(page, instance) {
     super(page);
-    this.username = this.page.getByLabel("Username");
-    this.password = this.page.getByLabel("Password");
-    this.loginButton = this.page.getByRole("button").getByText("Log In");
+    this.username = this.ui.getByLabel("Username");
+    this.password = this.ui.getByLabel("Password");
+    this.loginButton = this.ui.getByRole("button").getByText("Log In");
     this.instance = instance;
   }
   loginUsing(credentials) {
     return __async(this, null, function* () {
-      yield this.page.goto(this.instance.toString());
+      yield this.ui.goto(this.instance.toString());
       yield this.username.fill(credentials.username);
       yield this.password.fill(credentials.password);
       yield this.loginButton.click();
-      return this.page.context().storageState();
+      return this.ui.context().storageState();
     });
   }
 };
@@ -400,6 +410,82 @@ ${error}`);
       JSON.stringify(layoutData, null, 3).replace(sfdcEtag, "").replace(sfdcLongId, "").replace(filter, "").replace(placeholder, "")
     );
   }
+  readRecordUi(recordId, options) {
+    return __async(this, null, function* () {
+      options = options ? options : {
+        Full: { Edit: true, Create: true, View: true },
+        Compact: { Edit: true, Create: true, View: true }
+      };
+      const types = () => {
+        let types2 = "";
+        (options == null ? void 0 : options.Full) ? types2 += "Full" : null;
+        (options == null ? void 0 : options.Compact) ? types2 ? types2 += ",Compact" : types2 += "Compact" : null;
+        if (!types2)
+          throw new Error(`missing layout types for ui-record request:
+${JSON.stringify(options)}`);
+        else
+          return types2;
+      };
+      const modes = () => {
+        let modes2 = "";
+        if (options && options.Full) {
+          if (!options.Full) {
+            options.Full = options.Compact;
+          }
+          if (options.Full.Create) {
+            modes2 += "Create";
+          }
+          if (options.Full.Edit) {
+            modes2 += modes2 ? ",Edit" : "Edit";
+          }
+          if (options.Full.View) {
+            modes2 += modes2 ? ",View" : "View";
+          }
+        }
+        if (!modes2)
+          throw new Error(`missing layout modes for ui-record request:
+${JSON.stringify(options)}`);
+        else
+          return modes2;
+      };
+      const resource = `/ui-api/record-ui/${recordId}?layoutTypes=${types()}&modes=${modes()}`;
+      try {
+        return this.conn.request({ method: "Get", url: resource });
+      } catch (error) {
+        throw new Error(`unable to retrieve ${resource} due to:
+${error}`);
+      }
+    });
+  }
+  readApps(formFactor, userCustomizations) {
+    return __async(this, null, function* () {
+      const formFactorParam = formFactor ? `?formFactor=${formFactor}` : `?formFactor=Large`;
+      const userCustomizationsParam = userCustomizations ? `&userCustomizations=${userCustomizations}` : "";
+      const resource = `/ui-api/apps${formFactorParam}${userCustomizationsParam}`;
+      try {
+        let result = yield this.conn.request({ method: "Get", url: resource });
+        const sfdcEtag = /[a-zA-Z0-9]{32}/gm;
+        const sfdcLongId = /[a-zA-Z0-9]{18}/gm;
+        const url = /^.*\bhttps\b.*$/gm;
+        return JSON.parse(JSON.stringify(result, null, 3).replace(sfdcEtag, "").replace(sfdcLongId, "").replace(url, ""));
+      } catch (error) {
+        throw new Error(`unable to fetch available Apps due to:
+${error}`);
+      }
+    });
+  }
+  readLayoutsFromOrg(recordId, options) {
+    return __async(this, null, function* () {
+      try {
+        let data = Object.values((yield this.readRecordUi(recordId, options)).layouts)[0];
+        data = this.parseLayoutFromLayoutResponse(data);
+        return new UiLayout(Object.values(data)[0]);
+      } catch (error) {
+        throw new Error(`Unable to read Layout data from org due to:
+${error}`);
+      }
+    });
+  }
   create(sobject, data) {
     return __async(this, null, function* () {
       try {
@@ -482,106 +568,7 @@ ${result.exceptionStackTrace}`);
         return result;
     });
   }
-  readRecordUi(recordId, options) {
-    return __async(this, null, function* () {
-      options = options ? options : {
-        Full: { Edit: true, Create: true, View: true },
-        Compact: { Edit: true, Create: true, View: true }
-      };
-      const types = () => {
-        let types2 = "";
-        (options == null ? void 0 : options.Full) ? types2 += "Full" : null;
-        (options == null ? void 0 : options.Compact) ? types2 ? types2 += ",Compact" : types2 += "Compact" : null;
-        if (!types2)
-          throw new Error(`missing layout types for ui-record request:
-${JSON.stringify(options)}`);
-        else
-          return types2;
-      };
-      const modes = () => {
-        let modes2 = "";
-        if (options && options.Full) {
-          if (!options.Full) {
-            options.Full = options.Compact;
-          }
-          if (options.Full.Create) {
-            modes2 += "Create";
-          }
-          if (options.Full.Edit) {
-            modes2 += modes2 ? ",Edit" : "Edit";
-          }
-          if (options.Full.View) {
-            modes2 += modes2 ? ",View" : "View";
-          }
-        }
-        if (!modes2)
-          throw new Error(`missing layout modes for ui-record request:
-${JSON.stringify(options)}`);
-        else
-          return modes2;
-      };
-      const resource = `/ui-api/record-ui/${recordId}?layoutTypes=${types()}&modes=${modes()}`;
-      try {
-        return this.conn.request({ method: "Get", url: resource });
-      } catch (error) {
-        throw new Error(`unable to retrieve ${resource} due to:
-${error}`);
-      }
-    });
-  }
-  readApps(formFactor, userCustomizations) {
-    return __async(this, null, function* () {
-      const formFactorParam = formFactor ? `?formFactor=${formFactor}` : `?formFactor=Large`;
-      const userCustomizationsParam = userCustomizations ? `&userCustomizations=${userCustomizations}` : "";
-      const resource = `/ui-api/apps${formFactorParam}${userCustomizationsParam}`;
-      try {
-        let result = yield this.conn.request({ method: "Get", url: resource });
-        const sfdcEtag = /[a-zA-Z0-9]{32}/gm;
-        const sfdcLongId = /[a-zA-Z0-9]{18}/gm;
-        const url = /^.*\bhttps\b.*$/gm;
-        return JSON.parse(JSON.stringify(result, null, 3).replace(sfdcEtag, "").replace(sfdcLongId, "").replace(url, ""));
-      } catch (error) {
-        throw new Error(`unable to fetch available Apps due to:
-${error}`);
-      }
-    });
-  }
-  readRelatedListsUi(object, recordTypeId) {
-    return __async(this, null, function* () {
-      recordTypeId = recordTypeId ? `?recordTypeId=${recordTypeId}` : "";
-      const resource = `/ui-api/related-list-info/${object}${recordTypeId}`;
-      try {
-        return this.conn.request({ method: "Get", url: resource });
-      } catch (error) {
-        throw new Error(`unable to retrieve ${resource} due to:
-${error}`);
-      }
-    });
-  }
-  readLayoutsFromOrg(recordId, options) {
-    return __async(this, null, function* () {
-      try {
-        let data = Object.values((yield this.readRecordUi(recordId, options)).layouts)[0];
-        data = this.parseLayoutFromLayoutResponse(data);
-        return new UiLayout(Object.values(data)[0]);
-      } catch (error) {
-        throw new Error(`Unable to read Layout data from org due to:
-${error}`);
-      }
-    });
-  }
-  writeLayoutSectionsToFileFromOrg(filePath, recordId, dataToFetch) {
-    return __async(this, null, function* () {
-      try {
-        const layoutData = yield this.readLayoutsFromOrg(recordId, dataToFetch);
-        yield writeFile(filePath, JSON.stringify(layoutData, null, 1));
-      } catch (error) {
-        throw new Error(`Unable to write Layout data to file due to:
-${error}`);
-      }
-    });
-  }
-  validateVisibleRecordLayouts(recordId, page, options) {
+  parsedRecordLayouts(recordId, page, options) {
     return __async(this, null, function* () {
       try {
         const orgLayouts = this.readLayoutsFromOrg(recordId, options);
@@ -591,14 +578,14 @@ ${error}`);
             SalesforceNavigator.openResource(recordId, page).then(() => this.captureFullPageScreenshot(page))
           ]);
         }
-        expect(JSON.stringify(yield orgLayouts, null, 3)).toMatchSnapshot();
+        return JSON.stringify(yield orgLayouts, null, 3);
       } catch (error) {
         throw new Error(`Layouts validation via UI-API failed due to:
 ${error}`);
       }
     });
   }
-  validateAvailableApps(page) {
+  parsedAppsAndTabsFor(page) {
     return __async(this, null, function* () {
       try {
         const orgApps = this.readApps();
@@ -608,20 +595,9 @@ ${error}`);
             SalesforceNavigator.openHome(page).then(() => page.getByRole("button", { name: "App Launcher" }).click().then(() => page.waitForResponse(/getAppLauncherMenuData/gm).then(() => this.captureScreenshot({ page }))))
           ]);
         }
-        expect(JSON.stringify(yield orgApps, null, 3)).toMatchSnapshot();
+        return JSON.stringify(yield orgApps, null, 3);
       } catch (error) {
         throw new Error(`Apps validation via UI-API failed due to:
-${error}`);
-      }
-    });
-  }
-  writeAppsToFileFromOrg(filePath) {
-    return __async(this, null, function* () {
-      try {
-        const appsData = yield this.readApps();
-        yield writeFile(filePath, JSON.stringify(appsData, null, 1));
-      } catch (error) {
-        throw new Error(`Unable to write Apps data to file due to:
 ${error}`);
       }
     });
@@ -629,50 +605,22 @@ ${error}`);
 };
 
 // src/common/SalesforceObject.ts
-import { expect as expect2 } from "@playwright/test";
-var SalesforceObject = class {
-  constructor(user) {
-    this.user = user;
-  }
-  handleFlexipageSnapshots(parsedComponents, recordId) {
+import { expect } from "@playwright/test";
+
+// src/common/pages/FlexiPage.ts
+var FlexiPage = class extends AbstractPage {
+  getComponentsFor(recordId) {
     return __async(this, null, function* () {
-      yield this.scrollPageBottomTop();
-      try {
-        yield expect2(this.user.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
-        yield this.user.api.testInfo.attach("screenshot", { body: yield this.user.ui.screenshot({ fullPage: true }), contentType: "image/png" });
-      } catch (error) {
-        yield this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
-      } finally {
-        yield this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
-        yield this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
-      }
-      expect2(parsedComponents).toMatchSnapshot();
-    });
-  }
-  scrollPageBottomTop() {
-    return __async(this, null, function* () {
-      yield this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-      yield this.user.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
-    });
-  }
-  scrollPageTopBottom() {
-    return __async(this, null, function* () {
-      yield this.user.ui.evaluate(() => window.scrollTo(document.documentElement.scrollHeight, 0));
-      yield this.user.ui.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-    });
-  }
-  validateFlexiPageFor(recordId) {
-    return __async(this, null, function* () {
-      yield SalesforceNavigator.openResource(recordId, this.user.ui);
-      yield this.user.ui.waitForLoadState("networkidle");
+      yield SalesforceNavigator.openResource(recordId, this.ui);
+      yield this.ui.waitForResponse(/ui-force-components-controllers-slds/);
       yield this.scrollPageBottomTop();
       const snapshot = [];
-      yield this.user.ui.locator(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG).elementHandles().then((flexipageComponents) => __async(this, null, function* () {
+      yield this.ui.locator(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG).elementHandles().then((flexipageComponents) => __async(this, null, function* () {
         for (const component of flexipageComponents) {
           if (!(yield component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG)).length) {
             const parseComponentId = () => __async(this, null, function* () {
               yield component.scrollIntoViewIfNeeded();
-              yield this.user.ui.waitForLoadState("networkidle");
+              yield this.ui.waitForLoadState("networkidle");
               snapshot.push(`[FLEXCOMPONENT] ${yield component.getAttribute(SalesforceNavigator.FLEXIPAGE_COMPONENT_ID)}`);
             });
             const parseLabeledFields = () => __async(this, null, function* () {
@@ -722,9 +670,32 @@ var SalesforceObject = class {
           }
         }
       }));
-      const parsedComponents = snapshot.join("\n");
-      yield this.handleFlexipageSnapshots(parsedComponents, recordId);
+      return snapshot.join("\n");
     });
+  }
+};
+
+// src/common/SalesforceObject.ts
+var SalesforceObject = class {
+  constructor(user) {
+    this.user = user;
+    this.flexipage = {
+      parsedComponentsFor: (recordId) => __async(this, null, function* () {
+        const flexipage = new FlexiPage(this.user.ui);
+        const parsedComponents = yield flexipage.getComponentsFor(recordId);
+        try {
+          yield flexipage.scrollPageBottomTop();
+          yield expect(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+          yield this.user.api.testInfo.attach("screenshot", { body: yield flexipage.ui.screenshot({ fullPage: true }), contentType: "image/png" });
+        } catch (error) {
+          yield this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
+        } finally {
+          yield this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
+          yield this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
+          return parsedComponents;
+        }
+      })
+    };
   }
 };
 export {
