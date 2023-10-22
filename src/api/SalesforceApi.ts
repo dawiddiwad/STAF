@@ -1,9 +1,10 @@
-import { Page } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
 import { RecordUiData, UiLayout } from "api/UiLayout";
 import { SalesforceFrontdoorData } from "auth/AuthorizationTypes";
 import { Api } from "api/Api";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
+import { SalesforcePage } from "common/pages/SalesforcePage";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {
@@ -174,35 +175,44 @@ export class SalesforceApi extends Api {
 		} else return result;
 	}
 
-	async parsedRecordLayouts(recordId: string, page?: Page, options?: RecordUiData): Promise<string> {
+	async validateRecordLayoutsFor(recordId: string, page?: Page, options?: RecordUiData) {
 		try {
 			const orgLayouts = this.readLayoutsFromOrg(recordId, options);
 			if (page && this.testInfo){
 				await Promise.all([
 					orgLayouts,
 					SalesforceNavigator.openResource(recordId, page)
-						.then(() => this.captureFullPageScreenshot(page))
+						.then(async () => {
+							const currentPage = new SalesforcePage(page)
+							await currentPage.attachScreenshotToTestInfo(
+								await currentPage.captureFullPageScreenshot(), 
+								this.testInfo)
+						})
 				]);
 			}
-			return JSON.stringify(await orgLayouts, null, 3)
+			expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot()
 		} catch (error) {
 			throw new Error(`Layouts validation via UI-API failed due to:\n${error}`);
 		}
 	}
 
-	async parsedAppsAndTabsFor(page?: Page): Promise<string> {
+	async validateAppsAndTabsFor(page?: Page) {
 		try {
 			const orgApps = this.readApps();
 			if (page && this.testInfo){
 				await Promise.all([
 					orgApps,
 					SalesforceNavigator.openHome(page)
-						.then(() => page.getByRole('button', { name: 'App Launcher' }).click()
-							.then(() => page.waitForResponse(/getAppLauncherMenuData/gm)
-								.then(() => this.captureScreenshot({page: page}))))
+						.then(async () => {
+							await page.getByRole('button', { name: 'App Launcher' }).click()
+							const currentPage = new SalesforcePage(page)
+							await currentPage.attachScreenshotToTestInfo(
+								await currentPage.captureScreenshot({fullPage: false}), 
+								this.testInfo)
+						})
 				])
 			}
-			return JSON.stringify(await orgApps, null, 3)
+			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot
 		} catch (error) {
 			throw new Error(`Apps validation via UI-API failed due to:\n${error}`);
 		}
