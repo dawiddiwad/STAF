@@ -1,5 +1,5 @@
 import { TestInfo, Page, Browser } from '@playwright/test';
-import { RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult, MetadataInfo } from 'jsforce';
+import { RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult } from 'jsforce';
 import * as playwright_core from 'playwright-core';
 
 declare abstract class Api {
@@ -78,20 +78,17 @@ declare class SalesforceApi extends Api {
     Ready: Promise<this>;
     constructor(frontdoorData: SalesforceFrontdoorData, version?: string);
     private parseLayoutFromLayoutResponse;
+    private readRecordUi;
+    private readApps;
+    private readLayoutsFromOrg;
     create(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]>;
     update(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]>;
     delete(sobject: string, id: SalesforceId | SalesforceId[]): Promise<RecordResult | RecordResult[]>;
     read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]>;
     query(soql: string): Promise<QueryResult<unknown>>;
     executeApex(apexBody: string): Promise<ExecuteAnonymousResult>;
-    readRecordUi(recordId: string, options?: RecordUiData): Promise<MetadataInfo | MetadataInfo[]>;
-    readApps(formFactor?: 'Large' | 'Medium' | 'Small', userCustomizations?: boolean): Promise<MetadataInfo | MetadataInfo[]>;
-    readRelatedListsUi(object: string, recordTypeId?: string): Promise<MetadataInfo | MetadataInfo[]>;
-    readLayoutsFromOrg(recordId: string, options?: RecordUiData): Promise<UiLayout>;
-    writeLayoutSectionsToFileFromOrg(filePath: string, recordId: string, dataToFetch: RecordUiData): Promise<void>;
-    validateVisibleRecordLayouts(recordId: string, page?: Page, options?: RecordUiData): Promise<void>;
-    validateAvailableApps(page?: Page): Promise<void>;
-    writeAppsToFileFromOrg(filePath: string): Promise<void>;
+    parsedRecordLayouts(recordId: string, page?: Page, options?: RecordUiData): Promise<string>;
+    parsedAppsAndTabsFor(page?: Page): Promise<string>;
 }
 
 interface SalesforceCliParameters {
@@ -192,11 +189,10 @@ declare class SalesforceNavigator {
 
 declare abstract class SalesforceObject {
     readonly user: SalesforceStandardUser;
+    flexipage: {
+        parsedComponentsFor: (recordId: string) => Promise<string>;
+    };
     constructor(user: SalesforceStandardUser);
-    private handleFlexipageSnapshots;
-    scrollPageBottomTop(): Promise<void>;
-    scrollPageTopBottom(): Promise<void>;
-    validateFlexiPageFor(recordId: string): Promise<void>;
 }
 interface IsCreatableViaApi {
     createViaApi: (data?: any) => Promise<string>;
@@ -206,8 +202,10 @@ interface IsCreatableViaUi {
 }
 
 declare abstract class AbstractPage {
-    protected page: Page;
+    ui: Page;
     constructor(page: Page);
+    scrollPageBottomTop(): Promise<void>;
+    scrollPageTopBottom(): Promise<void>;
 }
 
 declare class SalesforceLoginPage extends AbstractPage {
