@@ -150,6 +150,7 @@ declare abstract class SalesforceStandardUser {
 declare class SOQLBuilder {
     private parseValue;
     crmUsersMatching(config: SalesforceUserDefinition): string;
+    recordTypeByName(name: string): string;
 }
 
 declare class SalesforceNavigator {
@@ -164,8 +165,8 @@ declare class SalesforceNavigator {
     static readonly TARGET_ULR_PARAM = "targetURL";
     static readonly RETURN_URL_PARAM = "retURL";
     static readonly APP_OR_TAB_SET_ID_PARAM = "tsid";
-    static readonly FLEXIPAGE_COMPONENT_TAG = "flexipage-component2";
     static readonly FLEXIPAGE_COMPONENT_ID = "data-component-id";
+    static readonly FLEXIPAGE_COMPONENT_CSS_LOCATOR: string;
     static readonly FLEXIPAGE_FIELD_LABEL = ".test-id__field-label";
     static readonly FLEXIPAGE_HIGHLIGHTS_ITEM = "records-highlights-details-item";
     private constructor();
@@ -188,6 +189,7 @@ declare abstract class SalesforceObject {
         validateComponentsFor: (recordId: string) => Promise<void>;
     };
     constructor(user: SalesforceStandardUser);
+    recordTypeIdFor(recordTypeName: string): Promise<string>;
 }
 interface IsCreatableViaApi {
     createViaApi: (data?: any) => Promise<string>;

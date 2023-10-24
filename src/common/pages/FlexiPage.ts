@@ -7,10 +7,10 @@ export class FlexiPage extends SalesforcePage {
         await this.ui.waitForResponse(/ui-force-components-controllers-slds/);
         await this.scrollPageBottomTop();
         const snapshot: string[] = []
-        await this.ui.locator(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG)
-            .elementHandles().then(async flexipageComponents => {
+        await this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)
+            .then(async flexipageComponents => {
                 for (const component of flexipageComponents){
-                    if (!(await component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG)).length){
+                    if (!(await component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)).length){
                         
                         const parseComponentId = async () => {
                             await component.scrollIntoViewIfNeeded()

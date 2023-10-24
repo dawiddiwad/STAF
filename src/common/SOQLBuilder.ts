@@ -33,4 +33,8 @@ export class SOQLBuilder {
         }
         return soql.join('\n')
     }
+
+    recordTypeByName(name: string): string{
+        return `SELECT Id FROM RecordType WHERE Name = '${name}'`
+    }
 }
