@@ -1,6 +1,7 @@
 import { expect } from "@playwright/test";
 import { SalesforceStandardUser } from "common/SalesforceUsers";
 import { FlexiPage } from "./pages/FlexiPage";
+import { SOQLBuilder } from "./SOQLBuilder";
 
 export abstract class SalesforceObject {
     public readonly user: SalesforceStandardUser;
@@ -29,6 +30,11 @@ export abstract class SalesforceObject {
                 expect(parsedComponents).toMatchSnapshot()
             }
         }
+    }
+
+    public async recordTypeIdFor(recordTypeName: string): Promise<string>{
+        return this.user.api.query(new SOQLBuilder().recordTypeByName(recordTypeName))
+            .then(queryResult => (queryResult.records[0] as any).Id)
     }
 }
 
