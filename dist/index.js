@@ -295,6 +295,9 @@ var SOQLBuilder = class {
     }
     return soql.join("\n");
   }
+  recordTypeByName(name) {
+    return `SELECT Id FROM RecordType WHERE Name = '${name}'`;
+  }
 };
 
 // src/common/SalesforceUsers.ts
@@ -414,8 +417,8 @@ _SalesforceNavigator.IMPERSONATION_USER_ID_PARAM = "suorgadminid";
 _SalesforceNavigator.TARGET_ULR_PARAM = "targetURL";
 _SalesforceNavigator.RETURN_URL_PARAM = "retURL";
 _SalesforceNavigator.APP_OR_TAB_SET_ID_PARAM = "tsid";
-_SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG = "flexipage-component2";
 _SalesforceNavigator.FLEXIPAGE_COMPONENT_ID = "data-component-id";
+_SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR = `[${_SalesforceNavigator.FLEXIPAGE_COMPONENT_ID}]`;
 _SalesforceNavigator.FLEXIPAGE_FIELD_LABEL = ".test-id__field-label";
 _SalesforceNavigator.FLEXIPAGE_HIGHLIGHTS_ITEM = "records-highlights-details-item";
 var SalesforceNavigator = _SalesforceNavigator;
@@ -671,9 +674,9 @@ var FlexiPage = class extends SalesforcePage {
       yield this.ui.waitForResponse(/ui-force-components-controllers-slds/);
       yield this.scrollPageBottomTop();
       const snapshot = [];
-      yield this.ui.locator(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG).elementHandles().then((flexipageComponents) => __async(this, null, function* () {
+      yield this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR).then((flexipageComponents) => __async(this, null, function* () {
         for (const component of flexipageComponents) {
-          if (!(yield component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_TAG)).length) {
+          if (!(yield component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)).length) {
             const parseComponentId = () => __async(this, null, function* () {
               yield component.scrollIntoViewIfNeeded();
               yield this.ui.waitForLoadState("networkidle");
@@ -754,6 +757,11 @@ var SalesforceObject = class {
         (0, import_test3.expect)(parsedComponents).toMatchSnapshot();
       })
     };
+  }
+  recordTypeIdFor(recordTypeName) {
+    return __async(this, null, function* () {
+      return this.user.api.query(new SOQLBuilder().recordTypeByName(recordTypeName)).then((queryResult) => queryResult.records[0].Id);
+    });
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
