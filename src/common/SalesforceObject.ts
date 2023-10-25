@@ -3,13 +3,13 @@ import { SalesforceStandardUser } from "common/SalesforceUsers";
 import { FlexiPage } from "./pages/FlexiPage";
 import { SOQLBuilder } from "./SOQLBuilder";
 
-export abstract class SalesforceObject {
-    public readonly user: SalesforceStandardUser;
+export abstract class SalesforceObject<T extends SalesforceStandardUser> {
+    public readonly user: T;
     public flexipage: {
         validateComponentsFor: (recordId: string) => Promise<void>
     };
 
-    constructor (user: SalesforceStandardUser){
+    constructor (user: T){
         this.user = user;
         this.flexipage = {
             validateComponentsFor: async (recordId: string) => {
@@ -38,10 +38,10 @@ export abstract class SalesforceObject {
     }
 }
 
-export interface IsCreatableViaApi {
+export type CreatableViaApi = {
     createViaApi: (data?) => Promise<string>
 }
 
-export interface IsCreatableViaUi {
+export type CreatableViaUi = {
     createViaUI: (data?) => Promise<void>
 }

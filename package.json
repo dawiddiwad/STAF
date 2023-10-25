@@ -1,6 +1,6 @@
 {
   "name": "salesforce-test-automation-framework",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "STAF - Salesforce Test Automation Framework",
   "author": "Dawid Dobrowolski SoftQA",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "build": "tsup",
     "test": "npm run build && jest",
     "prepare": "husky install",
-    "prepack": "npm run test"
+    "prepack": "npm install && npm run test"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
