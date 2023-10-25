@@ -183,20 +183,20 @@ declare class SalesforceNavigator {
     static openHome(page: Page): Promise<playwright_core.Response>;
 }
 
-declare abstract class SalesforceObject {
-    readonly user: SalesforceStandardUser;
+declare abstract class SalesforceObject<T extends SalesforceStandardUser> {
+    readonly user: T;
     flexipage: {
         validateComponentsFor: (recordId: string) => Promise<void>;
     };
-    constructor(user: SalesforceStandardUser);
+    constructor(user: T);
     recordTypeIdFor(recordTypeName: string): Promise<string>;
 }
-interface IsCreatableViaApi {
+type CreatableViaApi = {
     createViaApi: (data?: any) => Promise<string>;
-}
-interface IsCreatableViaUi {
+};
+type CreatableViaUi = {
     createViaUI: (data?: any) => Promise<void>;
-}
+};
 
 declare abstract class AbstractPage {
     ui: Page;
@@ -222,4 +222,4 @@ declare class SalesforceLoginPage extends SalesforcePage {
     loginUsing(credentials: UsernamePassword): Promise<StorageState>;
 }
 
-export { AbstractPage, Api, ApiGateway, DefaultCliUserInfo, IsCreatableViaApi, IsCreatableViaUi, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword };
+export { AbstractPage, Api, ApiGateway, CreatableViaApi, CreatableViaUi, DefaultCliUserInfo, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword };
