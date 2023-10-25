@@ -5,7 +5,8 @@ export class FlexiPage extends SalesforcePage {
     public async getComponentsFor(recordId: string): Promise<string> {
         await SalesforceNavigator.openResource(recordId, this.ui)
         await this.ui.waitForResponse(/ui-force-components-controllers-slds/);
-        await this.scrollPageBottomTop();
+        await this.scrollPageBottomTop()
+        await this.ui.waitForLoadState('networkidle')
         const snapshot: string[] = []
         await this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)
             .then(async flexipageComponents => {
@@ -13,10 +14,7 @@ export class FlexiPage extends SalesforcePage {
                     if (!(await component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)).length){
                         
                         const parseComponentId = async () => {
-                            await component.scrollIntoViewIfNeeded()
-                            await this.ui.waitForLoadState('networkidle')
                             snapshot.push(`[FLEXCOMPONENT] ${await component.getAttribute(SalesforceNavigator.FLEXIPAGE_COMPONENT_ID)}`)
-            
                         }
         
                         const parseLabeledFields = async () => {

@@ -639,13 +639,12 @@ var FlexiPage = class extends SalesforcePage {
       yield SalesforceNavigator.openResource(recordId, this.ui);
       yield this.ui.waitForResponse(/ui-force-components-controllers-slds/);
       yield this.scrollPageBottomTop();
+      yield this.ui.waitForLoadState("networkidle");
       const snapshot = [];
       yield this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR).then((flexipageComponents) => __async(this, null, function* () {
         for (const component of flexipageComponents) {
           if (!(yield component.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)).length) {
             const parseComponentId = () => __async(this, null, function* () {
-              yield component.scrollIntoViewIfNeeded();
-              yield this.ui.waitForLoadState("networkidle");
               snapshot.push(`[FLEXCOMPONENT] ${yield component.getAttribute(SalesforceNavigator.FLEXIPAGE_COMPONENT_ID)}`);
             });
             const parseLabeledFields = () => __async(this, null, function* () {
