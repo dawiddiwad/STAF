@@ -671,7 +671,7 @@ var FlexiPage = class extends SalesforcePage {
   getComponentsFor(recordId) {
     return __async(this, null, function* () {
       yield SalesforceNavigator.openResource(recordId, this.ui);
-      yield this.ui.waitForResponse(/ui-force-components-controllers-slds/);
+      yield this.ui.waitForLoadState("networkidle");
       yield this.scrollPageBottomTop();
       yield this.ui.waitForLoadState("networkidle");
       const snapshot = [];
@@ -743,7 +743,6 @@ var SalesforceObject = class {
         const parsedComponents = yield flexipage.getComponentsFor(recordId);
         if (this.user.api.testInfo) {
           try {
-            yield flexipage.scrollPageBottomTop();
             yield (0, import_test3.expect)(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
             yield this.user.api.testInfo.attach("screenshot", { body: yield flexipage.ui.screenshot({ fullPage: true }), contentType: "image/png" });
           } catch (error) {

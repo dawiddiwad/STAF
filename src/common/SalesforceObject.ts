@@ -17,7 +17,6 @@ export abstract class SalesforceObject<T extends SalesforceStandardUser> {
                 const parsedComponents = await flexipage.getComponentsFor(recordId)
                 if (this.user.api.testInfo){
                     try {
-                        await flexipage.scrollPageBottomTop()
                         await expect(flexipage.ui).toHaveScreenshot({maxDiffPixels: 0, fullPage: true})
                         await this.user.api.testInfo.attach('screenshot', { body: await flexipage.ui.screenshot({fullPage: true}), contentType: 'image/png' })
                     } catch (error) {
