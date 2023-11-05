@@ -57,7 +57,6 @@ export class SalesforceDefaultCliUser {
 }
 
 export abstract class SalesforceStandardUser {
-    private static uniquePool: Set<SalesforceStandardUser> = new Set()
     private static _cached: Map<string, Promise<StorageState>> = new Map()
     abstract config: SalesforceUserDefinition
     ui: Page
@@ -86,7 +85,6 @@ export abstract class SalesforceStandardUser {
                 const users = new SOQLBuilder().crmUsersMatching(this.config)
                 return cliUser.api.query(users).then(result => {
                     const selected = (result as QueryResult<any>).records[0].Id
-                    SalesforceStandardUser.uniquePool.add(selected)
                     SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
                     return SalesforceStandardUser._cached.get(this.constructor.name)
                 })

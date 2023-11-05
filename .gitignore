@@ -8,3 +8,4 @@ node_modules
 debug*
 auth.json*
 authFile.json*
+src/test
