@@ -212,7 +212,7 @@ export class SalesforceApi extends Api {
 						})
 				])
 			}
-			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot
+			expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot()
 		} catch (error) {
 			throw new Error(`Apps validation via UI-API failed due to:\n${error}`);
 		}
