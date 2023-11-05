@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { SalesforceStandardUser } from "common/SalesforceUsers";
 import { FlexiPage } from "./pages/FlexiPage";
 import { SOQLBuilder } from "./SOQLBuilder";
+import { SalesforceNavigator } from "./SalesforceNavigator";
 
 export abstract class SalesforceObject<T extends SalesforceStandardUser> {
     public readonly user: T;
@@ -14,19 +15,26 @@ export abstract class SalesforceObject<T extends SalesforceStandardUser> {
         this.flexipage = {
             validateComponentsFor: async (recordId: string) => {
                 const flexipage = new FlexiPage(this.user.ui)
-                const parsedComponents = await flexipage.getComponentsFor(recordId)
-                if (this.user.api.testInfo){
-                    try {
-                        await expect(flexipage.ui).toHaveScreenshot({maxDiffPixels: 0, fullPage: true})
-                        await this.user.api.testInfo.attach('screenshot', { body: await flexipage.ui.screenshot({fullPage: true}), contentType: 'image/png' })
-                    } catch (error) {
-                        await this.user.api.testInfo.attach('snapshot-fullpage_screenshots', {body: error})
-                    } finally {
-                        await this.user.api.testInfo.attach('snapshot-flexipage_components', {body: parsedComponents})
-                        await this.user.api.testInfo.attach('testrecord-sfdc_id', {body: recordId})
+                await SalesforceNavigator.openResource(recordId, this.user.ui)
+                let parsedComponents: string
+                try {
+                    await expect(async () => {
+                        parsedComponents = await flexipage.getComponents()
+                        expect(parsedComponents).toMatchSnapshot()
+                    }).toPass({timeout: 30000})
+                } catch (error) {
+                    throw error
+                } finally {
+                    if (this.user.api.testInfo){
+                        try {
+                            await expect(flexipage.ui).toHaveScreenshot({maxDiffPixels: 0, fullPage: true})
+                        } catch (error) {
+                        } finally {
+                            await this.user.api.testInfo.attach('snapshot-flexipage_components', {body: parsedComponents})
+                            await this.user.api.testInfo.attach('testrecord-sfdc_id', {body: recordId})
+                        }
                     }
                 }
-                expect(parsedComponents).toMatchSnapshot()
             }
         }
     }

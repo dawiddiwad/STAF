@@ -2,8 +2,7 @@ import { SalesforceNavigator } from "common/SalesforceNavigator";
 import { SalesforcePage } from "./SalesforcePage";
 
 export class FlexiPage extends SalesforcePage {
-    public async getComponentsFor(recordId: string): Promise<string> {
-        await SalesforceNavigator.openResource(recordId, this.ui)
+    public async getComponents(): Promise<string> {
         await this.ui.waitForLoadState("networkidle")
         await this.scrollPageBottomTop()
         await this.ui.waitForLoadState("networkidle")

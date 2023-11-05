@@ -562,8 +562,7 @@ import { expect as expect2 } from "@playwright/test";
 
 // src/common/pages/FlexiPage.ts
 var FlexiPage = class extends SalesforcePage {
-  async getComponentsFor(recordId) {
-    await SalesforceNavigator.openResource(recordId, this.ui);
+  async getComponents() {
     await this.ui.waitForLoadState("networkidle");
     await this.scrollPageBottomTop();
     await this.ui.waitForLoadState("networkidle");
@@ -634,19 +633,26 @@ var SalesforceObject = class {
     this.flexipage = {
       validateComponentsFor: async (recordId) => {
         const flexipage = new FlexiPage(this.user.ui);
-        const parsedComponents = await flexipage.getComponentsFor(recordId);
-        if (this.user.api.testInfo) {
-          try {
-            await expect2(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
-            await this.user.api.testInfo.attach("screenshot", { body: await flexipage.ui.screenshot({ fullPage: true }), contentType: "image/png" });
-          } catch (error) {
-            await this.user.api.testInfo.attach("snapshot-fullpage_screenshots", { body: error });
-          } finally {
-            await this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
-            await this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
+        await SalesforceNavigator.openResource(recordId, this.user.ui);
+        let parsedComponents;
+        try {
+          await expect2(async () => {
+            parsedComponents = await flexipage.getComponents();
+            expect2(parsedComponents).toMatchSnapshot();
+          }).toPass({ timeout: 3e4 });
+        } catch (error) {
+          throw error;
+        } finally {
+          if (this.user.api.testInfo) {
+            try {
+              await expect2(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+            } catch (error) {
+            } finally {
+              await this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
+              await this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
+            }
           }
         }
-        expect2(parsedComponents).toMatchSnapshot();
       }
     };
   }
