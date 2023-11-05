@@ -1,6 +1,6 @@
+import * as _playwright_test from '@playwright/test';
 import { TestInfo, Page, Browser } from '@playwright/test';
 import { RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult } from 'jsforce';
-import * as playwright_core from 'playwright-core';
 
 declare abstract class Api {
     testInfo: TestInfo;
@@ -136,7 +136,6 @@ declare class SalesforceDefaultCliUser {
     impersonateCrmUser(salesforceUserId: string): Promise<StorageState>;
 }
 declare abstract class SalesforceStandardUser {
-    private static uniquePool;
     private static _cached;
     abstract config: SalesforceUserDefinition;
     ui: Page;
@@ -179,8 +178,8 @@ declare class SalesforceNavigator {
         orgId: string;
         targetUserId: string;
     }): URL;
-    static openResource(resourcePath: string, page: Page): Promise<playwright_core.Response>;
-    static openHome(page: Page): Promise<playwright_core.Response>;
+    static openResource(resourcePath: string, page: Page): Promise<_playwright_test.Response>;
+    static openHome(page: Page): Promise<_playwright_test.Response>;
 }
 
 declare abstract class SalesforceObject<T extends SalesforceStandardUser> {
@@ -215,11 +214,16 @@ declare class SalesforcePage extends AbstractPage {
 
 declare class SalesforceLoginPage extends SalesforcePage {
     readonly instance: URL;
-    readonly username: playwright_core.Locator;
-    readonly password: playwright_core.Locator;
-    readonly loginButton: playwright_core.Locator;
+    readonly username: _playwright_test.Locator;
+    readonly password: _playwright_test.Locator;
+    readonly loginButton: _playwright_test.Locator;
     constructor(page: Page, instance: URL);
     loginUsing(credentials: UsernamePassword): Promise<StorageState>;
 }
 
-export { AbstractPage, Api, ApiGateway, CreatableViaApi, CreatableViaUi, DefaultCliUserInfo, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword };
+type SalesforceFixtures = {
+    cast<T extends SalesforceStandardUser>(actor: T): Promise<T>;
+};
+declare const test: _playwright_test.TestType<_playwright_test.PlaywrightTestArgs & _playwright_test.PlaywrightTestOptions & SalesforceFixtures, _playwright_test.PlaywrightWorkerArgs & _playwright_test.PlaywrightWorkerOptions>;
+
+export { AbstractPage, Api, ApiGateway, CreatableViaApi, CreatableViaUi, DefaultCliUserInfo, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword, test };
