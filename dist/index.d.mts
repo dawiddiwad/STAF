@@ -188,6 +188,7 @@ declare abstract class SalesforceObject<T extends SalesforceStandardUser> {
         validateComponentsFor: (recordId: string) => Promise<void>;
     };
     constructor(user: T);
+    private attachPageSnapshot;
     recordTypeIdFor(recordTypeName: string): Promise<string>;
 }
 type CreatableViaApi = {
