@@ -3,9 +3,7 @@ import { SalesforcePage } from "./SalesforcePage";
 
 export class FlexiPage extends SalesforcePage {
     public async getComponents(): Promise<string> {
-        await this.ui.waitForLoadState("networkidle")
         await this.scrollPageBottomTop()
-        await this.ui.waitForLoadState("networkidle")
         const snapshot: string[] = []
         await this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR)
             .then(async flexipageComponents => {
