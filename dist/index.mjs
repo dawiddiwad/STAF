@@ -563,9 +563,7 @@ import { expect as expect2 } from "@playwright/test";
 // src/common/pages/FlexiPage.ts
 var FlexiPage = class extends SalesforcePage {
   async getComponents() {
-    await this.ui.waitForLoadState("networkidle");
     await this.scrollPageBottomTop();
-    await this.ui.waitForLoadState("networkidle");
     const snapshot = [];
     await this.ui.$$(SalesforceNavigator.FLEXIPAGE_COMPONENT_CSS_LOCATOR).then(async (flexipageComponents) => {
       for (const component of flexipageComponents) {
@@ -632,29 +630,35 @@ var SalesforceObject = class {
     this.user = user;
     this.flexipage = {
       validateComponentsFor: async (recordId) => {
+        const testInfo = this.user.api.testInfo;
         const flexipage = new FlexiPage(this.user.ui);
         await SalesforceNavigator.openResource(recordId, this.user.ui);
         let parsedComponents;
         try {
+          if (testInfo.config.updateSnapshots !== "none") {
+            const safePeriod = testInfo.project.use.actionTimeout ? testInfo.project.use.actionTimeout : testInfo.timeout;
+            console.debug(`snapshot capture is on in '${testInfo.config.updateSnapshots}' mode: using implicit wait of ${safePeriod / 1e3}s to record`);
+            await flexipage.ui.waitForTimeout(safePeriod);
+          }
           await expect2(async () => {
             parsedComponents = await flexipage.getComponents();
-            expect2(parsedComponents).toMatchSnapshot();
-          }).toPass({ timeout: 3e4 });
-        } catch (error) {
-          throw error;
+            expect2(parsedComponents, "components validation").toMatchSnapshot();
+          }).toPass({ timeout: testInfo.project.use.actionTimeout ? testInfo.project.use.actionTimeout : testInfo.timeout });
         } finally {
-          if (this.user.api.testInfo) {
-            try {
-              await expect2(flexipage.ui).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
-            } catch (error) {
-            } finally {
-              await this.user.api.testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
-              await this.user.api.testInfo.attach("testrecord-sfdc_id", { body: recordId });
-            }
+          if (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on") || testInfo.retry === 1 && (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on-first-retry")) || testInfo.retry > 0 && (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on-all-retries")) || testInfo.error && (testInfo.project.use.trace instanceof Object && testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "retain-on-failure") || testInfo.config.updateSnapshots !== "none") {
+            await this.attachPageSnapshot(flexipage.ui);
           }
+          await testInfo.attach("snapshot-flexipage_components", { body: parsedComponents });
+          await testInfo.attach("testrecord-sfdc_id", { body: recordId });
         }
       }
     };
+  }
+  async attachPageSnapshot(page) {
+    try {
+      await expect2(page).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+    } catch (ignore) {
+    }
   }
   async recordTypeIdFor(recordTypeName) {
     return this.user.api.query(new SOQLBuilder().recordTypeByName(recordTypeName)).then((queryResult) => queryResult.records[0].Id);
