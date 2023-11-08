@@ -1,6 +1,6 @@
 import * as _playwright_test from '@playwright/test';
 import { TestInfo, Page, Browser } from '@playwright/test';
-import { RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult } from 'jsforce';
+import { Connection, RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult } from 'jsforce';
 
 declare abstract class Api {
     testInfo: TestInfo;
@@ -68,8 +68,8 @@ declare class NoRecordsReturnedError extends Error {
     constructor(msg: string);
 }
 declare class SalesforceApi extends Api {
-    private version;
-    private conn;
+    readonly version: string;
+    conn: Connection;
     Ready: Promise<this>;
     constructor(frontdoorData: SalesforceFrontdoorData, version?: string);
     private parseLayoutFromLayoutResponse;
