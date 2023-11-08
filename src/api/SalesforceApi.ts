@@ -13,8 +13,8 @@ export class NoRecordsReturnedError extends Error {
 }
 
 export class SalesforceApi extends Api {
-	private version: string
-	private conn: Connection;
+	readonly version: string
+	conn: Connection;
 	Ready: Promise<this>;
 
 	constructor(frontdoorData: SalesforceFrontdoorData, version?: string) {
