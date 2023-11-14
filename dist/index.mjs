@@ -80,19 +80,11 @@ var DefaultCliUserHandler = class {
     this.cli = cliHandler;
   }
   get defaultUserData() {
-    try {
-      if (!this._defaultUserData) {
-        this._defaultUserData = this.cli.exec({
-          cmd: "org open",
-          f: ["--json", "-r"]
-        });
-      }
-    } catch (error) {
-      throw new Error(`unable to authorize default cli user
-                
-due to:
-                
-${error}`);
+    if (!this._defaultUserData) {
+      this._defaultUserData = this.cli.exec({
+        cmd: "org open",
+        f: ["--json", "-r"]
+      });
     }
     return this._defaultUserData;
   }
@@ -146,16 +138,13 @@ var SalesforceCliHandler = class {
   pass(params) {
     return params.join(" ");
   }
-  parseResponse(response) {
+  parseOutputAsJSON(output) {
     try {
       const cliColoring = /[\u001b\u009b][[()#?]*(?:[0-9]{1,4}(?:[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g;
-      response = response.replace(cliColoring, "");
-      return JSON.parse(response);
+      output = output.replace(cliColoring, "");
+      return JSON.parse(output);
     } catch (error) {
-      throw new Error(`unable to parse SFDX command response:
-
-${response}
-
+      throw new Error(`unable to parse JSON from ${output}
 due to:
 ${error}`);
     }
@@ -163,17 +152,29 @@ ${error}`);
   async exec({ cmd, f: flags, log }) {
     const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ""}`;
     if (log)
-      console.info(`Executing ${this.path} command: ${fullCommand}`);
-    return new Promise((resolve) => {
-      exec(fullCommand, (error, stdout) => {
-        if (error && error.code === 1) {
-          throw new Error(`${this.path} command failed with exit code: ${error.code} caused by:
-${error.message}
-                        
-Error details:
-${JSON.stringify(this.parseResponse(stdout), null, 3)}`);
-        } else {
-          resolve(flags?.includes("--json") ? this.parseResponse(stdout) : stdout);
+      console.info(`Executing ${this.path} cli command: ${fullCommand}`);
+    return new Promise((resolve, reject) => {
+      exec(fullCommand, (error, stdout, stderr) => {
+        try {
+          if (error && error.code === 1) {
+            throw new Error(`command failed
+Error details:${stdout}
+caused by:
+${error}`);
+          } else if (stderr) {
+            throw new Error(`command failed
+Error details:${stderr}`);
+          } else {
+            if (stdout) {
+              resolve(flags?.includes("--json") ? this.parseOutputAsJSON(stdout) : stdout);
+            } else
+              throw new Error(`missing output from ${this.path} cli command`);
+          }
+        } catch (error2) {
+          reject(`error executing ${this.path} cli command:
+${fullCommand}
+caused by:
+${error2}`);
         }
       });
     });
@@ -226,13 +227,19 @@ var SalesforceDefaultCliUser = class _SalesforceDefaultCliUser {
   api;
   constructor(authenticator) {
     this.Ready = new Promise(async (makeReady) => {
-      const handler = authenticator.usingCli(new SalesforceCliHandler());
-      this.info = await handler.defaultUserData;
-      this.api = await handler.loginToApi();
-      this.browser = await chromium.launch({ headless: true });
-      this.ui = await this.browser.newContext().then((context) => context.newPage());
-      this.authorizationState = await handler.loginToUi(this.ui);
-      makeReady(this);
+      try {
+        const handler = authenticator.usingCli(new SalesforceCliHandler());
+        this.api = await handler.loginToApi();
+        this.browser = await chromium.launch({ headless: true });
+        this.ui = await this.browser.newContext().then((context) => context.newPage());
+        this.authorizationState = await handler.loginToUi(this.ui);
+        this.info = await handler.defaultUserData;
+        makeReady(this);
+      } catch (error) {
+        throw new Error(`unable to initialize default cli user
+due to:
+${error}`);
+      }
     });
   }
   static get instance() {
@@ -262,15 +269,23 @@ var SalesforceStandardUser = class _SalesforceStandardUser {
   Ready;
   constructor(mods) {
     this.Ready = new Promise(async (makeReady) => {
-      this.config = { ...this.config, ...mods };
-      const frontdoor = await SalesforceDefaultCliUser.instance.then((instance2) => instance2.info.result.url);
-      const sessionId = (await this.cached).cookies.filter(
-        (cookie) => cookie.name === "sid" && frontdoor.includes(cookie.domain)
-      )[0].value;
-      const instance = new URL(frontdoor).origin;
-      const frontDoor = { instance, sessionId };
-      this.api = await new SalesforceApi(frontDoor).Ready;
-      makeReady(this);
+      try {
+        this.config = { ...this.config, ...mods };
+        const frontdoor = await SalesforceDefaultCliUser.instance.then((instance2) => instance2.info.result.url);
+        const sessionId = (await this.cached).cookies.filter(
+          (cookie) => cookie.name === "sid" && frontdoor.includes(cookie.domain)
+        )[0].value;
+        const instance = new URL(frontdoor).origin;
+        const frontDoor = { instance, sessionId };
+        this.api = await new SalesforceApi(frontDoor).Ready;
+        makeReady(this);
+      } catch (error) {
+        throw new Error(`unable to initialize salesforce user ${this.constructor.name}:
+                    
+${JSON.stringify(this.config, null, 3)}
+due to:
+${error}`);
+      }
     });
   }
   get cached() {
@@ -484,7 +499,6 @@ ${error}`);
       throw new Error(`unable to execute soql:
 ${soql}
 due to:
-$
 ${error}`);
     }
     if (!result.records.length) {

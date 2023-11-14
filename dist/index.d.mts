@@ -95,7 +95,7 @@ declare class SalesforceCliHandler {
     private path;
     constructor(path?: string);
     private pass;
-    private parseResponse;
+    private parseOutputAsJSON;
     exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any>;
 }
 

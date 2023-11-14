@@ -156,7 +156,7 @@ export class SalesforceApi extends Api {
 		try {
 			result = await this.conn.query(soql);
 		} catch (error) {
-			throw new Error(`unable to execute soql:\n${soql}\ndue to:\n$\n${error}`);
+			throw new Error(`unable to execute soql:\n${soql}\ndue to:\n${error}`);
 		}
 		if (!result.records.length) {
 			throw new NoRecordsReturnedError(`no records returned by soql:\n${soql}`);

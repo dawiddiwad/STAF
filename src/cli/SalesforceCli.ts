@@ -16,27 +16,34 @@ export class SalesforceCliHandler {
         return params.join(' ')
     }
 
-    private parseResponse(response: string): Object {
+    private parseOutputAsJSON(output: string): Object {
         try {
             const cliColoring = /[\u001b\u009b][[()#?]*(?:[0-9]{1,4}(?:[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g
-            response = response.replace(cliColoring, '')
-            return JSON.parse(response)
+            output = output.replace(cliColoring, '')
+            return JSON.parse(output)
         }
         catch (error) {
-            throw new Error(`unable to parse SFDX command response:\n\n${response}\n\ndue to:\n${error}`)
+            throw new Error(`unable to parse JSON from ${output}\ndue to:\n${error}`)
         }
     }
 
     public async exec({ cmd, f: flags, log }: SalesforceCliParameters): Promise<any> {
         const fullCommand = `${this.path} ${cmd} ${flags ? this.pass(flags) : ''}`
-        if (log) console.info(`Executing ${this.path} command: ${fullCommand}`)
-        return new Promise<any>((resolve) => {
-            exec(fullCommand, (error, stdout) => {
-                if (error && error.code === 1) {
-                    throw new Error(`${this.path} command failed with exit code: ${error.code} caused by:\n${error.message}
-                        \nError details:\n${JSON.stringify(this.parseResponse(stdout), null, 3)}`)
-                } else {
-                    resolve(flags?.includes('--json') ? this.parseResponse(stdout) : stdout)
+        if (log) console.info(`Executing ${this.path} cli command: ${fullCommand}`)
+        return new Promise<any>((resolve, reject) => {
+            exec(fullCommand, (error, stdout, stderr) => {
+                try {
+                    if (error && error.code === 1) {
+                        throw new Error(`command failed\nError details:${stdout}\ncaused by:\n${error}`)
+                    } else if (stderr) {
+                        throw new Error(`command failed\nError details:${stderr}`) 
+                    } else {
+                        if (stdout){
+                            resolve(flags?.includes('--json') ? this.parseOutputAsJSON(stdout) : stdout)
+                        } else throw new Error(`missing output from ${this.path} cli command`)
+                    }
+                } catch (error) {
+                    reject(`error executing ${this.path} cli command:\n${fullCommand}\ncaused by:\n${error}`)
                 }
             })
         })
