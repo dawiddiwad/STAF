@@ -23,13 +23,17 @@ export class SalesforceDefaultCliUser {
 
     private constructor(authenticator: SalesforceAuthenticator){
         this.Ready = new Promise(async (makeReady) => {
-            const handler = authenticator.usingCli(new SalesforceCliHandler())
-            this.info = await handler.defaultUserData
-            this.api = await handler.loginToApi()
-            this.browser = await chromium.launch({headless: true})
-            this.ui = await this.browser.newContext().then(context => context.newPage())
-            this.authorizationState = await handler.loginToUi(this.ui)
-            makeReady(this)
+            try {
+                const handler = authenticator.usingCli(new SalesforceCliHandler())
+                this.api = await handler.loginToApi()
+                this.browser = await chromium.launch({headless: true})
+                this.ui = await this.browser.newContext().then(context => context.newPage())
+                this.authorizationState = await handler.loginToUi(this.ui)
+                this.info = await handler.defaultUserData
+                makeReady(this)
+            } catch (error) {
+                throw new Error(`unable to initialize default cli user\ndue to:\n${error}`)
+            }
         })
     }
 
@@ -65,17 +69,22 @@ export abstract class SalesforceStandardUser {
 
     constructor(mods?: SalesforceUserDefinition){
         this.Ready = new Promise(async (makeReady) => {
-            this.config = {...this.config, ...mods}
-            const frontdoor = await SalesforceDefaultCliUser.instance
-                .then(instance => instance.info.result.url)
-            const sessionId = (await this.cached).cookies
-                .filter(cookie => cookie.name === 'sid' && 
-                    frontdoor.includes(cookie.domain)
-                )[0].value
-            const instance = new URL(frontdoor).origin
-            const frontDoor = {instance: instance, sessionId: sessionId}
-            this.api = await new SalesforceApi(frontDoor).Ready
-            makeReady(this)
+            try {
+                this.config = {...this.config, ...mods}
+                const frontdoor = await SalesforceDefaultCliUser.instance
+                    .then(instance => instance.info.result.url)
+                const sessionId = (await this.cached).cookies
+                    .filter(cookie => cookie.name === 'sid' && 
+                        frontdoor.includes(cookie.domain)
+                    )[0].value
+                const instance = new URL(frontdoor).origin
+                const frontDoor = {instance: instance, sessionId: sessionId}
+                this.api = await new SalesforceApi(frontDoor).Ready
+                makeReady(this)
+            } catch (error) {
+                throw new Error(`unable to initialize salesforce user ${this.constructor.name}:
+                    \n${JSON.stringify(this.config, null, 3)}\ndue to:\n${error}`)
+            }
         })
     }
 
