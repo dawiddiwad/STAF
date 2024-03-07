@@ -147,7 +147,8 @@ declare abstract class SalesforceStandardUser {
 }
 
 declare class SOQLBuilder {
-    private parseValue;
+    private parse;
+    private isWildcard;
     crmUsersMatching(config: SalesforceUserDefinition): string;
     recordTypeByName(name: string): string;
 }

@@ -1,23 +1,35 @@
 import { SalesforceUserDefinition } from "common/SalesforceUsers";
 
 export class SOQLBuilder {
-    private parseValue(value: unknown){
-        if(typeof value == 'boolean'){
+    private parse(value: unknown){
+        if (typeof value == 'boolean'){
             return `${value}`
         } else {
             return `'${value}'`
         }
     }
 
+    private isWildcard(value: unknown){
+        return typeof value == 'string' 
+            && (value.startsWith('%') || value.startsWith('_') || value.endsWith('%') || value.endsWith('_'))
+    }
+
     crmUsersMatching(config: SalesforceUserDefinition): string{
-        const soql: string[] = [] 
+        const soql: string[] = []
         soql.push(`SELECT Id, Username FROM USER`)
         soql.push(`WHERE IsActive = true`)
         soql.push(`AND UserType = 'Standard'`)
         if (config.details){
             Object.entries(config.details)
-                .forEach(record => 
-                    soql.push(`AND ${record[0]} = ${this.parseValue(record[1])}`))
+                .forEach(record => {
+                    const field = record[0]
+                    const value = record[1]
+                    if (this.isWildcard(value)){
+                        soql.push(`AND ${field} LIKE '${value}'`)
+                    } else {
+                        soql.push(`AND ${field} = ${this.parse(value)}`)
+                    }
+                })       
         }
         if (config.permissionSets){
             config.permissionSets

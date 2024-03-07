@@ -183,12 +183,15 @@ ${error2}`);
 
 // src/common/SOQLBuilder.ts
 var SOQLBuilder = class {
-  parseValue(value) {
+  parse(value) {
     if (typeof value == "boolean") {
       return `${value}`;
     } else {
       return `'${value}'`;
     }
+  }
+  isWildcard(value) {
+    return typeof value == "string" && (value.startsWith("%") || value.startsWith("_") || value.endsWith("%") || value.endsWith("_"));
   }
   crmUsersMatching(config) {
     const soql = [];
@@ -196,7 +199,15 @@ var SOQLBuilder = class {
     soql.push(`WHERE IsActive = true`);
     soql.push(`AND UserType = 'Standard'`);
     if (config.details) {
-      Object.entries(config.details).forEach((record) => soql.push(`AND ${record[0]} = ${this.parseValue(record[1])}`));
+      Object.entries(config.details).forEach((record) => {
+        const field = record[0];
+        const value = record[1];
+        if (this.isWildcard(value)) {
+          soql.push(`AND ${field} LIKE '${value}'`);
+        } else {
+          soql.push(`AND ${field} = ${this.parse(value)}`);
+        }
+      });
     }
     if (config.permissionSets) {
       config.permissionSets.forEach((name) => {
