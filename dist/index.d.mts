@@ -122,6 +122,7 @@ declare class SalesforceAuthenticator {
 interface SalesforceUserDefinition {
     details?: {};
     permissionSets?: string[];
+    strictPermissionSets?: boolean;
 }
 declare class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>;

@@ -10,6 +10,7 @@ import { QueryResult } from "jsforce";
 export interface SalesforceUserDefinition {
     details?: {}
     permissionSets?: string[]
+    strictPermissionSets?: boolean
 }
 
 export class SalesforceDefaultCliUser {
@@ -93,7 +94,7 @@ export abstract class SalesforceStandardUser {
             return SalesforceDefaultCliUser.instance.then(cliUser => {
                 const users = new SOQLBuilder().crmUsersMatching(this.config)
                 return cliUser.api.query(users).then(result => {
-                    const selected = (result as QueryResult<any>).records[0].Id
+                    const selected = (result as QueryResult<any>).records[0].AssigneeId
                     SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
                     return SalesforceStandardUser._cached.get(this.constructor.name)
                 })

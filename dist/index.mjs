@@ -195,30 +195,34 @@ var SOQLBuilder = class {
   }
   crmUsersMatching(config) {
     const soql = [];
-    soql.push(`SELECT Id, Username FROM USER`);
+    soql.push(`SELECT AssigneeId, Assignee.Username`);
+    soql.push(`FROM PermissionSetAssignment`);
     soql.push(`WHERE IsActive = true`);
-    soql.push(`AND UserType = 'Standard'`);
+    soql.push(`AND Assignee.IsActive = true`);
+    soql.push(`AND Assignee.UserType = 'Standard'`);
     if (config.details) {
       Object.entries(config.details).forEach((record) => {
         const field = record[0];
         const value = record[1];
         if (this.isWildcard(value)) {
-          soql.push(`AND ${field} LIKE '${value}'`);
+          soql.push(`AND Assignee.${field} LIKE '${value}'`);
         } else {
-          soql.push(`AND ${field} = ${this.parse(value)}`);
+          soql.push(`AND Assignee.${field} = ${this.parse(value)}`);
         }
       });
     }
     if (config.permissionSets) {
-      config.permissionSets.forEach((name) => {
-        soql.push(`AND Id IN`);
-        soql.push(`(`);
-        soql.push(`SELECT AssigneeId`);
-        soql.push(`FROM PermissionSetAssignment`);
-        soql.push(`WHERE IsActive = true`);
-        soql.push(`AND PermissionSet.name = '${name}'`);
-        soql.push(`)`);
-      });
+      soql.push(`AND PermissionSet.Name IN (${config.permissionSets.map((set) => `'${set}'`).join()})`);
+    }
+    soql.push(`GROUP BY Assignee.Username, AssigneeId`);
+    if (config.strictPermissionSets) {
+      if (config.permissionSets) {
+        soql.push(`HAVING COUNT(Assignee.Username) = ${config.permissionSets.length}`);
+      } else {
+        soql.push(`HAVING COUNT(Assignee.Username) = 1`);
+      }
+    } else if (config.permissionSets) {
+      soql.push(`HAVING COUNT(Assignee.Username) >= ${config.permissionSets.length}`);
     }
     return soql.join("\n");
   }
@@ -304,7 +308,7 @@ ${error}`);
       return SalesforceDefaultCliUser.instance.then((cliUser) => {
         const users = new SOQLBuilder().crmUsersMatching(this.config);
         return cliUser.api.query(users).then((result) => {
-          const selected = result.records[0].Id;
+          const selected = result.records[0].AssigneeId;
           _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected));
           return _SalesforceStandardUser._cached.get(this.constructor.name);
         });
