@@ -122,6 +122,7 @@ declare class SalesforceAuthenticator {
 interface SalesforceUserDefinition {
     details?: {};
     permissionSets?: string[];
+    strictPermissionSets?: boolean;
 }
 declare class SalesforceDefaultCliUser {
     static _instance: Promise<SalesforceDefaultCliUser>;
@@ -147,7 +148,8 @@ declare abstract class SalesforceStandardUser {
 }
 
 declare class SOQLBuilder {
-    private parseValue;
+    private parse;
+    private isWildcard;
     crmUsersMatching(config: SalesforceUserDefinition): string;
     recordTypeByName(name: string): string;
 }
