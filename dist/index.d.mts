@@ -119,6 +119,15 @@ declare class SalesforceAuthenticator {
     usingCredentials: (credentials: UsernamePassword, instance: SalesforceInstance) => CredentialsHandler;
 }
 
+interface PermissionSetAssignment {
+    Assignee: {
+        Id: string;
+        Name: string;
+    };
+    PermissionSet: {
+        Name: string;
+    };
+}
 interface SalesforceUserDefinition {
     details?: {};
     permissionSets?: string[];
@@ -145,11 +154,13 @@ declare abstract class SalesforceStandardUser {
     constructor(mods?: SalesforceUserDefinition);
     get cached(): Promise<StorageState>;
     use(browser: Browser): Promise<this>;
+    private getUserIdMatchingConfig;
 }
 
 declare class SOQLBuilder {
     private parse;
     private isWildcard;
+    private validateProperty;
     crmUsersMatching(config: SalesforceUserDefinition): string;
     recordTypeByName(name: string): string;
 }
@@ -229,4 +240,4 @@ type SalesforceFixtures = {
 };
 declare const test: _playwright_test.TestType<_playwright_test.PlaywrightTestArgs & _playwright_test.PlaywrightTestOptions & SalesforceFixtures, _playwright_test.PlaywrightWorkerArgs & _playwright_test.PlaywrightWorkerOptions>;
 
-export { AbstractPage, Api, ApiGateway, CreatableViaApi, CreatableViaUi, DefaultCliUserInfo, NoRecordsReturnedError, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword, test };
+export { AbstractPage, Api, ApiGateway, CreatableViaApi, CreatableViaUi, DefaultCliUserInfo, NoRecordsReturnedError, PermissionSetAssignment, RecordUiData, SOQLBuilder, SalesforceApi, SalesforceAuthenticator, SalesforceCliHandler, SalesforceDefaultCliUser, SalesforceFrontdoorData, SalesforceInstance, SalesforceLoginPage, SalesforceNavigator, SalesforceObject, SalesforceStandardUser, SalesforceUserDefinition, StorageState, UiGateway, UiLayout, UsernamePassword, test };

@@ -1,4 +1,4 @@
-import { SalesforceUserDefinition } from "common/SalesforceUsers";
+import { PermissionSetAssignment, SalesforceUserDefinition } from "common/SalesforceUsers";
 
 export class SOQLBuilder {
     private parse(value: unknown){
@@ -14,9 +14,17 @@ export class SOQLBuilder {
             && (value.startsWith('%') || value.startsWith('_') || value.endsWith('%') || value.endsWith('_'))
     }
 
+    private validateProperty<T>(name: keyof T) {
+        return name;
+    }
+
     crmUsersMatching(config: SalesforceUserDefinition): string{
+
         const soql: string[] = []
-        soql.push(`SELECT AssigneeId, Assignee.Username`)
+        const assigneeId = `${this.validateProperty<PermissionSetAssignment>('Assignee')}.${this.validateProperty<PermissionSetAssignment['Assignee']>('Id')}`
+        const assigneeName = `${this.validateProperty<PermissionSetAssignment>('Assignee')}.${this.validateProperty<PermissionSetAssignment['Assignee']>('Name')}`
+        const permissionSetName = `${this.validateProperty<PermissionSetAssignment>('PermissionSet')}.${this.validateProperty<PermissionSetAssignment['PermissionSet']>('Name')}`
+        soql.push(`SELECT ${assigneeId}, ${assigneeName}, ${permissionSetName}`)
         soql.push(`FROM PermissionSetAssignment`)
         soql.push(`WHERE IsActive = true`)
         soql.push(`AND Assignee.IsActive = true`)
@@ -33,19 +41,7 @@ export class SOQLBuilder {
                     }
                 })       
         }
-        if (config.permissionSets){
-            soql.push(`AND PermissionSet.Name IN (${config.permissionSets.map(set => `'${set}'`).join()})`)
-        }
-        soql.push(`GROUP BY Assignee.Username, AssigneeId`)
-        if(config.strictPermissionSets){
-            if (config.permissionSets){
-                soql.push(`HAVING COUNT(Assignee.Username) = ${config.permissionSets.length}`)
-            } else {
-                soql.push(`HAVING COUNT(Assignee.Username) = 1`)
-            }
-        } else if (config.permissionSets){
-            soql.push(`HAVING COUNT(Assignee.Username) >= ${config.permissionSets.length}`)
-        }
+        soql.push(`ORDER BY Assignee.Name DESC`)
         return soql.join('\n')
     }
 
