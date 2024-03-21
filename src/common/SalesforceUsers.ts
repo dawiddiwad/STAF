@@ -1,12 +1,21 @@
-import { Browser, Page, chromium } from "@playwright/test";
+import { Browser, Page, chromium, expect } from "@playwright/test";
 import { DefaultCliUserInfo, StorageState } from "auth/AuthorizationTypes";
 import { SalesforceAuthenticator } from "auth/SalesforceAuthenticator";
 import { SalesforceCliHandler } from "cli/SalesforceCli";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
 import { SalesforceApi } from "api/SalesforceApi";
 import { SOQLBuilder } from "common/SOQLBuilder";
-import { QueryResult } from "jsforce";
+import { SalesforceId } from "jsforce";
 
+export interface PermissionSetAssignment {
+    Assignee: {
+        Id: string
+        Name: string
+    }
+    PermissionSet: {
+        Name: string
+    }
+}
 export interface SalesforceUserDefinition {
     details?: {}
     permissionSets?: string[]
@@ -47,6 +56,9 @@ export class SalesforceDefaultCliUser {
 
 
     async impersonateCrmUser(salesforceUserId: string): Promise<StorageState> {
+        if (!salesforceUserId){
+            throw new Error('salesforceUserId must be defined for impersonation')
+        }
         const impersonationUrl = SalesforceNavigator.buildImpersonationUrl({
             instanceUrl: new URL(this.info.result.url).origin,
             orgId: this.info.result.orgId,
@@ -55,6 +67,7 @@ export class SalesforceDefaultCliUser {
         const isolatedPage = await this.browser.newContext().then(context => context.newPage())
         await isolatedPage.context().addCookies(this.authorizationState.cookies)
         await isolatedPage.goto(impersonationUrl, {waitUntil: 'commit'})
+        await expect(isolatedPage.getByText('Logged in as'), {message: 'sucesfully logged in as other user'}).toBeVisible()
         const otherCrmUserStorageData = await isolatedPage.context().storageState()
         await isolatedPage.context().close()
         return otherCrmUserStorageData
@@ -83,8 +96,9 @@ export abstract class SalesforceStandardUser {
                 this.api = await new SalesforceApi(frontDoor).Ready
                 makeReady(this)
             } catch (error) {
-                throw new Error(`unable to initialize salesforce user ${this.constructor.name}:
-                    \n${JSON.stringify(this.config, null, 3)}\ndue to:\n${error}`)
+                throw new Error(`unable to initialize salesforce user type '${this.constructor.name}' with following configuration:
+                    \n${JSON.stringify(this.config, null, 3)}
+                    \ndue to:\n${error}`)
             }
         })
     }
@@ -92,10 +106,8 @@ export abstract class SalesforceStandardUser {
     get cached() {
         if (!SalesforceStandardUser._cached.get(this.constructor.name)){
             return SalesforceDefaultCliUser.instance.then(cliUser => {
-                const users = new SOQLBuilder().crmUsersMatching(this.config)
-                return cliUser.api.query(users).then(result => {
-                    const selected = (result as QueryResult<any>).records[0].AssigneeId
-                    SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected))
+                return this.getUserIdMatchingConfig().then(userId => {
+                    SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(userId))
                     return SalesforceStandardUser._cached.get(this.constructor.name)
                 })
             })
@@ -107,5 +119,45 @@ export abstract class SalesforceStandardUser {
         await context.addCookies((await this.cached).cookies)
         this.ui = await context.newPage()
         return this
+    }
+
+    private async getUserIdMatchingConfig(): Promise<SalesforceId> {
+        const queryResults = await SalesforceDefaultCliUser.instance
+            .then(cliUser => cliUser.api.query(new SOQLBuilder().crmUsersMatching(this.config))
+                .then(results => results.records as unknown as PermissionSetAssignment[]))
+
+        const matchingUsers = new Set<string>()
+
+        queryResults.forEach(candidate => {
+            const candidateAssignment = queryResults
+                .filter(target => target.Assignee.Id === candidate.Assignee.Id)
+                .map(target => target.PermissionSet.Name)
+
+            const matchesUserConfig = (assignment: string[]) => {
+                const includesAll = (source: string[], matching: string[]) =>
+                    matching.every(value => source.includes(value))
+                const defaultProfileAssignment = 1
+                const noPermissionSets = (!this.config.permissionSets && !this.config.strictPermissionSets)
+                const noPermissionSetsStrict = (!this.config.permissionSets && this.config.strictPermissionSets
+                    && assignment.length === defaultProfileAssignment)
+                const permissionSetsDefined = (this.config.permissionSets && !this.config.strictPermissionSets
+                    && includesAll(assignment, this.config.permissionSets)
+                    && assignment.length >= this.config.permissionSets.length + defaultProfileAssignment)
+                const permissionSetsDefinedAndStrict = (this.config.permissionSets && this.config.strictPermissionSets
+                    && includesAll(assignment, this.config.permissionSets)
+                    && assignment.length === this.config.permissionSets.length + defaultProfileAssignment)
+                return noPermissionSets || noPermissionSetsStrict || permissionSetsDefined || permissionSetsDefinedAndStrict
+            }
+
+            if (matchesUserConfig(candidateAssignment)) {
+                matchingUsers.add(candidate.Assignee.Id)
+            }
+        })
+
+        if (!matchingUsers.size) {
+            throw new Error(`could not find any matching users`)
+        } else {
+            return [...matchingUsers][0]
+        }
     }
 }

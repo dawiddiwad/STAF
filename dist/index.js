@@ -231,9 +231,15 @@ var SOQLBuilder = class {
   isWildcard(value) {
     return typeof value == "string" && (value.startsWith("%") || value.startsWith("_") || value.endsWith("%") || value.endsWith("_"));
   }
+  validateProperty(name) {
+    return name;
+  }
   crmUsersMatching(config) {
     const soql = [];
-    soql.push(`SELECT AssigneeId, Assignee.Username`);
+    const assigneeId = `${this.validateProperty("Assignee")}.${this.validateProperty("Id")}`;
+    const assigneeName = `${this.validateProperty("Assignee")}.${this.validateProperty("Name")}`;
+    const permissionSetName = `${this.validateProperty("PermissionSet")}.${this.validateProperty("Name")}`;
+    soql.push(`SELECT ${assigneeId}, ${assigneeName}, ${permissionSetName}`);
     soql.push(`FROM PermissionSetAssignment`);
     soql.push(`WHERE IsActive = true`);
     soql.push(`AND Assignee.IsActive = true`);
@@ -249,19 +255,7 @@ var SOQLBuilder = class {
         }
       });
     }
-    if (config.permissionSets) {
-      soql.push(`AND PermissionSet.Name IN (${config.permissionSets.map((set) => `'${set}'`).join()})`);
-    }
-    soql.push(`GROUP BY Assignee.Username, AssigneeId`);
-    if (config.strictPermissionSets) {
-      if (config.permissionSets) {
-        soql.push(`HAVING COUNT(Assignee.Username) = ${config.permissionSets.length}`);
-      } else {
-        soql.push(`HAVING COUNT(Assignee.Username) = 1`);
-      }
-    } else if (config.permissionSets) {
-      soql.push(`HAVING COUNT(Assignee.Username) >= ${config.permissionSets.length}`);
-    }
+    soql.push(`ORDER BY Assignee.Name DESC`);
     return soql.join("\n");
   }
   recordTypeByName(name) {
@@ -302,6 +296,9 @@ ${error}`);
       return _SalesforceDefaultCliUser._instance;
   }
   async impersonateCrmUser(salesforceUserId) {
+    if (!salesforceUserId) {
+      throw new Error("salesforceUserId must be defined for impersonation");
+    }
     const impersonationUrl = SalesforceNavigator.buildImpersonationUrl({
       instanceUrl: new URL(this.info.result.url).origin,
       orgId: this.info.result.orgId,
@@ -310,6 +307,7 @@ ${error}`);
     const isolatedPage = await this.browser.newContext().then((context) => context.newPage());
     await isolatedPage.context().addCookies(this.authorizationState.cookies);
     await isolatedPage.goto(impersonationUrl, { waitUntil: "commit" });
+    await (0, import_test.expect)(isolatedPage.getByText("Logged in as"), { message: "sucesfully logged in as other user" }).toBeVisible();
     const otherCrmUserStorageData = await isolatedPage.context().storageState();
     await isolatedPage.context().close();
     return otherCrmUserStorageData;
@@ -333,9 +331,10 @@ var SalesforceStandardUser = class _SalesforceStandardUser {
         this.api = await new SalesforceApi(frontDoor).Ready;
         makeReady(this);
       } catch (error) {
-        throw new Error(`unable to initialize salesforce user ${this.constructor.name}:
+        throw new Error(`unable to initialize salesforce user type '${this.constructor.name}' with following configuration:
                     
 ${JSON.stringify(this.config, null, 3)}
+                    
 due to:
 ${error}`);
       }
@@ -344,10 +343,8 @@ ${error}`);
   get cached() {
     if (!_SalesforceStandardUser._cached.get(this.constructor.name)) {
       return SalesforceDefaultCliUser.instance.then((cliUser) => {
-        const users = new SOQLBuilder().crmUsersMatching(this.config);
-        return cliUser.api.query(users).then((result) => {
-          const selected = result.records[0].AssigneeId;
-          _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected));
+        return this.getUserIdMatchingConfig().then((userId) => {
+          _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(userId));
           return _SalesforceStandardUser._cached.get(this.constructor.name);
         });
       });
@@ -359,6 +356,30 @@ ${error}`);
     await context.addCookies((await this.cached).cookies);
     this.ui = await context.newPage();
     return this;
+  }
+  async getUserIdMatchingConfig() {
+    const queryResults = await SalesforceDefaultCliUser.instance.then((cliUser) => cliUser.api.query(new SOQLBuilder().crmUsersMatching(this.config)).then((results) => results.records));
+    const matchingUsers = /* @__PURE__ */ new Set();
+    queryResults.forEach((candidate) => {
+      const candidateAssignment = queryResults.filter((target) => target.Assignee.Id === candidate.Assignee.Id).map((target) => target.PermissionSet.Name);
+      const matchesUserConfig = (assignment) => {
+        const includesAll = (source, matching) => matching.every((value) => source.includes(value));
+        const defaultProfileAssignment = 1;
+        const noPermissionSets = !this.config.permissionSets && !this.config.strictPermissionSets;
+        const noPermissionSetsStrict = !this.config.permissionSets && this.config.strictPermissionSets && assignment.length === defaultProfileAssignment;
+        const permissionSetsDefined = this.config.permissionSets && !this.config.strictPermissionSets && includesAll(assignment, this.config.permissionSets) && assignment.length >= this.config.permissionSets.length + defaultProfileAssignment;
+        const permissionSetsDefinedAndStrict = this.config.permissionSets && this.config.strictPermissionSets && includesAll(assignment, this.config.permissionSets) && assignment.length === this.config.permissionSets.length + defaultProfileAssignment;
+        return noPermissionSets || noPermissionSetsStrict || permissionSetsDefined || permissionSetsDefinedAndStrict;
+      };
+      if (matchesUserConfig(candidateAssignment)) {
+        matchingUsers.add(candidate.Assignee.Id);
+      }
+    });
+    if (!matchingUsers.size) {
+      throw new Error(`could not find any matching users`);
+    } else {
+      return [...matchingUsers][0];
+    }
   }
 };
 
