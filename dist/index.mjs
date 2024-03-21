@@ -4,7 +4,7 @@ var Api = class {
 };
 
 // src/api/SalesforceApi.ts
-import { expect } from "@playwright/test";
+import { expect as expect2 } from "@playwright/test";
 import { Connection } from "jsforce";
 
 // src/api/UiLayout.ts
@@ -18,7 +18,7 @@ var UiLayout = class {
 };
 
 // src/common/SalesforceUsers.ts
-import { chromium } from "@playwright/test";
+import { chromium, expect } from "@playwright/test";
 
 // src/common/pages/AbstractPage.ts
 var AbstractPage = class {
@@ -193,9 +193,15 @@ var SOQLBuilder = class {
   isWildcard(value) {
     return typeof value == "string" && (value.startsWith("%") || value.startsWith("_") || value.endsWith("%") || value.endsWith("_"));
   }
+  validateProperty(name) {
+    return name;
+  }
   crmUsersMatching(config) {
     const soql = [];
-    soql.push(`SELECT AssigneeId, Assignee.Username`);
+    const assigneeId = `${this.validateProperty("Assignee")}.${this.validateProperty("Id")}`;
+    const assigneeName = `${this.validateProperty("Assignee")}.${this.validateProperty("Name")}`;
+    const permissionSetName = `${this.validateProperty("PermissionSet")}.${this.validateProperty("Name")}`;
+    soql.push(`SELECT ${assigneeId}, ${assigneeName}, ${permissionSetName}`);
     soql.push(`FROM PermissionSetAssignment`);
     soql.push(`WHERE IsActive = true`);
     soql.push(`AND Assignee.IsActive = true`);
@@ -211,19 +217,7 @@ var SOQLBuilder = class {
         }
       });
     }
-    if (config.permissionSets) {
-      soql.push(`AND PermissionSet.Name IN (${config.permissionSets.map((set) => `'${set}'`).join()})`);
-    }
-    soql.push(`GROUP BY Assignee.Username, AssigneeId`);
-    if (config.strictPermissionSets) {
-      if (config.permissionSets) {
-        soql.push(`HAVING COUNT(Assignee.Username) = ${config.permissionSets.length}`);
-      } else {
-        soql.push(`HAVING COUNT(Assignee.Username) = 1`);
-      }
-    } else if (config.permissionSets) {
-      soql.push(`HAVING COUNT(Assignee.Username) >= ${config.permissionSets.length}`);
-    }
+    soql.push(`ORDER BY Assignee.Name DESC`);
     return soql.join("\n");
   }
   recordTypeByName(name) {
@@ -264,6 +258,9 @@ ${error}`);
       return _SalesforceDefaultCliUser._instance;
   }
   async impersonateCrmUser(salesforceUserId) {
+    if (!salesforceUserId) {
+      throw new Error("salesforceUserId must be defined for impersonation");
+    }
     const impersonationUrl = SalesforceNavigator.buildImpersonationUrl({
       instanceUrl: new URL(this.info.result.url).origin,
       orgId: this.info.result.orgId,
@@ -272,6 +269,7 @@ ${error}`);
     const isolatedPage = await this.browser.newContext().then((context) => context.newPage());
     await isolatedPage.context().addCookies(this.authorizationState.cookies);
     await isolatedPage.goto(impersonationUrl, { waitUntil: "commit" });
+    await expect(isolatedPage.getByText("Logged in as"), { message: "sucesfully logged in as other user" }).toBeVisible();
     const otherCrmUserStorageData = await isolatedPage.context().storageState();
     await isolatedPage.context().close();
     return otherCrmUserStorageData;
@@ -295,9 +293,10 @@ var SalesforceStandardUser = class _SalesforceStandardUser {
         this.api = await new SalesforceApi(frontDoor).Ready;
         makeReady(this);
       } catch (error) {
-        throw new Error(`unable to initialize salesforce user ${this.constructor.name}:
+        throw new Error(`unable to initialize salesforce user type '${this.constructor.name}' with following configuration:
                     
 ${JSON.stringify(this.config, null, 3)}
+                    
 due to:
 ${error}`);
       }
@@ -306,10 +305,8 @@ ${error}`);
   get cached() {
     if (!_SalesforceStandardUser._cached.get(this.constructor.name)) {
       return SalesforceDefaultCliUser.instance.then((cliUser) => {
-        const users = new SOQLBuilder().crmUsersMatching(this.config);
-        return cliUser.api.query(users).then((result) => {
-          const selected = result.records[0].AssigneeId;
-          _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(selected));
+        return this.getUserIdMatchingConfig().then((userId) => {
+          _SalesforceStandardUser._cached.set(this.constructor.name, cliUser.impersonateCrmUser(userId));
           return _SalesforceStandardUser._cached.get(this.constructor.name);
         });
       });
@@ -321,6 +318,30 @@ ${error}`);
     await context.addCookies((await this.cached).cookies);
     this.ui = await context.newPage();
     return this;
+  }
+  async getUserIdMatchingConfig() {
+    const queryResults = await SalesforceDefaultCliUser.instance.then((cliUser) => cliUser.api.query(new SOQLBuilder().crmUsersMatching(this.config)).then((results) => results.records));
+    const matchingUsers = /* @__PURE__ */ new Set();
+    queryResults.forEach((candidate) => {
+      const candidateAssignment = queryResults.filter((target) => target.Assignee.Id === candidate.Assignee.Id).map((target) => target.PermissionSet.Name);
+      const matchesUserConfig = (assignment) => {
+        const includesAll = (source, matching) => matching.every((value) => source.includes(value));
+        const defaultProfileAssignment = 1;
+        const noPermissionSets = !this.config.permissionSets && !this.config.strictPermissionSets;
+        const noPermissionSetsStrict = !this.config.permissionSets && this.config.strictPermissionSets && assignment.length === defaultProfileAssignment;
+        const permissionSetsDefined = this.config.permissionSets && !this.config.strictPermissionSets && includesAll(assignment, this.config.permissionSets) && assignment.length >= this.config.permissionSets.length + defaultProfileAssignment;
+        const permissionSetsDefinedAndStrict = this.config.permissionSets && this.config.strictPermissionSets && includesAll(assignment, this.config.permissionSets) && assignment.length === this.config.permissionSets.length + defaultProfileAssignment;
+        return noPermissionSets || noPermissionSetsStrict || permissionSetsDefined || permissionSetsDefinedAndStrict;
+      };
+      if (matchesUserConfig(candidateAssignment)) {
+        matchingUsers.add(candidate.Assignee.Id);
+      }
+    });
+    if (!matchingUsers.size) {
+      throw new Error(`could not find any matching users`);
+    } else {
+      return [...matchingUsers][0];
+    }
   }
 };
 
@@ -556,7 +577,7 @@ ${result.exceptionStackTrace}`);
           })
         ]);
       }
-      expect(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
+      expect2(JSON.stringify(await orgLayouts, null, 3)).toMatchSnapshot();
     } catch (error) {
       throw new Error(`Layouts validation via UI-API failed due to:
 ${error}`);
@@ -578,7 +599,7 @@ ${error}`);
           })
         ]);
       }
-      expect(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
+      expect2(JSON.stringify(await orgApps, null, 3)).toMatchSnapshot();
     } catch (error) {
       throw new Error(`Apps validation via UI-API failed due to:
 ${error}`);
@@ -587,7 +608,7 @@ ${error}`);
 };
 
 // src/common/SalesforceObject.ts
-import { expect as expect2 } from "@playwright/test";
+import { expect as expect3 } from "@playwright/test";
 
 // src/common/pages/FlexiPage.ts
 var FlexiPage = class extends SalesforcePage {
@@ -669,9 +690,9 @@ var SalesforceObject = class {
             console.debug(`snapshot capture is on in '${testInfo.config.updateSnapshots}' mode: using implicit wait of ${safePeriod / 1e3}s to record`);
             await flexipage.ui.waitForTimeout(safePeriod);
           }
-          await expect2(async () => {
+          await expect3(async () => {
             parsedComponents = await flexipage.getComponents();
-            expect2(parsedComponents, "components validation").toMatchSnapshot();
+            expect3(parsedComponents, "components validation").toMatchSnapshot();
           }).toPass({ timeout: testInfo.project.use.actionTimeout ? testInfo.project.use.actionTimeout : testInfo.timeout });
         } finally {
           if (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on") || testInfo.retry === 1 && (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on-first-retry")) || testInfo.retry > 0 && (testInfo.project.use.trace instanceof Object && (testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "on-all-retries")) || testInfo.error && (testInfo.project.use.trace instanceof Object && testInfo.project.use.trace.snapshots && testInfo.project.use.trace.mode === "retain-on-failure") || testInfo.config.updateSnapshots !== "none") {
@@ -685,7 +706,7 @@ var SalesforceObject = class {
   }
   async attachPageSnapshot(page) {
     try {
-      await expect2(page).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
+      await expect3(page).toHaveScreenshot({ maxDiffPixels: 0, fullPage: true });
     } catch (ignore) {
     }
   }
