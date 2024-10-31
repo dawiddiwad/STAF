@@ -500,7 +500,7 @@ ${JSON.stringify(options)}`);
     };
     const resource = `/ui-api/record-ui/${recordId}?layoutTypes=${types()}&modes=${modes()}`;
     try {
-      return this.conn.request({ method: "Get", url: resource });
+      return this.conn.request({ method: "GET", url: resource });
     } catch (error) {
       throw new Error(`unable to retrieve ${resource} due to:
 ${error}`);
@@ -511,7 +511,7 @@ ${error}`);
     const userCustomizationsParam = userCustomizations ? `&userCustomizations=${userCustomizations}` : "";
     const resource = `/ui-api/apps${formFactorParam}${userCustomizationsParam}`;
     try {
-      let result = await this.conn.request({ method: "Get", url: resource });
+      let result = await this.conn.request({ method: "GET", url: resource });
       const sfdcEtag = /[a-zA-Z0-9]{32}/gm;
       const sfdcLongId = /[a-zA-Z0-9]{18}/gm;
       const url = /^.*\bhttps\b.*$/gm;

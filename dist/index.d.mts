@@ -1,6 +1,7 @@
 import * as _playwright_test from '@playwright/test';
 import { TestInfo, Page, Browser } from '@playwright/test';
-import { Connection, RecordResult, SalesforceId, Record, QueryResult, ExecuteAnonymousResult } from 'jsforce';
+import { Connection, SaveResult, Record, QueryResult } from 'jsforce';
+import { ExecuteAnonymousResult } from 'jsforce/lib/api/tooling';
 
 declare abstract class Api {
     testInfo: TestInfo;
@@ -76,10 +77,10 @@ declare class SalesforceApi extends Api {
     private readRecordUi;
     private readApps;
     private readLayoutsFromOrg;
-    create(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]>;
-    update(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]>;
-    delete(sobject: string, id: SalesforceId | SalesforceId[]): Promise<RecordResult | RecordResult[]>;
-    read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]>;
+    create(sobject: string, data: object): Promise<SaveResult>;
+    update(sobject: string, data: any): Promise<SaveResult>;
+    delete(sobject: string, id: string): Promise<SaveResult>;
+    read(sobject: string, id: string): Promise<Record>;
     query(soql: string): Promise<QueryResult<unknown>>;
     executeApex(apexBody: string): Promise<ExecuteAnonymousResult>;
     validateRecordLayoutsFor(recordId: string, page?: Page, options?: RecordUiData): Promise<void>;

@@ -1,10 +1,11 @@
 import { Page, expect } from "@playwright/test";
-import { Connection, ExecuteAnonymousResult, MetadataInfo, QueryResult, Record, RecordResult, SalesforceId } from "jsforce"
+import { Connection, QueryResult, Record, SaveResult } from "jsforce"
 import { RecordUiData, UiLayout } from "api/UiLayout";
 import { SalesforceFrontdoorData } from "auth/AuthorizationTypes";
 import { Api } from "api/Api";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
 import { SalesforcePage } from "common/pages/SalesforcePage";
+import { ExecuteAnonymousResult } from "jsforce/lib/api/tooling";
 
 export class NoRecordsReturnedError extends Error {
 	constructor(msg: string) {
@@ -47,7 +48,7 @@ export class SalesforceApi extends Api {
 		) as UiLayout;
 	}
 
-	private async readRecordUi(recordId: string, options?: RecordUiData): Promise<MetadataInfo | MetadataInfo[]> {
+	private async readRecordUi(recordId: string, options?: RecordUiData): Promise<unknown> {
 		options = options ? options : {
 			Full: { Edit: true, Create: true, View: true },
 			Compact: { Edit: true, Create: true, View: true }
@@ -85,18 +86,18 @@ export class SalesforceApi extends Api {
 
 		const resource = `/ui-api/record-ui/${recordId}?layoutTypes=${types()}&modes=${modes()}`;
 		try {
-			return this.conn.request({ method: 'Get', url: resource });
+			return this.conn.request({ method: 'GET', url: resource });
 		} catch (error) {
 			throw new Error(`unable to retrieve ${resource} due to:\n${error}`);
 		}
 	}
 
-	private async readApps(formFactor?: 'Large' | 'Medium' | 'Small', userCustomizations?: boolean): Promise<MetadataInfo | MetadataInfo[]> {
+	private async readApps(formFactor?: 'Large' | 'Medium' | 'Small', userCustomizations?: boolean): Promise<Request> {
 		const formFactorParam = formFactor ? `?formFactor=${formFactor}` : `?formFactor=Large`;
 		const userCustomizationsParam = userCustomizations ? `&userCustomizations=${userCustomizations}` : '';
 		const resource = `/ui-api/apps${formFactorParam}${userCustomizationsParam}`;
 		try {
-			let result = await this.conn.request({ method: 'Get', url: resource });
+			let result = await this.conn.request({ method: 'GET', url: resource });
 			const sfdcEtag = /[a-zA-Z0-9]{32}/gm;
 			const sfdcLongId = /[a-zA-Z0-9]{18}/gm;
 			const url = /^.*\bhttps\b.*$/gm;
@@ -119,7 +120,7 @@ export class SalesforceApi extends Api {
 		}
 	}
 
-	async create(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
+	async create(sobject: string, data: object): Promise<SaveResult> {
 		try {
 			return await this.conn.create(sobject, data, { allOrNone: true });
 		} catch (error) {
@@ -127,7 +128,7 @@ export class SalesforceApi extends Api {
 		}
 	}
 
-	async update(sobject: string, data: object | object[]): Promise<RecordResult | RecordResult[]> {
+	async update(sobject: string, data: any): Promise<SaveResult> {
 		try {
 			return await this.conn.update(sobject, data, { allOrNone: true });
 		} catch (error) {
@@ -135,7 +136,7 @@ export class SalesforceApi extends Api {
 		}
 	}
 
-	async delete(sobject: string, id: SalesforceId | SalesforceId[]): Promise<RecordResult | RecordResult[]> {
+	async delete(sobject: string, id: string): Promise<SaveResult> {
 		try {
 			return await this.conn.delete(sobject, id);
 		} catch (error) {
@@ -143,7 +144,7 @@ export class SalesforceApi extends Api {
 		}
 	}
 
-	async read(sobject: string, id: SalesforceId | SalesforceId[]): Promise<Record | Record[]> {
+	async read(sobject: string, id: string): Promise<Record> {
 		try {
 			return await this.conn.retrieve(sobject, id);
 		} catch (error) {

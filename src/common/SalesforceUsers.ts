@@ -5,7 +5,6 @@ import { SalesforceCliHandler } from "cli/SalesforceCli";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
 import { SalesforceApi } from "api/SalesforceApi";
 import { SOQLBuilder } from "common/SOQLBuilder";
-import { SalesforceId } from "jsforce";
 
 export interface PermissionSetAssignment {
     Assignee: {
@@ -121,7 +120,7 @@ export abstract class SalesforceStandardUser {
         return this
     }
 
-    private async getUserIdMatchingConfig(): Promise<SalesforceId> {
+    private async getUserIdMatchingConfig(): Promise<string> {
         const queryResults = await SalesforceDefaultCliUser.instance
             .then(cliUser => cliUser.api.query(new SOQLBuilder().crmUsersMatching(this.config))
                 .then(results => results.records as unknown as PermissionSetAssignment[]))
