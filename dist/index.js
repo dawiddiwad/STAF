@@ -21,7 +21,7 @@ var src_exports = {};
 __export(src_exports, {
   AbstractPage: () => AbstractPage,
   Api: () => Api,
-  NoRecordsReturnedError: () => NoRecordsReturnedError,
+  NoRecordsReturnedError: () => NoRecordsReturnedError2,
   SOQLBuilder: () => SOQLBuilder,
   SalesforceApi: () => SalesforceApi,
   SalesforceAuthenticator: () => SalesforceAuthenticator,
@@ -43,7 +43,7 @@ var Api = class {
 
 // src/api/SalesforceApi.ts
 var import_test2 = require("@playwright/test");
-var import_jsforce = require("jsforce");
+var import_jsforce2 = require("jsforce");
 
 // src/api/UiLayout.ts
 var UiLayout = class {
@@ -110,6 +110,106 @@ var SalesforceLoginPage = class extends SalesforcePage {
   }
 };
 
+// src/api/rest-handler.ts
+var import_jsforce = require("jsforce");
+var NoRecordsReturnedError = class extends Error {
+  constructor(msg) {
+    super(msg);
+  }
+};
+var RestHandler = class {
+  apiVersion = "57.0";
+  ready;
+  conn;
+  constructor(frontdoorData, apiVersion) {
+    if (apiVersion) {
+      this.apiVersion = apiVersion;
+    }
+    this.ready = new Promise((authenticate) => {
+      try {
+        this.conn = new import_jsforce.Connection({
+          instanceUrl: frontdoorData.instance,
+          sessionId: frontdoorData.sessionId,
+          version: this.apiVersion
+        });
+        authenticate(this);
+      } catch (error) {
+        throw new Error(`unable to authenticate Salesforce Rest API due to:
+${error}`);
+      }
+    });
+  }
+  async create(sobject, data) {
+    try {
+      return await this.conn.create(sobject, data, { allOrNone: true });
+    } catch (error) {
+      throw new Error(`unable to create ${sobject} due to:
+${error}`);
+    }
+  }
+  async update(sobject, data) {
+    try {
+      return await this.conn.update(sobject, data, { allOrNone: true });
+    } catch (error) {
+      throw new Error(`unable to update ${sobject} with data:
+${JSON.stringify(data, null, 3)}
+due to:
+${error}`);
+    }
+  }
+  async delete(sobject, ids) {
+    try {
+      return await this.conn.delete(sobject, ids);
+    } catch (error) {
+      throw new Error(`unable to delete ${sobject} record ${ids} due to:
+${error}`);
+    }
+  }
+  async read(sobject, ids) {
+    try {
+      return await this.conn.retrieve(sobject, ids);
+    } catch (error) {
+      throw new Error(`unable to read ${sobject} record ${ids} due to:
+${error}`);
+    }
+  }
+  async query(soql) {
+    let result;
+    try {
+      result = await this.conn.query(soql);
+    } catch (error) {
+      throw new Error(`unable to execute soql:
+${soql}
+due to:
+${error}`);
+    }
+    if (!result.records.length) {
+      throw new NoRecordsReturnedError(`no records returned by soql:
+${soql}`);
+    } else
+      return result;
+  }
+  async executeApex(apexBody) {
+    let result;
+    try {
+      result = await this.conn.tooling.executeAnonymous(apexBody);
+    } catch (error) {
+      throw new Error(`unable to execute anonymous apex:
+${apexBody}
+due to:
+${error}`);
+    }
+    if (!result.success) {
+      throw new Error(`exception running anonymous apex:
+${apexBody}
+due to:
+${result.exceptionMessage}
+${result.exceptionStackTrace}`);
+    } else
+      return result;
+  }
+};
+
 // src/auth/SalesforceAuthenticator.ts
 var DefaultCliUserHandler = class {
   cli;
@@ -138,7 +238,7 @@ var DefaultCliUserHandler = class {
     return page.context().storageState();
   }
   async loginToApi() {
-    return new SalesforceApi(await this.parseFrontDoorData()).Ready;
+    return new RestHandler(await this.parseFrontDoorData()).ready;
   }
 };
 var CredentialsHandler = class {
@@ -317,9 +417,10 @@ var SalesforceStandardUser = class _SalesforceStandardUser {
   static _cached = /* @__PURE__ */ new Map();
   ui;
   api;
-  Ready;
+  ready;
+  testInfo;
   constructor(mods) {
-    this.Ready = new Promise(async (makeReady) => {
+    this.ready = new Promise(async (makeReady) => {
       try {
         this.config = { ...this.config, ...mods };
         const frontdoor = await SalesforceDefaultCliUser.instance.then((instance2) => instance2.info.result.url);
@@ -328,7 +429,7 @@ var SalesforceStandardUser = class _SalesforceStandardUser {
         )[0].value;
         const instance = new URL(frontdoor).origin;
         const frontDoor = { instance, sessionId };
-        this.api = await new SalesforceApi(frontDoor).Ready;
+        this.api = await new RestHandler(frontDoor).ready;
         makeReady(this);
       } catch (error) {
         throw new Error(`unable to initialize salesforce user type '${this.constructor.name}' with following configuration:
@@ -426,7 +527,7 @@ var SalesforceNavigator = class _SalesforceNavigator {
 };
 
 // src/api/SalesforceApi.ts
-var NoRecordsReturnedError = class extends Error {
+var NoRecordsReturnedError2 = class extends Error {
   constructor(msg) {
     super(msg);
   }
@@ -440,7 +541,7 @@ var SalesforceApi = class extends Api {
     version ? this.version = version : this.version = "57.0";
     this.Ready = new Promise((connect) => {
       try {
-        this.conn = new import_jsforce.Connection({
+        this.conn = new import_jsforce2.Connection({
           instanceUrl: frontdoorData.instance,
           sessionId: frontdoorData.sessionId,
           version: this.version
@@ -576,7 +677,7 @@ due to:
 ${error}`);
     }
     if (!result.records.length) {
-      throw new NoRecordsReturnedError(`no records returned by soql:
+      throw new NoRecordsReturnedError2(`no records returned by soql:
 ${soql}`);
     } else
       return result;
@@ -718,7 +819,7 @@ var SalesforceObject = class {
     this.user = user;
     this.flexipage = {
       validateComponentsFor: async (recordId) => {
-        const testInfo = this.user.api.testInfo;
+        const testInfo = this.user.testInfo;
         const flexipage = new FlexiPage(this.user.ui);
         await SalesforceNavigator.openResource(recordId, this.user.ui);
         let parsedComponents;
@@ -758,9 +859,9 @@ var import_test4 = require("@playwright/test");
 var test = import_test4.test.extend({
   cast: async ({ browser }, use, testInfo) => {
     await use(async (actor) => {
-      await actor.Ready.then((actor2) => actor2.use(browser));
-      await actor.Ready.then((actor2) => actor2.api.testInfo = testInfo);
-      return actor.Ready;
+      await actor.ready.then((actor2) => actor2.use(browser));
+      await actor.ready.then((actor2) => actor2.testInfo = testInfo);
+      return actor.ready;
     });
   }
 });

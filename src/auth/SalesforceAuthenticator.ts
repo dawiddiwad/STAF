@@ -1,9 +1,9 @@
 import { Page } from "@playwright/test"
 import { SalesforceCliHandler } from "cli/SalesforceCli"
 import { SalesforceNavigator } from "common/SalesforceNavigator"
-import { SalesforceApi } from "api/SalesforceApi"
 import { ApiGateway, DefaultCliUserInfo, SalesforceFrontdoorData, SalesforceInstance, StorageState, UiGateway, UsernamePassword } from "auth/AuthorizationTypes"
 import { SalesforceLoginPage } from "common/pages/SalesforceLoginPage"
+import { RestHandler } from "api/rest-handler"
 
 class DefaultCliUserHandler implements UiGateway, ApiGateway{
     private cli: SalesforceCliHandler
@@ -37,8 +37,8 @@ class DefaultCliUserHandler implements UiGateway, ApiGateway{
         return page.context().storageState()
     }
 
-    async loginToApi(): Promise<SalesforceApi> {
-        return new SalesforceApi(await this.parseFrontDoorData()).Ready
+    async loginToApi(): Promise<RestHandler> {
+        return new RestHandler(await this.parseFrontDoorData()).ready
     }
 }
 

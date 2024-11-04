@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { Api } from "api/Api";
+import { RestHandler } from "api/rest-handler";
 
 export type SalesforceInstance = 
     'SANDBOX' | 'PRODUCTION' | URL
@@ -43,5 +44,5 @@ export type UiGateway = {
 }
 
 export type ApiGateway = {
-    loginToApi(): Promise<Api>
+    loginToApi(): Promise<RestHandler>
 }

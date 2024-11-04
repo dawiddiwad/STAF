@@ -1,4 +1,3 @@
-import { TestInfo } from "@playwright/test"
 import { Connection, QueryResult, Record, SaveResult, SObjectUpdateRecord } from "jsforce"
 import { SalesforceFrontdoorData } from "auth/AuthorizationTypes"
 import { ExecuteAnonymousResult } from "jsforce/lib/api/tooling"
@@ -12,8 +11,7 @@ export class NoRecordsReturnedError extends Error {
 export class RestHandler {
 	readonly apiVersion: string = "57.0"
     readonly ready: Promise<this>
-	conn: Connection
-    testInfo: TestInfo
+	public conn: Connection
 
 	constructor(frontdoorData: SalesforceFrontdoorData, apiVersion?: string) {
         if (apiVersion){

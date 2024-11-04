@@ -1,10 +1,11 @@
-import { Browser, Page, chromium, expect } from "@playwright/test";
+import { Browser, Page, TestInfo, chromium, expect } from "@playwright/test";
 import { DefaultCliUserInfo, StorageState } from "auth/AuthorizationTypes";
 import { SalesforceAuthenticator } from "auth/SalesforceAuthenticator";
 import { SalesforceCliHandler } from "cli/SalesforceCli";
 import { SalesforceNavigator } from "common/SalesforceNavigator";
 import { SalesforceApi } from "api/SalesforceApi";
 import { SOQLBuilder } from "common/SOQLBuilder";
+import { RestHandler } from "api/rest-handler";
 
 export interface PermissionSetAssignment {
     Assignee: {
@@ -28,7 +29,7 @@ export class SalesforceDefaultCliUser {
     authorizationState: StorageState
     info: DefaultCliUserInfo
     ui: Page
-    api: SalesforceApi
+    api: RestHandler
 
     private constructor(authenticator: SalesforceAuthenticator){
         this.Ready = new Promise(async (makeReady) => {
@@ -77,11 +78,12 @@ export abstract class SalesforceStandardUser {
     private static _cached: Map<string, Promise<StorageState>> = new Map()
     abstract config: SalesforceUserDefinition
     ui: Page
-    api: SalesforceApi
-    Ready: Promise<this>
+    api: RestHandler
+    ready: Promise<this>
+    testInfo: TestInfo
 
     constructor(mods?: SalesforceUserDefinition){
-        this.Ready = new Promise(async (makeReady) => {
+        this.ready = new Promise(async (makeReady) => {
             try {
                 this.config = {...this.config, ...mods}
                 const frontdoor = await SalesforceDefaultCliUser.instance
@@ -92,7 +94,7 @@ export abstract class SalesforceStandardUser {
                     )[0].value
                 const instance = new URL(frontdoor).origin
                 const frontDoor = {instance: instance, sessionId: sessionId}
-                this.api = await new SalesforceApi(frontDoor).Ready
+                this.api = await new RestHandler(frontDoor).ready
                 makeReady(this)
             } catch (error) {
                 throw new Error(`unable to initialize salesforce user type '${this.constructor.name}' with following configuration:

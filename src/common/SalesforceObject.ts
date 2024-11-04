@@ -14,7 +14,7 @@ export abstract class SalesforceObject<T extends SalesforceStandardUser> {
         this.user = user;
         this.flexipage = {
             validateComponentsFor: async (recordId: string) => {
-                const testInfo = this.user.api.testInfo
+                const testInfo = this.user.testInfo
                 const flexipage = new FlexiPage(this.user.ui)
                 await SalesforceNavigator.openResource(recordId, this.user.ui)
                 let parsedComponents: string

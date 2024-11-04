@@ -3,39 +3,40 @@ import { RestHandler } from "api/rest-handler"
 import { SalesforcePage } from "common/pages/SalesforcePage"
 import { SalesforceNavigator } from "common/SalesforceNavigator"
 
-type Layout = {
-    sections: any
+type LayoutDetails = {
+    sections: unknown
 }
 
-type LayoutModes = {
-    create?: Layout | boolean,
-    edit?: Layout | boolean,
-    view?: Layout | boolean
-}
-
-type LayoutTypes = {
-	compact?: LayoutModes, 
-	full?: LayoutModes
-}
+type LayoutModes = 
+	{
+		create?: LayoutDetails | boolean
+		edit?: LayoutDetails | boolean
+		view?: LayoutDetails | boolean
+	}
+	& (
+		| {create: LayoutDetails | boolean}
+		| {edit: LayoutDetails | boolean}
+		| {view: LayoutDetails | boolean}
+	)
 
 type TestContext = {
     ui: Page, 
     testInfo: TestInfo
 }
 
-type ValidatorConfig = {
-	types?: LayoutTypes,
+type LayoutRecord = 
+	{
+		full?: LayoutModes;
+    	compact?: LayoutModes;
+	} 
+	& (
+		| { full: LayoutModes } 
+		| { compact: LayoutModes }
+	)
+
+export type ValidatorConfig = {
+	types?: LayoutRecord,
 	evidence?: TestContext
-}
-
-export class RecordLayout {
-    Compact?: LayoutModes;
-    Full?: LayoutModes;
-
-    constructor(data: LayoutTypes){
-        this.Compact = data.compact;
-        this.Full = data.full;
-    }
 }
 
 export class RecordValidator {
@@ -49,7 +50,14 @@ export class RecordValidator {
         return JSON.stringify(data, null, 3)
     }
 
-    private filterRecordData(layoutData: ValidatorConfig): RecordLayout {
+	private isRecordUiResponse(obj: unknown): obj is { layouts: LayoutModes[] } {
+		return typeof obj === 'object' 
+			&& obj !== null 
+			&& 'layouts' in obj 
+			&& Array.isArray((obj as any).layouts)
+	}
+
+    private filterRecordData(layoutData: LayoutModes): LayoutRecord {
 		const matching = {
 			etags: /[a-zA-Z0-9]{32}/gm,
 			longIds: /[a-zA-Z0-9]{18}/gm,
@@ -61,10 +69,10 @@ export class RecordValidator {
 			.replace(matching.longIds, "")
 			.replace(matching.filters, "")
 			.replace(matching.placeholders, "")
-		) as RecordLayout
+		) as LayoutRecord
 	}
 
-	private parseLayoutTypes (types: LayoutTypes): string[] {
+	private parseLayoutTypes (types: LayoutRecord): string[] {
 		const layoutTypes: string[] = []
 		if (types.compact) {
 			layoutTypes.push('Compact')
@@ -99,9 +107,6 @@ export class RecordValidator {
 		const modes = new Set<string>()
 		types.forEach(type => this.parseLayoutModes(config.types[type])
 			.forEach(mode => modes.add(mode)))
-		if (!modes.size) {
-			throw new Error(`missing layout modes in record validation pathname:\n${JSON.stringify(config)}`)
-		}
 
 		const uri = new URL(pathname, SalesforceNavigator.SANDBOX_LOGIN_URL)
 		uri.searchParams.append('layoutTypes', types.toString())
@@ -109,11 +114,15 @@ export class RecordValidator {
 		return uri.pathname
 	}
 
-    private async fetchLayoutForRecord(id: string, config?: ValidatorConfig): Promise<RecordLayout> {
+    private async fetchLayoutForRecord(id: string, config?: ValidatorConfig): Promise<LayoutRecord> {
 		const pathname = this.getPathnameForLayoutRecord(id, config)
 		try {
-			const response = await this.api.conn.request({ method: 'GET', url: pathname })
-			return this.filterRecordData(((response as any).layouts)[0])
+			const response = await this.api.conn.request({ method: 'GET', url: pathname }) as unknown
+			if (this.isRecordUiResponse(response)){
+				return this.filterRecordData(response.layouts[0])
+			} else {
+				throw new Error(`received unexpected response:\n${JSON.stringify(response)}`)
+			}
 		} catch (error) {
 			throw new Error(`unable to retrieve ${pathname} due to:\n${error}`)
 		}

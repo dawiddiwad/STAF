@@ -8,9 +8,9 @@ type SalesforceFixtures = {
 export const test = base.extend<SalesforceFixtures>({
     cast: async ({browser}, use, testInfo) => {
         await use(async <T extends SalesforceStandardUser>(actor: T) => {
-            await actor.Ready.then(actor => actor.use(browser))
-            await actor.Ready.then(actor => actor.api.testInfo = testInfo)
-            return actor.Ready
+            await actor.ready.then(actor => actor.use(browser))
+            await actor.ready.then(actor => actor.testInfo = testInfo)
+            return actor.ready
         })
     }
 })

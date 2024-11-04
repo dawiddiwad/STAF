@@ -1,6 +1,6 @@
 import * as _playwright_test from '@playwright/test';
 import { TestInfo, Page, Browser } from '@playwright/test';
-import { Connection, SaveResult, Record, QueryResult } from 'jsforce';
+import { Connection, SaveResult, SObjectUpdateRecord, Record, QueryResult } from 'jsforce';
 import { ExecuteAnonymousResult } from 'jsforce/lib/api/tooling';
 
 declare abstract class Api {
@@ -24,6 +24,19 @@ declare class UiLayout implements RecordUiData {
     Compact?: LayoutMode;
     Full?: LayoutMode;
     constructor(data: RecordUiData);
+}
+
+declare class RestHandler {
+    readonly apiVersion: string;
+    readonly ready: Promise<this>;
+    conn: Connection;
+    constructor(frontdoorData: SalesforceFrontdoorData, apiVersion?: string);
+    create(sobject: string, data: object | object[]): Promise<SaveResult>;
+    update(sobject: string, data: SObjectUpdateRecord<any, any>): Promise<SaveResult>;
+    delete(sobject: string, ids: string[]): Promise<SaveResult[]>;
+    read(sobject: string, ids: string[]): Promise<Record[]>;
+    query(soql: string): Promise<QueryResult<unknown>>;
+    executeApex(apexBody: string): Promise<ExecuteAnonymousResult>;
 }
 
 type SalesforceInstance = 'SANDBOX' | 'PRODUCTION' | URL;
@@ -62,7 +75,7 @@ type UiGateway = {
     loginToUi(page: Page): Promise<StorageState>;
 };
 type ApiGateway = {
-    loginToApi(): Promise<Api>;
+    loginToApi(): Promise<RestHandler>;
 };
 
 declare class NoRecordsReturnedError extends Error {
@@ -107,7 +120,7 @@ declare class DefaultCliUserHandler implements UiGateway, ApiGateway {
     get defaultUserData(): Promise<DefaultCliUserInfo>;
     private parseFrontDoorData;
     loginToUi(page: Page): Promise<StorageState>;
-    loginToApi(): Promise<SalesforceApi>;
+    loginToApi(): Promise<RestHandler>;
 }
 declare class CredentialsHandler implements UiGateway {
     private credentials;
@@ -141,7 +154,7 @@ declare class SalesforceDefaultCliUser {
     authorizationState: StorageState;
     info: DefaultCliUserInfo;
     ui: Page;
-    api: SalesforceApi;
+    api: RestHandler;
     private constructor();
     static get instance(): Promise<SalesforceDefaultCliUser>;
     impersonateCrmUser(salesforceUserId: string): Promise<StorageState>;
@@ -150,8 +163,9 @@ declare abstract class SalesforceStandardUser {
     private static _cached;
     abstract config: SalesforceUserDefinition;
     ui: Page;
-    api: SalesforceApi;
-    Ready: Promise<this>;
+    api: RestHandler;
+    ready: Promise<this>;
+    testInfo: TestInfo;
     constructor(mods?: SalesforceUserDefinition);
     get cached(): Promise<StorageState>;
     use(browser: Browser): Promise<this>;
